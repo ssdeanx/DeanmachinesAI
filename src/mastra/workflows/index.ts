@@ -433,8 +433,8 @@ const feedbackStep = new Step({
       // Store feedback in memory for reinforcement learning
       try {
         // Create a unique thread for storing this feedback entry
-        const feedbackThreadId = `feedback_${documentData.timestamp.replace(/[^a-zA-Z0-9]/g, '')}`;
-        const feedbackResourceId = `feedback_resource_${documentData.query.replace(/\s+/g, '_').toLowerCase()}`;
+        const feedbackThreadId = `feedback_${documentData.timestamp.replace(/[^a-zA-Z0-9]/g, "")}`;
+        const feedbackResourceId = `feedback_resource_${documentData.query.replace(/\s+/g, "_").toLowerCase()}`;
 
         // Store feedback as metadata on a new thread
         await memory.createThread({
@@ -445,8 +445,8 @@ const feedbackStep = new Step({
             query: documentData.query,
             feedback,
             timestamp: new Date().toISOString(),
-            origin: "system"
-          }
+            origin: "system",
+          },
         });
       } catch (storageError) {
         console.error("Error storing feedback in memory:", storageError);
@@ -491,3 +491,18 @@ const ragWorkflow = new Workflow({
 ragWorkflow.commit();
 
 export { weatherWorkflow, ragWorkflow };
+
+/**
+ * Workflows Index
+ *
+ * This file exports all workflows and agent networks available in the DeanmachinesAI system.
+ * Workflows provide predefined execution paths, while AgentNetworks use LLM-based routing
+ * for dynamic agent collaboration.
+ */
+
+// Export agent networks
+export * from "./agentNetwork";
+
+// TODO: Add and export workflow definitions here as they are developed
+// export * from "./weatherWorkflow";
+// export * from "./researchWorkflow";

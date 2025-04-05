@@ -1,7 +1,19 @@
 import { Mastra } from "@mastra/core";
 import { createLogger } from "@mastra/core/logger";
-import { researchAgent, analystAgent, writerAgent } from "./agents";
+import {
+  researchAgent,
+  analystAgent,
+  writerAgent,
+  rlTrainerAgent,
+  dataManagerAgent,
+} from "./agents";
 import { ragWorkflow } from "./workflows";
+import {
+  deanInsightsNetwork,
+  dataFlowNetwork,
+  contentCreationNetwork,
+  networks,
+} from "./workflows/agentNetwork";
 import { memory } from "./database";
 import {
   collectFeedbackTool,
@@ -24,26 +36,22 @@ export {
   optimizePolicyTool,
 };
 
+// Re-export agent networks for easier access
+export { deanInsightsNetwork, dataFlowNetwork, contentCreationNetwork };
+
 // Create and export the Mastra instance
 export const mastra = new Mastra({
   agents: {
     researchAgent,
     analystAgent,
     writerAgent,
+    rlTrainerAgent,
+    dataManagerAgent,
   },
   workflows: {
     ragWorkflow,
   },
-  tools: {
-    // RL feedback tools
-    collectFeedback: collectFeedbackTool,
-    analyzeFeedback: analyzeFeedbackTool,
-    applyRLInsights: applyRLInsightsTool,
-    // RL reward tools
-    calculateReward: calculateRewardTool,
-    defineRewardFunction: defineRewardFunctionTool,
-    optimizePolicy: optimizePolicyTool,
-  },
+  networks,
   logger: createLogger({ name: "DeanmachinesAI", level: "info" }),
   // Use the properly configured memory from the database module
   memory,
