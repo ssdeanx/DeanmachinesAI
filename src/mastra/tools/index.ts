@@ -10,6 +10,12 @@ import { env } from "process";
 export * from "./document";
 // Re-export GraphRAG tools
 export * from "./graphRag";
+// Re-export file reading and writing tools
+export * from "./readwrite";
+// Re-export RL feedback tools
+export * from "./rlFeedback";
+// Re-export RL reward tools
+export * from "./rlReward";
 
 // Initialize embeddings model
 const embeddings = new GoogleGenerativeAIEmbeddings({

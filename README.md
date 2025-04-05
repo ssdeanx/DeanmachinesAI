@@ -2,6 +2,8 @@
 
 A Mastra AI-powered application with intelligent agents and workflows for weather forecasting and activity planning.
 
+![alt text](image.png)
+
 ## 📋 Project Overview
 
 DeanmachinesAI leverages the Mastra TypeScript framework to build AI applications with agents, tools, and workflows. The project currently focuses on weather data retrieval and analysis, with planned expansions into other domains.
