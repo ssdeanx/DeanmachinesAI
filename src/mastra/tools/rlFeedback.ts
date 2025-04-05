@@ -1,0 +1,645 @@
+/**
+ * Reinforcement Learning Feedback Tools for Mastra AI.
+ *
+ * This module provides tools for collecting, analyzing, and applying
+ * feedback for reinforcement learning to improve agent performance over time.
+ */
+
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { LibSQLStore } from "@mastra/core/storage/libsql";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createLangSmithRun, trackFeedback } from "../services/langsmith";
+import { env } from "process";
+
+/**
+ * Types of feedback that can be collected for RL
+ */
+export enum FeedbackType {
+  /** User explicitly rates agent response */
+  EXPLICIT = "explicit",
+  /** System infers quality from user behavior */
+  IMPLICIT = "implicit",
+  /** Model evaluates its own performance */
+  SELF_CRITIQUE = "self_critique",
+}
+
+/**
+ * Feedback metrics that can be tracked
+ */
+export interface FeedbackMetrics {
+  /** Overall quality score (1-10) */
+  quality: number;
+  /** Accuracy of information (1-10) */
+  accuracy?: number;
+  /** Relevance to user request (1-10) */
+  relevance?: number;
+  /** Helpfulness of the response (1-10) */
+  helpfulness?: number;
+  /** Time taken to respond (ms) */
+  latencyMs?: number;
+  /** Free-form comment about the response */
+  comment?: string;
+}
+
+/**
+ * Tool for collecting feedback on agent responses
+ */
+export const collectFeedbackTool = createTool({
+  id: "collect-feedback",
+  description: "Collects user or system feedback for reinforcement learning",
+  inputSchema: z.object({
+    agentId: z.string().describe("ID of the agent being evaluated"),
+    interactionId: z.string().describe("Unique identifier for the interaction"),
+    feedback: z.object({
+      type: z
+        .enum([
+          FeedbackType.EXPLICIT,
+          FeedbackType.IMPLICIT,
+          FeedbackType.SELF_CRITIQUE,
+        ])
+        .describe("Source of the feedback"),
+      metrics: z.object({
+        quality: z
+          .number()
+          .min(1)
+          .max(10)
+          .describe("Overall quality score (1-10)"),
+        accuracy: z
+          .number()
+          .min(1)
+          .max(10)
+          .optional()
+          .describe("Accuracy of information (1-10)"),
+        relevance: z
+          .number()
+          .min(1)
+          .max(10)
+          .optional()
+          .describe("Relevance to user request (1-10)"),
+        helpfulness: z
+          .number()
+          .min(1)
+          .max(10)
+          .optional()
+          .describe("Helpfulness of the response (1-10)"),
+        latencyMs: z.number().optional().describe("Time taken to respond (ms)"),
+        comment: z.string().optional().describe("Comment about the response"),
+      }),
+      inputContext: z
+        .string()
+        .optional()
+        .describe("User input that triggered the response"),
+      outputResponse: z
+        .string()
+        .optional()
+        .describe("Agent's response being evaluated"),
+    }),
+  }),
+  outputSchema: z.object({
+    success: z.boolean(),
+    feedbackId: z.string().optional(),
+    error: z.string().optional(),
+  }),
+  execute: async ({ context }) => {
+    const runId = await createLangSmithRun("collect-feedback", [
+      "rl",
+      "feedback",
+    ]);
+
+    try {
+      // Get memory adapter for storing feedback
+      const memoryAdapter = new LibSQLStore({
+        config: {
+          url: env.TURSO_DATABASE_URL!,
+          authToken: env.TURSO_DATABASE_KEY!,
+        },
+      });
+
+      // Generate a unique ID for this feedback
+      const feedbackId = `feedback_${context.agentId}_${Date.now()}`;
+
+      // Store feedback in memory for reinforcement learning
+      await memoryAdapter.set(feedbackId, {
+        type: "system",
+        data: {
+          agentId: context.agentId,
+          interactionId: context.interactionId,
+          feedbackType: context.feedback.type,
+          metrics: context.feedback.metrics,
+          context: context.feedback.inputContext,
+          response: context.feedback.outputResponse,
+          timestamp: new Date().toISOString(),
+        }
+      });
+
+      // Track in LangSmith as well if available
+      await trackFeedback(runId, {
+        score: context.feedback.metrics.quality / 10, // Normalize to 0-1
+        comment: context.feedback.metrics.comment,
+        key: `${context.feedback.type}_feedback`,
+        value: {
+          metrics: context.feedback.metrics,
+          agentId: context.agentId,
+        },
+      });
+
+      return {
+        success: true,
+        feedbackId,
+      };
+    } catch (error) {
+      console.error("Error collecting feedback:", error);
+
+      // Track failure in LangSmith
+      await trackFeedback(runId, {
+        score: 0,
+        comment: error instanceof Error ? error.message : "Unknown error",
+        key: "feedback_collection_failure",
+      });
+
+      return {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unknown error collecting feedback",
+      };
+    }
+  },
+});
+
+/**
+ * Tool for analyzing collected feedback to derive insights
+ */
+export const analyzeFeedbackTool = createTool({
+  id: "analyze-feedback",
+  description:
+    "Analyzes collected feedback to derive insights for agent improvement",
+  inputSchema: z.object({
+    agentId: z.string().describe("ID of the agent to analyze feedback for"),
+    startDate: z
+      .string()
+      .optional()
+      .describe("Start date for feedback analysis (ISO format)"),
+    endDate: z
+      .string()
+      .optional()
+      .describe("End date for feedback analysis (ISO format)"),
+    metricName: z.string().optional().describe("Specific metric to analyze"),
+    limit: z
+      .number()
+      .optional()
+      .default(100)
+      .describe("Maximum number of feedback items to analyze"),
+  }),
+  outputSchema: z.object({
+    insights: z.array(
+      z.object({
+        metric: z.string(),
+        averageScore: z.number(),
+        trend: z.string(),
+        improvementSuggestions: z.array(z.string()),
+      })
+    ),
+    sampleSize: z.number(),
+    timeRange: z.object({
+      start: z.string(),
+      end: z.string(),
+    }),
+  }),
+  execute: async ({ context }) => {
+    const runId = await createLangSmithRun("analyze-feedback", [
+      "rl",
+      "analysis",
+    ]);
+
+    try {
+      // Get memory adapter for retrieving feedback
+      const memoryAdapter = new LibSQLStore({
+        config: {
+          url: env.TURSO_DATABASE_URL!,
+          authToken: env.TURSO_DATABASE_KEY!,
+        },
+      });
+
+      // Query parameters for feedback retrieval
+      const startDate = context.startDate
+        ? new Date(context.startDate)
+        : new Date(0);
+      const endDate = context.endDate ? new Date(context.endDate) : new Date();
+
+      // Retrieve feedback for analysis
+      // Note: In a real implementation, you would query by date range and agent ID
+      // This is a simplified version that would need to be adapted to your specific
+      // LibSQLStore implementation details
+
+      // For demonstration, we'll generate sample feedback data
+      const sampleFeedback = generateSampleFeedback(
+        context.agentId,
+        startDate,
+        endDate,
+        context.limit || 100
+      );
+
+      // Use LLM to generate insights from feedback data
+      const genAI = new GoogleGenerativeAI(env.GOOGLE_GENERATIVE_AI_API_KEY!);
+      const model = genAI.getGenerativeModel({
+        model: "models/gemini-2.0-pro",
+      });
+
+      // Aggregate metrics
+      const metrics = aggregateMetrics(sampleFeedback);
+
+      // Generate insights using LLM
+      const result = await model.generateContent(`
+        Analyze the following performance metrics for an AI agent and provide insights:
+
+        ${JSON.stringify(metrics, null, 2)}
+
+        For each metric, provide:
+        1. The current average score
+        2. The trend (improving, declining, stable)
+        3. 2-3 specific suggestions for improvement
+
+        Return ONLY a valid JSON array with this structure:
+        [
+          {
+            "metric": "quality",
+            "averageScore": 7.5,
+            "trend": "improving",
+            "improvementSuggestions": ["suggestion 1", "suggestion 2"]
+          },
+          ...
+        ]
+      `);
+
+      const insightsText = result.response.text();
+      let insights: Array<{
+        metric: string;
+        averageScore: number;
+        trend: string;
+        improvementSuggestions: string[];
+      }> = [];
+
+      try {
+        // Extract JSON from the response
+        const jsonMatch = insightsText.match(/\[\s*\{[\s\S]*\}\s*\]/);
+        if (jsonMatch) {
+          insights = JSON.parse(jsonMatch[0]);
+        }
+      } catch (jsonError) {
+        console.error("Error parsing insights result:", jsonError);
+        insights = metrics.map((m) => ({
+          metric: m.name,
+          averageScore: m.average,
+          trend: determineTrend(m.values),
+          improvementSuggestions: [
+            "Improve prompt clarity and specificity",
+            "Enhance error handling and edge cases",
+          ],
+        }));
+      }
+
+      // Track success in LangSmith
+      await trackFeedback(runId, {
+        score: 1,
+        comment: `Successfully analyzed ${sampleFeedback.length} feedback entries`,
+        key: "feedback_analysis_success",
+      });
+
+      return {
+        insights,
+        sampleSize: sampleFeedback.length,
+        timeRange: {
+          start: startDate.toISOString(),
+          end: endDate.toISOString(),
+        },
+      };
+    } catch (error) {
+      console.error("Error analyzing feedback:", error);
+
+      // Track failure in LangSmith
+      await trackFeedback(runId, {
+        score: 0,
+        comment: error instanceof Error ? error.message : "Unknown error",
+        key: "feedback_analysis_failure",
+      });
+
+      return {
+        insights: [],
+        sampleSize: 0,
+        timeRange: {
+          start: context.startDate || new Date(0).toISOString(),
+          end: context.endDate || new Date().toISOString(),
+        },
+      };
+    }
+  },
+});
+
+/**
+ * Tool for applying RL insights to improve agent performance
+ */
+export const applyRLInsightsTool = createTool({
+  id: "apply-rl-insights",
+  description:
+    "Applies reinforcement learning insights to improve agent performance",
+  inputSchema: z.object({
+    agentId: z.string().describe("ID of the agent to improve"),
+    insights: z
+      .array(
+        z.object({
+          metric: z.string(),
+          averageScore: z.number(),
+          trend: z.string(),
+          improvementSuggestions: z.array(z.string()),
+        })
+      )
+      .describe("Insights derived from feedback analysis"),
+    currentInstructions: z.string().describe("Current agent instructions"),
+  }),
+  outputSchema: z.object({
+    success: z.boolean(),
+    improvedInstructions: z.string(),
+    changes: z.array(
+      z.object({
+        metric: z.string(),
+        change: z.string(),
+      })
+    ),
+    error: z.string().optional(),
+  }),
+  execute: async ({ context }) => {
+    const runId = await createLangSmithRun("apply-rl-insights", [
+      "rl",
+      "improvement",
+    ]);
+
+    try {
+      // Use LLM to generate improved instructions based on insights
+      const genAI = new GoogleGenerativeAI(env.GOOGLE_GENERATIVE_AI_API_KEY!);
+      const model = genAI.getGenerativeModel({
+        model: "models/gemini-2.0-pro",
+      });
+
+      const result = await model.generateContent(`
+        You are an AI instruction optimizer. Your task is to improve these agent instructions:
+
+        CURRENT INSTRUCTIONS:
+        ${context.currentInstructions}
+
+        Based on these performance insights:
+        ${JSON.stringify(context.insights, null, 2)}
+
+        Provide improved instructions that address the issues identified in the insights.
+        The new instructions should maintain the original intent and style while enhancing areas
+        that need improvement according to feedback.
+
+        IMPROVED INSTRUCTIONS:
+      `);
+
+      const improvedInstructions = result.response.text();
+
+      // Generate summary of changes
+      const changeResult = await model.generateContent(`
+        Summarize the key changes made to these instructions:
+
+        ORIGINAL:
+        ${context.currentInstructions}
+
+        IMPROVED:
+        ${improvedInstructions}
+
+        For each of these metrics that was improved, describe the specific change made:
+        ${context.insights.map((i) => i.metric).join(", ")}
+
+        Return ONLY a valid JSON array with this structure:
+        [
+          {
+            "metric": "quality",
+            "change": "Added more specific guidance on response formatting"
+          },
+          ...
+        ]
+      `);
+
+      const changesText = changeResult.response.text();
+      let changes: Array<{
+        metric: string;
+        change: string;
+      }> = [];
+
+      try {
+        // Extract JSON from the response
+        const jsonMatch = changesText.match(/\[\s*\{[\s\S]*\}\s*\]/);
+        if (jsonMatch) {
+          changes = JSON.parse(jsonMatch[0]);
+        }
+      } catch (jsonError) {
+        console.error("Error parsing changes result:", jsonError);
+        changes = context.insights.map((insight) => ({
+          metric: insight.metric,
+          change: "Improved instructions based on feedback",
+        }));
+      }
+
+      // Track success in LangSmith
+      await trackFeedback(runId, {
+        score: 1,
+        comment: `Successfully applied insights to improve agent instructions`,
+        key: "rl_application_success",
+        value: { changeCount: changes.length },
+      });
+
+      return {
+        success: true,
+        improvedInstructions,
+        changes,
+      };
+    } catch (error) {
+      console.error("Error applying RL insights:", error);
+
+      // Track failure in LangSmith
+      await trackFeedback(runId, {
+        score: 0,
+        comment: error instanceof Error ? error.message : "Unknown error",
+        key: "rl_application_failure",
+      });
+
+      return {
+        success: false,
+        improvedInstructions: context.currentInstructions,
+        changes: [],
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unknown error applying insights",
+      };
+    }
+  },
+});
+
+/**
+ * Helper function to generate sample feedback data for testing
+ *
+ * @param agentId - ID of the agent
+ * @param startDate - Start date for generated data
+ * @param endDate - End date for generated data
+ * @param count - Number of feedback entries to generate
+ * @returns Array of simulated feedback entries
+ */
+function generateSampleFeedback(
+  agentId: string,
+  startDate: Date,
+  endDate: Date,
+  count: number
+): Array<{
+  agentId: string;
+  interactionId: string;
+  feedbackType: FeedbackType;
+  metrics: FeedbackMetrics;
+  timestamp: string;
+}> {
+  const feedback: Array<{
+    agentId: string;
+    interactionId: string;
+    feedbackType: FeedbackType;
+    metrics: FeedbackMetrics;
+    timestamp: string;
+  }> = [];
+  const timeRange = endDate.getTime() - startDate.getTime();
+
+  for (let i = 0; i < count; i++) {
+    const timestamp = new Date(startDate.getTime() + Math.random() * timeRange);
+
+    feedback.push({
+      agentId,
+      interactionId: `interaction_${i}_${Date.now()}`,
+      feedbackType:
+        Math.random() > 0.7
+          ? FeedbackType.EXPLICIT
+          : Math.random() > 0.5
+            ? FeedbackType.IMPLICIT
+            : FeedbackType.SELF_CRITIQUE,
+      metrics: {
+        quality: Math.floor(Math.random() * 10) + 1,
+        accuracy: Math.floor(Math.random() * 10) + 1,
+        relevance: Math.floor(Math.random() * 10) + 1,
+        helpfulness: Math.floor(Math.random() * 10) + 1,
+        latencyMs: Math.floor(Math.random() * 2000) + 100,
+      },
+      timestamp: timestamp.toISOString(),
+    });
+  }
+
+  // Sort by timestamp
+  feedback.sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  );
+
+  return feedback;
+}
+
+/**
+ * Aggregate metrics from feedback entries
+ *
+ * @param feedback - Array of feedback entries
+ * @returns Aggregated metrics
+ */
+function aggregateMetrics(
+  feedback: Array<{
+    metrics: FeedbackMetrics;
+    timestamp: string;
+  }>
+): Array<{
+  name: string;
+  average: number;
+  values: Array<{
+    value: number;
+    timestamp: string;
+  }>;
+}> {
+  // Initialize result structure with known metrics
+  const metrics: Record<
+    string,
+    {
+      total: number;
+      count: number;
+      values: Array<{
+        value: number;
+        timestamp: string;
+      }>;
+    }
+  > = {
+    quality: { total: 0, count: 0, values: [] },
+    accuracy: { total: 0, count: 0, values: [] },
+    relevance: { total: 0, count: 0, values: [] },
+    helpfulness: { total: 0, count: 0, values: [] },
+  };
+
+  // Aggregate data
+  for (const entry of feedback) {
+    for (const [metricName, metricValue] of Object.entries(entry.metrics)) {
+      // Skip non-numeric metrics
+      if (typeof metricValue !== "number") continue;
+
+      // Initialize metric if not exists
+      if (!metrics[metricName]) {
+        metrics[metricName] = { total: 0, count: 0, values: [] };
+      }
+
+      metrics[metricName].total += metricValue;
+      metrics[metricName].count++;
+      metrics[metricName].values.push({
+        value: metricValue,
+        timestamp: entry.timestamp,
+      });
+    }
+  }
+
+  // Calculate averages and format result
+  return Object.entries(metrics).map(([name, data]) => ({
+    name,
+    average: data.count > 0 ? data.total / data.count : 0,
+    values: data.values,
+  }));
+}
+
+/**
+ * Determine trend from a series of values
+ *
+ * @param values - Array of values with timestamps
+ * @returns Trend description ("improving", "declining", "stable")
+ */
+function determineTrend(
+  values: Array<{
+    value: number;
+    timestamp: string;
+  }>
+): string {
+  // Need at least 2 values to determine trend
+  if (values.length < 2) return "stable";
+
+  // Sort by timestamp
+  const sorted = [...values].sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+  );
+
+  // Split into two halves to compare
+  const halfIndex = Math.floor(sorted.length / 2);
+  const firstHalf = sorted.slice(0, halfIndex);
+  const secondHalf = sorted.slice(halfIndex);
+
+  // Calculate averages
+  const firstHalfAvg =
+    firstHalf.reduce((sum, v) => sum + v.value, 0) / firstHalf.length;
+  const secondHalfAvg =
+    secondHalf.reduce((sum, v) => sum + v.value, 0) / secondHalf.length;
+
+  // Determine trend
+  const difference = secondHalfAvg - firstHalfAvg;
+  if (difference > 0.5) return "improving";
+  if (difference < -0.5) return "declining";
+  return "stable";
+}
