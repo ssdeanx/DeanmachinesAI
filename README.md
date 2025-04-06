@@ -1,12 +1,12 @@
 # DeanmachinesAI
 
-A Mastra AI-powered application with intelligent agents, networks, and workflows for research, analysis, and document processing with reinforcement learning capabilities.
+A Mastra AI-powered application with intelligent agents, networks, and workflows for research, analysis, and document processing with reinforcement learning capabilities and enhanced search functionality.
 
 ![alt text](image.png)
 
 ## 📋 Project Overview
 
-DeanmachinesAI leverages the Mastra TypeScript framework to build advanced AI applications with specialized agents, flexible tools, and collaborative workflows. The system utilizes agent networks for dynamic task routing and reinforcement learning for continuous improvement, enabling sophisticated information processing and knowledge generation.
+DeanmachinesAI leverages the Mastra TypeScript framework to build advanced AI applications with specialized agents, flexible tools, and collaborative workflows. The system utilizes agent networks for dynamic task routing and reinforcement learning for continuous improvement, enabling sophisticated information processing and knowledge generation through vector search and web retrieval capabilities.
 
 ## 🏗️ Current Architecture
 
@@ -43,6 +43,8 @@ graph TD
             E3[RAG Tools]
             E4[RL Feedback Tools]
             E5[RL Reward Tools]
+            E6[ExaSearch Tool]
+            E7[Vector Query Tool]
         end
 
         C -.-> E1
@@ -50,9 +52,13 @@ graph TD
         C -.-> E3
         C -.-> E4
         C -.-> E5
+        C -.-> E6
+        C -.-> E7
         D -.-> E1
         D -.-> E2
         D -.-> E3
+        D -.-> E6
+        D -.-> E7
     end
 
     subgraph "External Services"
@@ -60,23 +66,28 @@ graph TD
         F2[Pinecone DB]
         F3[LangSmith]
         F4[Weather API]
+        F5[Exa Search API]
     end
 
     A --> F1
     A --> F2
     A --> F3
     D2 --> F4
+    E6 --> F5
 ```
 
 ## 🛠️ Technology Stack
 
 - **Framework**: Mastra AI (TypeScript)
-- **LLM Provider**: Google AI (Gemini 2.0 Pro)
+- **LLM Provider**: Google AI (Gemini 2.0 Pro/Flash)
 - **Storage**:
   - Turso (LibSQL) for agent memory
   - Pinecone for vector database
+  - Upstash for backup vector storage
 - **APIs**:
   - Open-Meteo for weather data
+  - Exa for enhanced web search
+- **Tokenization**: js-tiktoken with o200 encoding
 - **Monitoring & Evaluation**:
   - LangSmith for tracing and observability
   - Custom reinforcement learning feedback loops
@@ -112,6 +123,10 @@ graph TD
   - Semantic search for relevant content
   - Content analysis and insight generation
   - Formatting for various documentation types
+- **Search & Retrieval**:
+  - Exa-powered web search with metadata filtering
+  - Vector query with js-tiktoken tokenization
+  - Hybrid semantic search with reranking capabilities
 
 ### Workflow Implementations
 
@@ -136,9 +151,14 @@ gantt
     Agent Networks              :done, networks, 2025-04-25, 2025-05-05
     RL Feedback & Reward        :done, rl, 2025-05-01, 2025-05-10
 
+    section Current
+    Vector Query Implementation :done, vquery, 2025-04-01, 2025-04-06
+    Exa Search Integration      :done, exasearch, 2025-04-03, 2025-04-06
+    Token Optimization          :active, tokens, 2025-04-05, 2025-04-10
+
     section Phase 2
-    Voice Integration           :voice, after rl, 20d
-    Mobile UI Development       :mobile, after voice, 30d
+    Voice Integration           :voice, after tokens, 15d
+    Mobile UI Development       :mobile, after voice, 25d
     Deployment & Scaling        :deploy, after mobile, 15d
 
     section Phase 3
@@ -151,9 +171,9 @@ gantt
 ```mermaid
 pie
     title Feature Implementation Progress
-    "Complete" : 45
-    "In Progress" : 15
-    "Planned" : 40
+    "Complete" : 55
+    "In Progress" : 20
+    "Planned" : 25
 ```
 
 ## 🧠 Agent Networks
@@ -171,6 +191,24 @@ Focused on data processing operations with an emphasis on reinforcement learning
 ### 3. ContentCreation Network
 
 Specializes in researching topics and producing high-quality content with continuous improvement through feedback.
+
+## 🔎 Enhanced Search & Retrieval
+
+The system implements advanced search capabilities:
+
+### ExaSearch Tool
+
+- Provides high-quality web search results
+- Supports filtering by site, date ranges, and content types
+- Returns formatted results for RAG applications
+- Handles full content retrieval for comprehensive analysis
+
+### Vector Query Tool
+
+- Uses js-tiktoken with o200 encoding for efficient tokenization
+- Integrates with Pinecone for high-performance vector search
+- Supports semantic reranking with configurable weight balancing
+- Enables metadata filtering for precise result targeting
 
 ## 🤖 Reinforcement Learning
 
@@ -198,13 +236,14 @@ The project requires configuration for:
 - Turso Database for persistent agent memory
 - LangSmith for observability and tracing
 - Pinecone for vector database functionality
+- Exa API for advanced web search
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- API keys for Google AI, Turso, and other services
+- API keys for Google AI, Turso, Exa, and other services
 
 ### Installation
 
@@ -308,6 +347,11 @@ graph TB
                 ReadFileTool["Read File<br>File System"]
                 WriteFileTool["Write File<br>File System"]
             end
+
+            subgraph "Search Tools"
+                ExaSearchTool["Web Search<br>Exa API"]
+                VectorQueryTool["Vector Query<br>js-tiktoken"]
+            end
         end
 
         subgraph "Workflows"
@@ -355,7 +399,10 @@ graph TB
 
     %% Tool Connections
     ResearchAgent -->|Uses| SearchTool
+    ResearchAgent -->|Uses| ExaSearchTool
+    ResearchAgent -->|Uses| VectorQueryTool
     AnalystAgent -->|Uses| AnalyzeTool
+    AnalystAgent -->|Uses| VectorQueryTool
     WriterAgent -->|Uses| FormatTool
     RLTrainerAgent -->|Uses| FeedbackTool
     RLTrainerAgent -->|Uses| RewardTool
@@ -370,6 +417,7 @@ graph TB
     DocumentationStep -->|Step 4| FeedbackStep
 
     ResearchStep -->|Uses| ResearchAgent
+    ResearchStep -->|Uses| ExaSearchTool
     AnalysisStep -->|Uses| AnalystAgent
     DocumentationStep -->|Uses| WriterAgent
     FeedbackStep -->|Uses| RLTrainerAgent

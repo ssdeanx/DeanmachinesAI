@@ -8,8 +8,8 @@
 import { BaseCallbackHandler } from "@langchain/core/callbacks/base";
 import { ChatOpenAI } from "@langchain/openai";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { ConversationChain, LLMChain } from "langchain/chains";
-import { SystemMessage, HumanMessage } from "@langchain/core/messages";
+import { ConversationChain } from "langchain/chains";
+import { SystemMessage } from "@langchain/core/messages";
 import { PromptTemplate, ChatPromptTemplate } from "@langchain/core/prompts";
 import { env } from "process";
 import { configureLangSmithTracing } from "./langsmith";
@@ -98,22 +98,19 @@ export function createConversationChain(
 }
 
 /**
- * Creates an LLM chain with a custom prompt template
+ * Creates a chain using LangChain Expression Language (LCEL) with a custom prompt template
  *
  * @param promptTemplate - The prompt template string with {variables}
  * @param config - LangChain model configuration
- * @returns A configured LLM chain
+ * @returns A configured LCEL chain
  */
 export function createLLMChain(
   promptTemplate: string,
   config?: LangChainConfig
 ) {
   const llm = createLangChainModel(config);
-
   const prompt = PromptTemplate.fromTemplate(promptTemplate);
 
-  return new LLMChain({
-    llm,
-    prompt,
-  });
+  // Using LCEL pipe pattern instead of deprecated LLMChain
+  return prompt.pipe(llm);
 }

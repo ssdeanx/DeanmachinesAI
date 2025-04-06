@@ -200,7 +200,7 @@ const feedbackStep = new Step({
     const genAI = new GoogleGenerativeAI(
       process.env.GOOGLE_GENERATIVE_AI_API_KEY!
     );
-    const model = genAI.getGenerativeModel({ model: "models/gemini-1.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
 
     try {
       const result = await model.generateContent(`

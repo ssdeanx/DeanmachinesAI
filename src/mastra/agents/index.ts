@@ -41,7 +41,7 @@ export const researchAgent = new Agent({
     You have memory capabilities and can recall previous conversations and research.
     When a user returns, try to reference relevant past interactions to provide continuity.
   `,
-  model: google("gemini-2.0-flash"),
+  model: google("models/gemini-2.0-flash"),
   tools: {
     searchDocumentsTool,
     embedDocumentTool,
@@ -85,7 +85,7 @@ export const analystAgent = new Agent({
     You have memory capabilities and can recall previous analyses and conversations.
     When returning to a topic, reference previous insights and build upon them.
   `,
-  model: google("gemini-2.0-flash"),
+  model: google("models/gemini-2.0-flash"),
   tools: {
     analyzeContentTool,
     searchDocumentsTool,
@@ -130,7 +130,7 @@ export const writerAgent = new Agent({
     You have memory capabilities and can recall previous writing projects and user preferences.
     Maintain style consistency with previous content for the same project or user.
   `,
-  model: google("gemini-2.0-flash"),
+  model: google("models/gemini-2.0-flash"),
   tools: {
     formatContentTool,
     searchDocumentsTool,
@@ -175,7 +175,7 @@ export const rlTrainerAgent = new Agent({
     You have memory capabilities to track performance over time and identify trends.
     Use this memory to build upon previous optimization attempts and avoid repeating failed strategies.
   `,
-  model: google("gemini-2.0-pro-exp-03-05"),
+  model: google("models/gemini-2.0-flash"),
   tools: {
     collectFeedbackTool,
     analyzeFeedbackTool,
@@ -221,7 +221,8 @@ export const dataManagerAgent = new Agent({
     You have memory capabilities to recall previous file operations and data structures.
     Use this memory to maintain consistency in how you organize and process files.
   `,
-  model: google("gemini-2.0-pro-exp-03-05"),
+  model: google("models/gemini-2.0-flash"),
+  // Use the same model as the research agent for consistency
   tools: {
     readFileTool,
     writeToFileTool,

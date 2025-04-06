@@ -26,7 +26,7 @@ import { env } from "process";
  */
 export const deanInsightsNetwork = new AgentNetwork({
   name: "DeanInsights Network",
-  model: google("gemini-2.0-pro"), // Using Google's Gemini model for routing
+  model: google("models/gemini-2.0-flash"), // Using Google's Gemini model for routing
   agents: [
     researchAgent,
     analystAgent,
@@ -72,7 +72,7 @@ export const deanInsightsNetwork = new AgentNetwork({
  */
 export const dataFlowNetwork = new AgentNetwork({
   name: "DataFlow Network",
-  model: google("gemini-2.0-pro"),
+  model: google("models/gemini-2.0-flash"),
   agents: [dataManagerAgent, analystAgent, rlTrainerAgent],
   instructions: `
     You are a data processing coordination system that orchestrates specialized agents
@@ -108,7 +108,7 @@ export const dataFlowNetwork = new AgentNetwork({
  */
 export const contentCreationNetwork = new AgentNetwork({
   name: "ContentCreation Network",
-  model: google("gemini-2.0-pro"),
+  model: google("models/gemini-2.0-flash"),
   agents: [researchAgent, writerAgent, rlTrainerAgent],
   instructions: `
     You are a content creation coordination system that orchestrates the process
