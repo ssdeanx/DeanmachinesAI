@@ -6,6 +6,7 @@
  */
 
 import { LibSQLStore } from "@mastra/core/storage/libsql";
+import { LibSQLVector } from "@mastra/core/vector/libsql";
 import { Memory } from "@mastra/memory";
 import { env } from "process";
 import { createEmbeddings } from "./vector-store"; // This returns GoogleGenerativeAIEmbeddings
@@ -24,6 +25,16 @@ export interface MemoryOptions {
   enableWorkingMemory?: boolean;
   /** Token limit to prevent context overflow */
   tokenLimit?: number;
+  /** Options for semantic recall */
+  semanticRecallOptions?: {
+    /** Number of top results to return */
+    topK?: number;
+    /** Range of messages around matches to include */
+    messageRange?: {
+      before?: number;
+      after?: number;
+    };
+  };
 }
 
 /**
@@ -44,27 +55,30 @@ export function createMemory(options?: MemoryOptions): Memory {
     );
   }
 
-  const memoryAdapter = new LibSQLStore({
-    config: {
-      url: dbUrl,
-      authToken: dbToken,
-    },
-  });
+  const dbConfig = {
+    url: dbUrl,
+    authToken: dbToken,
+  };
+
+  // Create storage and vector store using the same database
+  const storageAdapter = new LibSQLStore({ config: dbConfig });
+  const vectorStore = new LibSQLVector({ connectionUrl: dbUrl, authToken: dbToken });
 
   // Create embeddings instance that already conforms to Mastra's requirements
   const embeddings = createEmbeddings();
 
   // Create and return the configured memory instance
   return new Memory({
-    storage: memoryAdapter,
+    storage: storageAdapter,
+    vector: vectorStore,
     embedder: embeddings,
     options: {
       lastMessages: options?.lastMessages || 20,
       semanticRecall: {
-        topK: 5,
+        topK: options?.semanticRecallOptions?.topK || 5,
         messageRange: {
-          before: 2,
-          after: 1,
+          before: options?.semanticRecallOptions?.messageRange?.before || 2,
+          after: options?.semanticRecallOptions?.messageRange?.after || 1,
         },
       },
       workingMemory: {

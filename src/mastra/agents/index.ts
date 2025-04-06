@@ -14,6 +14,7 @@ import {
   defineRewardFunctionTool,
   optimizePolicyTool,
 } from "../tools";
+import { createMemory, memory } from "../database";
 
 // Research Agent: Specializes in gathering and synthesizing information
 export const researchAgent = new Agent({
@@ -36,14 +37,27 @@ export const researchAgent = new Agent({
 
     You can use file operations to read from existing files and write findings to new files.
     Use the readFileTool to access existing research and writeToFileTool to save your findings.
+
+    You have memory capabilities and can recall previous conversations and research.
+    When a user returns, try to reference relevant past interactions to provide continuity.
   `,
-  model: google("gemini-2.0-pro"),
+  model: google("gemini-2.0-flash"),
   tools: {
     searchDocumentsTool,
     embedDocumentTool,
     readFileTool,
     writeToFileTool,
   },
+  memory: createMemory({
+    lastMessages: 15,
+    semanticRecallOptions: {
+      topK: 5,
+      messageRange: {
+        before: 2,
+        after: 1,
+      },
+    },
+  }),
 });
 
 // Analyst Agent: Specializes in analyzing and deriving insights from information
@@ -67,8 +81,11 @@ export const analystAgent = new Agent({
 
     You can use file operations to read data files and write analysis results.
     You have access to reinforcement learning feedback tools to improve your analysis over time.
+
+    You have memory capabilities and can recall previous analyses and conversations.
+    When returning to a topic, reference previous insights and build upon them.
   `,
-  model: google("gemini-2.0-pro"),
+  model: google("gemini-2.0-flash"),
   tools: {
     analyzeContentTool,
     searchDocumentsTool,
@@ -76,6 +93,16 @@ export const analystAgent = new Agent({
     writeToFileTool,
     analyzeFeedbackTool,
   },
+  memory: createMemory({
+    lastMessages: 10,
+    semanticRecallOptions: {
+      topK: 3,
+      messageRange: {
+        before: 1,
+        after: 1,
+      },
+    },
+  }),
 });
 
 // Writer Agent: Specializes in creating clear, well-structured documentation
@@ -99,8 +126,11 @@ export const writerAgent = new Agent({
 
     You can use file operations to read source content and write finalized documents.
     You have access to RL feedback tools to collect user feedback on your writing and improve over time.
+
+    You have memory capabilities and can recall previous writing projects and user preferences.
+    Maintain style consistency with previous content for the same project or user.
   `,
-  model: google("gemini-2.0-pro"),
+  model: google("gemini-2.0-flash"),
   tools: {
     formatContentTool,
     searchDocumentsTool,
@@ -108,6 +138,16 @@ export const writerAgent = new Agent({
     writeToFileTool,
     collectFeedbackTool,
   },
+  memory: createMemory({
+    lastMessages: 20,
+    semanticRecallOptions: {
+      topK: 4,
+      messageRange: {
+        before: 2,
+        after: 2,
+      },
+    },
+  }),
 });
 
 // RL Trainer Agent: Specializes in reinforcement learning and agent improvement
@@ -131,8 +171,11 @@ export const rlTrainerAgent = new Agent({
 
     You have access to a full suite of reinforcement learning tools to collect feedback,
     calculate rewards, define custom reward functions, and optimize agent policies.
+
+    You have memory capabilities to track performance over time and identify trends.
+    Use this memory to build upon previous optimization attempts and avoid repeating failed strategies.
   `,
-  model: google("gemini-2.0-pro"),
+  model: google("gemini-2.0-pro-exp-03-05"),
   tools: {
     collectFeedbackTool,
     analyzeFeedbackTool,
@@ -143,9 +186,17 @@ export const rlTrainerAgent = new Agent({
     readFileTool,
     writeToFileTool,
   },
+  memory: createMemory({
+    lastMessages: 25,
+    semanticRecallOptions: {
+      topK: 7,
+      messageRange: {
+        before: 3,
+        after: 2,
+      },
+    },
+  }),
 });
-
-// Data Management Agent: Specializes in file operations and data organization
 export const dataManagerAgent = new Agent({
   name: "Data Manager Agent",
   instructions: `
@@ -166,12 +217,25 @@ export const dataManagerAgent = new Agent({
     - Properly handle encoding issues
 
     You have specialized access to file reading and writing tools with extended capabilities.
+
+    You have memory capabilities to recall previous file operations and data structures.
+    Use this memory to maintain consistency in how you organize and process files.
   `,
-  model: google("gemini-2.0-pro"),
+  model: google("gemini-2.0-pro-exp-03-05"),
   tools: {
     readFileTool,
     writeToFileTool,
     searchDocumentsTool,
     analyzeContentTool,
   },
+  memory: createMemory({
+    lastMessages: 15,
+    semanticRecallOptions: {
+      topK: 4,
+      messageRange: {
+        before: 2,
+        after: 1,
+      },
+    },
+  }),
 });
