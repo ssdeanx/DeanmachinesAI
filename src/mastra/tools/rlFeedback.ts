@@ -10,7 +10,45 @@ import { z } from "zod";
 import { LibSQLStore } from "@mastra/core/storage/libsql";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createLangSmithRun, trackFeedback } from "../services/langsmith";
-import { env } from "process";
+import { Memory } from "@mastra/memory";
+
+// Helper function to get environment variable with fallback
+const getEnvVar = (name: string, fallback: string = ''): string => {
+  const value = process.env[name];
+  if (!value && !fallback) {
+    console.warn(`Environment variable ${name} not set`);
+  }
+  return value || fallback;
+};
+
+// Create a storage instance
+const getStorage = (): LibSQLStore => {
+  try {
+    // For development, use in-memory database if env variables aren't set
+    const dbUrl = getEnvVar('TURSO_DATABASE_URL', 'file:rl-feedback.db');
+    const authToken = getEnvVar('TURSO_DATABASE_KEY', '');
+
+    return new LibSQLStore({
+      config: {
+        url: dbUrl,
+        authToken
+      }
+    });
+  } catch (error) {
+    console.error("Error initializing LibSQLStore:", error);
+    // Fallback to in-memory database
+    return new LibSQLStore({
+      config: {
+        url: ':memory:'
+      }
+    });
+  }
+};
+
+// Initialize a Memory instance for storing RL feedback data
+const memoryInstance = new Memory({
+  storage: getStorage(),
+});
 
 /**
  * Types of feedback that can be collected for RL
@@ -108,29 +146,52 @@ export const collectFeedbackTool = createTool({
     ]);
 
     try {
-      // Get memory adapter for storing feedback
-      const memoryAdapter = new LibSQLStore({
-        config: {
-          url: env.TURSO_DATABASE_URL!,
-          authToken: env.TURSO_DATABASE_KEY!,
-        },
-      });
-
       // Generate a unique ID for this feedback
       const feedbackId = `feedback_${context.agentId}_${Date.now()}`;
 
-      // Store feedback in memory for reinforcement learning
-      await memoryAdapter.set(feedbackId, {
-        type: "system",
-        data: {
-          agentId: context.agentId,
-          interactionId: context.interactionId,
-          feedbackType: context.feedback.type,
-          metrics: context.feedback.metrics,
-          context: context.feedback.inputContext,
-          response: context.feedback.outputResponse,
-          timestamp: new Date().toISOString(),
-        }
+      // Instead of using the LibSQLStore directly, use Memory API to store feedback
+      // First, create or get an existing thread for the agent's RL feedback
+      const threadId = `rl_feedback_${context.agentId}`;
+      let thread;
+
+      try {
+        thread = await memoryInstance.getThreadById({ threadId });
+      } catch (e) {
+        // Thread doesn't exist yet, create it
+        thread = await memoryInstance.createThread({
+          resourceId: context.agentId,
+          threadId,
+          title: `RL Feedback for Agent ${context.agentId}`,
+          metadata: {
+            type: "rl_feedback_thread"
+          }
+        });
+      }
+
+      // Format the feedback data as a system message
+      const feedbackData = {
+        interactionId: context.interactionId,
+        feedbackType: context.feedback.type,
+        metrics: context.feedback.metrics,
+        context: context.feedback.inputContext || "",
+        response: context.feedback.outputResponse || "",
+        timestamp: new Date().toISOString(),
+      };
+
+      // Add a message to the thread with the feedback content
+      // Include metadata in the content as the addMessage method doesn't support metadata directly
+      const messageContent = JSON.stringify({
+        ...feedbackData,
+        feedbackId,
+        type: "rl_feedback",
+        metrics: context.feedback.metrics
+      });
+
+      await memoryInstance.addMessage({
+        threadId,
+        role: "assistant", // Changed from "system" to "assistant" as Mastra only supports "user" or "assistant"
+        content: messageContent,
+        type: "text"
       });
 
       // Track in LangSmith as well if available
@@ -216,12 +277,7 @@ export const analyzeFeedbackTool = createTool({
 
     try {
       // Get memory adapter for retrieving feedback
-      const memoryAdapter = new LibSQLStore({
-        config: {
-          url: env.TURSO_DATABASE_URL!,
-          authToken: env.TURSO_DATABASE_KEY!,
-        },
-      });
+      const memoryAdapter = getStorage();
 
       // Query parameters for feedback retrieval
       const startDate = context.startDate
@@ -243,7 +299,12 @@ export const analyzeFeedbackTool = createTool({
       );
 
       // Use LLM to generate insights from feedback data
-      const genAI = new GoogleGenerativeAI(env.GOOGLE_GENERATIVE_AI_API_KEY!);
+      const apiKey = getEnvVar('GOOGLE_GENERATIVE_AI_API_KEY');
+      if (!apiKey) {
+        throw new Error("Google Generative AI API key is required");
+      }
+
+      const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({
         model: "models/gemini-2.0-pro",
       });
@@ -378,7 +439,12 @@ export const applyRLInsightsTool = createTool({
 
     try {
       // Use LLM to generate improved instructions based on insights
-      const genAI = new GoogleGenerativeAI(env.GOOGLE_GENERATIVE_AI_API_KEY!);
+      const apiKey = getEnvVar('GOOGLE_GENERATIVE_AI_API_KEY');
+      if (!apiKey) {
+        throw new Error("Google Generative AI API key is required");
+      }
+
+      const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({
         model: "models/gemini-2.0-pro",
       });

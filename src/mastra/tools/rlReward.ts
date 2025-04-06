@@ -10,7 +10,46 @@ import { z } from "zod";
 import { LibSQLStore } from "@mastra/core/storage/libsql";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { createLangSmithRun, trackFeedback } from "../services/langsmith";
+import { Memory } from "@mastra/memory";
 import { env } from "process";
+
+// Helper function to get environment variable with fallback
+const getEnvVar = (name: string, fallback: string = ''): string => {
+  const value = process.env[name];
+  if (!value && !fallback) {
+    console.warn(`Environment variable ${name} not set`);
+  }
+  return value || fallback;
+};
+
+// Create a storage instance
+const getStorage = (): LibSQLStore => {
+  try {
+    // For development, use in-memory database if env variables aren't set
+    const dbUrl = getEnvVar('TURSO_DATABASE_URL', 'file:rl-rewards.db');
+    const authToken = getEnvVar('TURSO_DATABASE_KEY', '');
+
+    return new LibSQLStore({
+      config: {
+        url: dbUrl,
+        authToken
+      }
+    });
+  } catch (error) {
+    console.error("Error initializing LibSQLStore:", error);
+    // Fallback to in-memory database
+    return new LibSQLStore({
+      config: {
+        url: ':memory:'
+      }
+    });
+  }
+};
+
+// Initialize a Memory instance for storing RL reward data
+const memoryInstance = new Memory({
+  storage: getStorage(),
+});
 
 /**
  * Represents a state-action pair in reinforcement learning
@@ -130,14 +169,6 @@ export const calculateRewardTool = createTool({
     ]);
 
     try {
-      // Get memory adapter for storing reward data
-      const memoryAdapter = new LibSQLStore({
-        config: {
-          url: env.TURSO_DATABASE_URL!,
-          authToken: env.TURSO_DATABASE_KEY!,
-        },
-      });
-
       // Create the state-action pair
       const stateAction: StateAction = {
         state: context.state,
@@ -154,22 +185,33 @@ export const calculateRewardTool = createTool({
       // Generate a unique ID for this reward record
       const rewardId = `reward_${context.agentId}_${Date.now()}`;
 
-      // Get previous cumulative reward
+      // Get previous cumulative reward by querying the episode thread
       let cumulativeReward = reward;
+      const episodeThreadId = `rl_episode_${context.agentId}_${context.episodeId}`;
+
       try {
-        const previousRecords = await retrievePreviousRewards(
-          memoryAdapter,
-          context.agentId,
-          context.episodeId
-        );
+        // Try to get existing thread for this episode
+        const thread = await memoryInstance.getThreadById({ threadId: episodeThreadId });
 
-        if (previousRecords && previousRecords.length > 0) {
-          // Sort by step number and get the most recent
-          const latestRecord = previousRecords.sort(
-            (a, b) => b.stepNumber - a.stepNumber
-          )[0];
+        // If thread exists, get previous messages and calculate cumulative reward
+        if (thread) {
+          const { messages } = await memoryInstance.query({
+            threadId: episodeThreadId,
+            selectBy: { last: 1 } // Get most recent message
+          });
 
-          cumulativeReward += latestRecord.cumulativeReward;
+          if (messages.length > 0) {
+            try {
+              // Parse the content which should contain the RewardRecord
+              const content = typeof messages[0].content === 'string'
+                ? messages[0].content
+                : JSON.stringify(messages[0].content);
+              const previousRecord = JSON.parse(content) as RewardRecord;
+              cumulativeReward += previousRecord.cumulativeReward;
+            } catch (parseError) {
+              console.warn("Error parsing previous reward record:", parseError);
+            }
+          }
         }
       } catch (error) {
         console.warn("Error retrieving previous rewards:", error);
@@ -192,8 +234,41 @@ export const calculateRewardTool = createTool({
         },
       };
 
-      // Store the reward record
-      await memoryAdapter.storeMetadata(rewardId, "rl_reward", rewardRecord);
+      // Create or get thread for this episode
+      let thread;
+      try {
+        thread = await memoryInstance.getThreadById({ threadId: episodeThreadId });
+      } catch (e) {
+        // Thread doesn't exist yet, create it
+        thread = await memoryInstance.createThread({
+          resourceId: context.agentId,
+          threadId: episodeThreadId,
+          title: `RL Episode ${context.episodeId} for Agent ${context.agentId}`,
+          metadata: {
+            type: "rl_episode_thread",
+            episodeId: context.episodeId
+          }
+        });
+      }
+
+      // Store the reward record as a message in the thread
+      // Include metadata in the content as the addMessage method doesn't support metadata directly
+      const messageContent = JSON.stringify({
+        ...rewardRecord,
+        rewardId,
+        type: "rl_reward",
+        reward,
+        cumulativeReward,
+        stepNumber: context.stepNumber || 0,
+        isTerminal: context.isTerminal || false
+      });
+
+      await memoryInstance.addMessage({
+        threadId: episodeThreadId,
+        role: "assistant",
+        content: messageContent,
+        type: "text"
+      });
 
       // Track in LangSmith for observability
       await trackFeedback(runId, {
@@ -293,14 +368,6 @@ export const defineRewardFunctionTool = createTool({
     ]);
 
     try {
-      // Get memory adapter for storing reward function definitions
-      const memoryAdapter = new LibSQLStore({
-        config: {
-          url: env.TURSO_DATABASE_URL!,
-          authToken: env.TURSO_DATABASE_KEY!,
-        },
-      });
-
       // Create the reward function configuration
       const rewardFunction: RewardFunctionConfig & {
         formula: string;
@@ -320,12 +387,42 @@ export const defineRewardFunctionTool = createTool({
         components: context.components,
       };
 
-      // Store the reward function definition
-      await memoryAdapter.storeMetadata(
-        `reward_function_${context.id}`,
-        "rl_reward_function",
-        rewardFunction
-      );
+      // Generate a unique thread ID for storing reward functions
+      const rewardFunctionThreadId = `rl_reward_functions`;
+
+      // Create or get thread for reward functions
+      let thread;
+      try {
+        thread = await memoryInstance.getThreadById({ threadId: rewardFunctionThreadId });
+      } catch (e) {
+        // Thread doesn't exist yet, create it
+        thread = await memoryInstance.createThread({
+          resourceId: 'system',
+          threadId: rewardFunctionThreadId,
+          title: `RL Reward Function Definitions`,
+          metadata: {
+            type: "rl_reward_function_thread"
+          }
+        });
+      }
+
+      // Store the reward function definition as a message
+      const messageId = `reward_function_${context.id}`;
+
+      // Include metadata in the content as the addMessage method doesn't support metadata directly
+      const messageContent = JSON.stringify({
+        ...rewardFunction,
+        type: "rl_reward_function",
+        functionId: context.id,
+        functionName: context.name
+      });
+
+      await memoryInstance.addMessage({
+        threadId: rewardFunctionThreadId,
+        role: "assistant",
+        content: messageContent,
+        type: "text"
+      });
 
       // Track in LangSmith
       await trackFeedback(runId, {
@@ -422,12 +519,7 @@ export const optimizePolicyTool = createTool({
 
     try {
       // Get memory adapter for retrieving reward data
-      const memoryAdapter = new LibSQLStore({
-        config: {
-          url: env.TURSO_DATABASE_URL!,
-          authToken: env.TURSO_DATABASE_KEY!,
-        },
-      });
+      const memoryAdapter = getStorage();
 
       // Query parameters
       const startDate = context.startDate
@@ -454,7 +546,12 @@ export const optimizePolicyTool = createTool({
       }
 
       // Use LLM to analyze rewards and suggest policy improvements
-      const genAI = new GoogleGenerativeAI(env.GOOGLE_GENERATIVE_AI_API_KEY!);
+      const apiKey = getEnvVar('GOOGLE_GENERATIVE_AI_API_KEY');
+      if (!apiKey) {
+        throw new Error("Google Generative AI API key is required");
+      }
+
+      const genAI = new GoogleGenerativeAI(apiKey);
       const model = genAI.getGenerativeModel({
         model: "models/gemini-2.0-pro",
       });
