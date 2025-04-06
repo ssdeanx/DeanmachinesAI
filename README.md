@@ -264,97 +264,113 @@ This project is licensed under the ISC License - see the LICENSE file for detail
 graph TB
     User((External User))
 
-    subgraph "Mastra AI System"
-        subgraph "Agent Layer"
-            ResearchAgent["Research Agent<br>(Google Gemini 2.0 Pro)"]
-            AnalystAgent["Analyst Agent<br>(Google Gemini 2.0 Pro)"]
-            WriterAgent["Writer Agent<br>(Google Gemini 2.0 Pro)"]
-            RLTrainerAgent["RL Trainer Agent<br>(Google Gemini 2.0 Pro)"]
-            DataManagerAgent["Data Manager Agent<br>(Google Gemini 2.0 Pro)"]
+    subgraph "DeanmachinesAI System"
+        subgraph "Agent Networks"
+            DeanInsights["DeanInsights Network<br>Google Gemini"]
+            DataFlow["DataFlow Network<br>Google Gemini"]
+            ContentCreation["ContentCreation Network<br>Google Gemini"]
         end
 
-        subgraph "Core Services"
-            LangChainService["LangChain Service<br>(Node.js)"]
-            LangSmithService["LangSmith Service<br>(Node.js)"]
-
-            subgraph "LangChain Components"
-                ModelProvider["Model Provider<br>(OpenAI/Google/Anthropic)"]
-                ConversationChain["Conversation Chain<br>(LangChain)"]
-                LLMChain["LLM Chain<br>(LangChain)"]
-            end
-
-            subgraph "LangSmith Components"
-                TracingModule["Tracing Module<br>(LangSmith SDK)"]
-                FeedbackModule["Feedback Module<br>(LangSmith SDK)"]
-                EvaluationModule["Evaluation Module<br>(LangSmith SDK)"]
-            end
+        subgraph "Core Agents"
+            ResearchAgent["Research Agent<br>Gemini Flash"]
+            AnalystAgent["Analyst Agent<br>Gemini Flash"]
+            WriterAgent["Writer Agent<br>Gemini Flash"]
+            RLTrainerAgent["RL Trainer Agent<br>Gemini Pro Exp"]
+            DataManagerAgent["Data Manager Agent<br>Gemini Pro Exp"]
         end
 
         subgraph "Database Layer"
-            VectorStore["Vector Store<br>(Pinecone)"]
-            MemoryStore["Memory Store<br>(LibSQL)"]
+            VectorStore["Vector Store<br>Pinecone"]
+            LibSQLStore["Memory Store<br>LibSQL/Turso"]
+            UpstashBackup["Backup Store<br>Upstash"]
+        end
 
-            subgraph "Vector Store Components"
-                EmbeddingsManager["Embeddings Manager<br>(Google AI)"]
-                GraphRAG["Graph RAG<br>(Custom)"]
-                VectorIndex["Vector Index<br>(Pinecone)"]
+        subgraph "Services"
+            LangChainService["LangChain Service<br>LangChain"]
+            LangFuseService["LangFuse Service<br>LangFuse"]
+            LangSmithService["LangSmith Service<br>LangSmith"]
+        end
+
+        subgraph "Tools"
+            subgraph "Document Tools"
+                SearchTool["Search Documents<br>Vector Search"]
+                AnalyzeTool["Analyze Content<br>Gemini Pro"]
+                FormatTool["Format Content<br>Gemini Pro"]
             end
 
-            subgraph "Memory Components"
-                ThreadManager["Thread Manager<br>(LibSQL)"]
-                StorageAdapter["Storage Adapter<br>(LibSQL)"]
+            subgraph "RL Tools"
+                FeedbackTool["Feedback Collection<br>Custom"]
+                RewardTool["Reward Calculation<br>Custom"]
+                PolicyTool["Policy Optimization<br>Custom"]
+            end
+
+            subgraph "File Tools"
+                ReadFileTool["Read File<br>File System"]
+                WriteFileTool["Write File<br>File System"]
             end
         end
 
-        subgraph "Workflow Engine"
-            RAGWorkflow["RAG Workflow<br>(Custom)"]
-            WeatherWorkflow["Weather Workflow<br>(Custom)"]
+        subgraph "Workflows"
+            RAGWorkflow["RAG Workflow<br>Custom"]
 
-            subgraph "Workflow Components"
-                StepExecutor["Step Executor<br>(Custom)"]
-                ContextManager["Context Manager<br>(Custom)"]
-                WorkflowRouter["Workflow Router<br>(Custom)"]
+            subgraph "Workflow Steps"
+                ResearchStep["Research Step<br>Custom"]
+                AnalysisStep["Analysis Step<br>Custom"]
+                DocumentationStep["Documentation Step<br>Custom"]
+                FeedbackStep["Feedback Step<br>Custom"]
             end
         end
     end
 
-    subgraph "External Services"
-        GoogleAI["Google AI<br>(External API)"]
-        PineconeDB["Pinecone DB<br>(External Service)"]
-        LangSmithAPI["LangSmith API<br>(External Service)"]
-    end
+    %% Connections
+    User -->|Interacts with| DeanInsights
+    User -->|Interacts with| DataFlow
+    User -->|Interacts with| ContentCreation
 
-    %% Connections between components
-    User -->|"Queries"| RAGWorkflow
-    User -->|"Weather Requests"| WeatherWorkflow
+    %% Agent Network Connections
+    DeanInsights -->|Uses| ResearchAgent
+    DeanInsights -->|Uses| AnalystAgent
+    DeanInsights -->|Uses| WriterAgent
+    DeanInsights -->|Uses| RLTrainerAgent
+    DeanInsights -->|Uses| DataManagerAgent
 
-    %% Agent Layer connections
-    RAGWorkflow -->|"Delegates Research"| ResearchAgent
-    RAGWorkflow -->|"Delegates Analysis"| AnalystAgent
-    RAGWorkflow -->|"Delegates Writing"| WriterAgent
-    RAGWorkflow -->|"Collects Feedback"| RLTrainerAgent
-    RAGWorkflow -->|"Manages Data"| DataManagerAgent
+    DataFlow -->|Uses| DataManagerAgent
+    DataFlow -->|Uses| AnalystAgent
+    DataFlow -->|Uses| RLTrainerAgent
 
-    %% Core Services connections
-    ResearchAgent -->|"Uses"| LangChainService
-    AnalystAgent -->|"Uses"| LangChainService
-    WriterAgent -->|"Uses"| LangChainService
-    LangChainService -->|"Traces"| LangSmithService
-    LangChainService -->|"Uses"| ModelProvider
-    ModelProvider -->|"Calls"| GoogleAI
+    ContentCreation -->|Uses| ResearchAgent
+    ContentCreation -->|Uses| WriterAgent
+    ContentCreation -->|Uses| RLTrainerAgent
 
-    %% Database Layer connections
-    LangChainService -->|"Stores Vectors"| VectorStore
-    LangChainService -->|"Manages Memory"| MemoryStore
-    VectorStore -->|"Uses"| EmbeddingsManager
-    VectorStore -->|"Implements"| GraphRAG
-    VectorStore -->|"Stores In"| PineconeDB
+    %% Service Connections
+    LangChainService -->|Provides Models| ResearchAgent
+    LangChainService -->|Provides Models| AnalystAgent
+    LangChainService -->|Provides Models| WriterAgent
 
-    %% Workflow connections
-    WorkflowRouter -->|"Executes"| StepExecutor
-    StepExecutor -->|"Manages"| ContextManager
+    %% Database Connections
+    ResearchAgent -->|Stores Vectors| VectorStore
+    AnalystAgent -->|Stores Memory| LibSQLStore
+    WriterAgent -->|Stores Memory| LibSQLStore
+    LibSQLStore -.->|Backs up to| UpstashBackup
 
-    %% External service connections
-    LangSmithService -->|"Reports to"| LangSmithAPI
-    EmbeddingsManager -->|"Generates via"| GoogleAI
+    %% Tool Connections
+    ResearchAgent -->|Uses| SearchTool
+    AnalystAgent -->|Uses| AnalyzeTool
+    WriterAgent -->|Uses| FormatTool
+    RLTrainerAgent -->|Uses| FeedbackTool
+    RLTrainerAgent -->|Uses| RewardTool
+    RLTrainerAgent -->|Uses| PolicyTool
+    DataManagerAgent -->|Uses| ReadFileTool
+    DataManagerAgent -->|Uses| WriteFileTool
+
+    %% Workflow Connections
+    RAGWorkflow -->|Step 1| ResearchStep
+    ResearchStep -->|Step 2| AnalysisStep
+    AnalysisStep -->|Step 3| DocumentationStep
+    DocumentationStep -->|Step 4| FeedbackStep
+
+    ResearchStep -->|Uses| ResearchAgent
+    AnalysisStep -->|Uses| AnalystAgent
+    DocumentationStep -->|Uses| WriterAgent
+    FeedbackStep -->|Uses| RLTrainerAgent
 ```
