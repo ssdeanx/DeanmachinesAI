@@ -10,8 +10,27 @@ import { LibSQLVector } from "@mastra/core/vector/libsql";
 import { Memory } from "@mastra/memory";
 import type { MastraStorage, MastraVector } from "@mastra/core";
 
+// Define the memory configuration type
+export interface MemoryConfig {
+  lastMessages: number;
+  semanticRecall: {
+    topK: number;
+    messageRange: {
+      before: number;
+      after: number;
+    };
+  };
+  workingMemory: {
+    enabled: boolean;
+    type: "text-stream";
+  };
+  threads: {
+    generateTitle: boolean;
+  };
+}
+
 // Default memory configuration that works well for most agents
-const defaultMemoryConfig = {
+const defaultMemoryConfig: MemoryConfig = {
   lastMessages: 50,
   semanticRecall: {
     topK: 5,
@@ -29,7 +48,14 @@ const defaultMemoryConfig = {
   },
 };
 
-export function createMemory(options = defaultMemoryConfig) {
+/**
+ * Creates a new Memory instance with LibSQL storage and vector capabilities.
+ * @param options Memory configuration options
+ * @returns Configured Memory instance
+ */
+export function createMemory(
+  options: Partial<MemoryConfig> = defaultMemoryConfig
+): Memory {
   // Initialize LibSQL storage
   const storage = new LibSQLStore({
     config: {
@@ -51,3 +77,6 @@ export function createMemory(options = defaultMemoryConfig) {
 
 // Export shared memory instance
 export const sharedMemory = createMemory();
+
+// Re-export Memory type for convenience
+export type { Memory };

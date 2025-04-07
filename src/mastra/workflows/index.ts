@@ -2,7 +2,7 @@ import { Agent } from "@mastra/core/agent";
 import { Step, Workflow } from "@mastra/core/workflows";
 import { z } from "zod";
 import { researchAgent, analystAgent, writerAgent } from "../agents";
-import { memory } from "../database";
+import { sharedMemory as memory } from "../database";
 import { PineconeStore } from "@langchain/pinecone";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { Pinecone } from "@pinecone-database/pinecone";
@@ -200,7 +200,9 @@ const feedbackStep = new Step({
     const genAI = new GoogleGenerativeAI(
       process.env.GOOGLE_GENERATIVE_AI_API_KEY!
     );
-    const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({
+      model: "models/gemini-2.0-flash",
+    });
 
     try {
       const result = await model.generateContent(`

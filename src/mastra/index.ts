@@ -14,7 +14,7 @@ import {
   contentCreationNetwork,
   networks,
 } from "./workflows/agentNetwork";
-import { memory } from "./database";
+import { sharedMemory as memory } from "./database";
 import {
   collectFeedbackTool,
   analyzeFeedbackTool,
