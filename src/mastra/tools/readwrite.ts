@@ -8,7 +8,7 @@
 import { createTool } from "@mastra/core/tools";
 import { z } from "zod";
 import { promises as fs } from "fs";
-import { resolve, dirname, extname } from "path";
+import { resolve, dirname, extname, join } from "path";
 import { createLangSmithRun, trackFeedback } from "../services/langsmith";
 
 /**
@@ -39,6 +39,26 @@ export enum FileWriteMode {
   APPEND = "append",
   /** Create a new file, fail if the file exists */
   CREATE_NEW = "create-new",
+}
+
+/**
+ * Base path for knowledge folder
+ */
+const KNOWLEDGE_BASE_PATH = resolve(process.cwd(), "knowledge");
+
+/**
+ * Validates if a path is within the knowledge folder
+ */
+function isKnowledgePath(path: string): boolean {
+  const absolutePath = resolve(path);
+  return absolutePath.startsWith(KNOWLEDGE_BASE_PATH);
+}
+
+/**
+ * Resolves a knowledge folder path
+ */
+function resolveKnowledgePath(path: string): string {
+  return join(KNOWLEDGE_BASE_PATH, path);
 }
 
 /**
@@ -423,3 +443,184 @@ export const writeToFileTool = createTool({
     }
   },
 });
+
+export const readKnowledgeFileTool = createTool({
+  id: "read-knowledge-file",
+  description: "Reads a file from the knowledge folder",
+  inputSchema: z.object({
+    path: z.string().describe("Path relative to knowledge folder"),
+    encoding: z
+      .enum([
+        FileEncoding.UTF8,
+        FileEncoding.ASCII,
+        FileEncoding.UTF16LE,
+        FileEncoding.LATIN1,
+        FileEncoding.BASE64,
+        FileEncoding.HEX,
+      ])
+      .default(FileEncoding.UTF8),
+    maxSizeBytes: z.number().optional().default(10485760),
+  }),
+  outputSchema: z.object({
+    content: z.string().describe("Content of the file"),
+    metadata: z.object({
+      path: z.string().describe("Absolute path to the file"),
+      size: z.number().describe("Size of the file in bytes"),
+      extension: z.string().describe("File extension"),
+      encoding: z.string().describe("Encoding used to read the file"),
+      lineCount: z.number().describe("Total number of lines in the file"),
+      readLines: z.number().describe("Number of lines read"),
+    }),
+    success: z.boolean().describe("Whether the operation was successful"),
+    error: z
+      .string()
+      .optional()
+      .describe("Error message if the operation failed"),
+  }),
+  execute: async ({ context }) => {
+    const runId = await createLangSmithRun("read-knowledge-file", [
+      "knowledge",
+      "read",
+    ]);
+
+    try {
+      const knowledgePath = resolveKnowledgePath(context.path);
+
+      if (!isKnowledgePath(knowledgePath)) {
+        throw new Error("Access denied: Can only read from knowledge folder");
+      }
+
+      // Ensure the execute method exists before calling it
+      if (!readFileTool.execute) {
+        throw new Error("readFileTool.execute is not defined");
+      }
+
+      // Modify context to use knowledge path and provide default startLine
+      return readFileTool.execute({
+        context: { ...context, path: knowledgePath, startLine: 0 },
+      });
+    } catch (error) {
+      console.error("Error reading knowledge file:", error);
+
+      // Track failure in LangSmith
+      await trackFeedback(runId, {
+        score: 0,
+        comment: error instanceof Error ? error.message : "Unknown error",
+        key: "knowledge_read_failure",
+      });
+
+      return {
+        content: "",
+        metadata: {
+          path: context.path,
+          size: 0,
+          extension: extname(context.path),
+          encoding: context.encoding,
+          lineCount: 0,
+          readLines: 0,
+        },
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unknown error reading knowledge file",
+      };
+    }
+  },
+});
+
+export const writeKnowledgeFileTool = createTool({
+  id: "write-knowledge-file",
+  description: "Writes content to a file in the knowledge folder",
+  inputSchema: z.object({
+    path: z.string().describe("Path relative to knowledge folder"),
+    content: z.string(),
+    mode: z
+      .enum([
+        FileWriteMode.OVERWRITE,
+        FileWriteMode.APPEND,
+        FileWriteMode.CREATE_NEW,
+      ])
+      .default(FileWriteMode.OVERWRITE),
+    encoding: z
+      .enum([
+        FileEncoding.UTF8,
+        FileEncoding.ASCII,
+        FileEncoding.UTF16LE,
+        FileEncoding.LATIN1,
+        FileEncoding.BASE64,
+        FileEncoding.HEX,
+      ])
+      .default(FileEncoding.UTF8),
+    createDirectory: z.boolean().optional().default(true),
+  }),
+  outputSchema: z.object({
+    metadata: z.object({
+      path: z.string().describe("Absolute path to the file"),
+      size: z.number().describe("Size of the written content in bytes"),
+      extension: z.string().describe("File extension"),
+      encoding: z.string().describe("Encoding used to write the file"),
+      mode: z.string().describe("Write mode used"),
+    }),
+    success: z.boolean().describe("Whether the operation was successful"),
+    error: z
+      .string()
+      .optional()
+      .describe("Error message if the operation failed"),
+  }),
+  execute: async ({ context }) => {
+    const runId = await createLangSmithRun("write-knowledge-file", [
+      "knowledge",
+      "write",
+    ]);
+
+    try {
+      const knowledgePath = resolveKnowledgePath(context.path);
+
+      if (!isKnowledgePath(knowledgePath)) {
+        throw new Error("Access denied: Can only write to knowledge folder");
+      }
+
+      // Ensure the execute method exists before calling it
+      if (!writeToFileTool.execute) {
+        throw new Error("writeToFileTool.execute is not defined");
+      }
+
+      // Modify context to use knowledge path and include default maxSizeBytes
+      return writeToFileTool.execute({
+        context: {
+          ...context,
+          path: knowledgePath,
+          // Provide the default value from writeToFileTool's schema
+          maxSizeBytes: 10485760,
+        },
+      });
+    } catch (error) {
+      console.error("Error writing to knowledge file:", error);
+
+      // Track failure in LangSmith
+      await trackFeedback(runId, {
+        score: 0,
+        comment: error instanceof Error ? error.message : "Unknown error",
+        key: "knowledge_write_failure",
+      });
+
+      return {
+        metadata: {
+          path: context.path,
+          size: 0,
+          extension: extname(context.path),
+          encoding: context.encoding,
+          mode: context.mode,
+        },
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Unknown error writing knowledge file",
+      };
+    }
+  },
+});
+
+// Original tools are already exported when defined

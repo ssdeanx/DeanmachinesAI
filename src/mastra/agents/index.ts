@@ -1,5 +1,7 @@
 import { google } from "@ai-sdk/google";
 import { Agent } from "@mastra/core/agent";
+import { createMemory, sharedMemory } from "../database";
+import { createResponseHook } from "../hooks";
 import {
   searchDocumentsTool,
   embedDocumentTool,
@@ -14,10 +16,33 @@ import {
   defineRewardFunctionTool,
   optimizePolicyTool,
 } from "../tools";
-import { createMemory, memory } from "../database";
 
-// Research Agent: Specializes in gathering and synthesizing information
+// Configure base agent settings with response hook
+const baseAgentConfig = {
+  model: google("models/gemini-2.0-flash"),
+  memory: sharedMemory,
+  onError: async (error: Error) => {
+    console.error("Agent error:", error);
+    return {
+      text: "I encountered an error. Please try again or contact support.",
+      error: error.message,
+    };
+  },
+  onResponse: createResponseHook({
+    minResponseLength: 20,
+    maxAttempts: 2,
+    validateResponse: (response) => {
+      if (response.object) {
+        return Object.keys(response.object).length > 0;
+      }
+      return response.text ? response.text.length >= 20 : false;
+    },
+  }),
+};
+
+// Research Agent
 export const researchAgent = new Agent({
+  ...baseAgentConfig,
   name: "Research Agent",
   instructions: `
     You are a specialized research agent designed to find, gather, and synthesize information.
@@ -41,7 +66,6 @@ export const researchAgent = new Agent({
     You have memory capabilities and can recall previous conversations and research.
     When a user returns, try to reference relevant past interactions to provide continuity.
   `,
-  model: google("models/gemini-2.0-flash"),
   tools: {
     searchDocumentsTool,
     embedDocumentTool,
@@ -49,19 +73,27 @@ export const researchAgent = new Agent({
     writeToFileTool,
   },
   memory: createMemory({
-    lastMessages: 15,
-    semanticRecallOptions: {
-      topK: 5,
+    lastMessages: 25,
+    semanticRecall: {
+      topK: 8,
       messageRange: {
-        before: 2,
-        after: 1,
+        before: 3,
+        after: 2,
       },
+    },
+    workingMemory: {
+      enabled: true,
+      type: "tool-call",
+    },
+    threads: {
+      generateTitle: true,
     },
   }),
 });
 
-// Analyst Agent: Specializes in analyzing and deriving insights from information
+// Analyst Agent
 export const analystAgent = new Agent({
+  ...baseAgentConfig,
   name: "Analyst Agent",
   instructions: `
     You are a specialized analyst agent designed to interpret data, identify patterns, and extract meaningful insights.
@@ -85,7 +117,6 @@ export const analystAgent = new Agent({
     You have memory capabilities and can recall previous analyses and conversations.
     When returning to a topic, reference previous insights and build upon them.
   `,
-  model: google("models/gemini-2.0-flash"),
   tools: {
     analyzeContentTool,
     searchDocumentsTool,
@@ -94,19 +125,27 @@ export const analystAgent = new Agent({
     analyzeFeedbackTool,
   },
   memory: createMemory({
-    lastMessages: 10,
-    semanticRecallOptions: {
-      topK: 3,
+    lastMessages: 20,
+    semanticRecall: {
+      topK: 6,
       messageRange: {
-        before: 1,
-        after: 1,
+        before: 3,
+        after: 2,
       },
+    },
+    workingMemory: {
+      enabled: true,
+      type: "tool-call",
+    },
+    threads: {
+      generateTitle: true,
     },
   }),
 });
 
-// Writer Agent: Specializes in creating clear, well-structured documentation
+// Writer Agent
 export const writerAgent = new Agent({
+  ...baseAgentConfig,
   name: "Writer Agent",
   instructions: `
     You are a specialized writer agent designed to create clear, engaging, and well-structured documentation.
@@ -130,7 +169,6 @@ export const writerAgent = new Agent({
     You have memory capabilities and can recall previous writing projects and user preferences.
     Maintain style consistency with previous content for the same project or user.
   `,
-  model: google("models/gemini-2.0-flash"),
   tools: {
     formatContentTool,
     searchDocumentsTool,
@@ -140,18 +178,26 @@ export const writerAgent = new Agent({
   },
   memory: createMemory({
     lastMessages: 20,
-    semanticRecallOptions: {
+    semanticRecall: {
       topK: 4,
       messageRange: {
         before: 2,
         after: 2,
       },
     },
+    workingMemory: {
+      enabled: true,
+      type: "tool-call",
+    },
+    threads: {
+      generateTitle: true,
+    },
   }),
 });
 
-// RL Trainer Agent: Specializes in reinforcement learning and agent improvement
+// RL Trainer Agent
 export const rlTrainerAgent = new Agent({
+  ...baseAgentConfig,
   name: "RL Trainer Agent",
   instructions: `
     You are a specialized reinforcement learning trainer agent designed to optimize and improve other AI agents.
@@ -175,7 +221,6 @@ export const rlTrainerAgent = new Agent({
     You have memory capabilities to track performance over time and identify trends.
     Use this memory to build upon previous optimization attempts and avoid repeating failed strategies.
   `,
-  model: google("models/gemini-2.0-flash"),
   tools: {
     collectFeedbackTool,
     analyzeFeedbackTool,
@@ -188,16 +233,26 @@ export const rlTrainerAgent = new Agent({
   },
   memory: createMemory({
     lastMessages: 25,
-    semanticRecallOptions: {
+    semanticRecall: {
       topK: 7,
       messageRange: {
         before: 3,
         after: 2,
       },
     },
+    workingMemory: {
+      enabled: true,
+      type: "tool-call",
+    },
+    threads: {
+      generateTitle: true,
+    },
   }),
 });
+
+// Data Manager Agent
 export const dataManagerAgent = new Agent({
+  ...baseAgentConfig,
   name: "Data Manager Agent",
   instructions: `
     You are a specialized data management agent designed to organize, process, and maintain file-based data.
@@ -221,8 +276,6 @@ export const dataManagerAgent = new Agent({
     You have memory capabilities to recall previous file operations and data structures.
     Use this memory to maintain consistency in how you organize and process files.
   `,
-  model: google("models/gemini-2.0-flash"),
-  // Use the same model as the research agent for consistency
   tools: {
     readFileTool,
     writeToFileTool,
@@ -231,12 +284,31 @@ export const dataManagerAgent = new Agent({
   },
   memory: createMemory({
     lastMessages: 15,
-    semanticRecallOptions: {
+    semanticRecall: {
       topK: 4,
       messageRange: {
         before: 2,
         after: 1,
       },
     },
+    workingMemory: {
+      enabled: true,
+      type: "tool-call",
+    },
+    threads: {
+      generateTitle: true,
+    },
   }),
 });
+
+// Export agents object for Mastra configuration
+export default {
+  researchAgent,
+  analystAgent,
+  writerAgent,
+  rlTrainerAgent,
+  dataManagerAgent,
+};
+
+// Export type for OpenAPI/Swagger documentation
+export type AgentIds = keyof typeof Agent;
