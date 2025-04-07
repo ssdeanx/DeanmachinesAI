@@ -1,3 +1,5 @@
+<div align="center">
+
 # DeanmachinesAI
 
 A Mastra AI-powered application with intelligent agents, networks, and workflows for research, analysis, and document processing with reinforcement learning capabilities and enhanced search functionality.
@@ -11,69 +13,55 @@ DeanmachinesAI leverages the Mastra TypeScript framework to build advanced AI ap
 ## 🏗️ Current Architecture
 
 ```mermaid
-graph TD
-    subgraph "DeanmachinesAI Core"
-        A[Mastra Instance] --> B[Agent Networks]
-        A --> C[Specialized Agents]
-        A --> D[Workflows]
-        A --> E[RL System]
+C4Component
+    title DeanmachinesAI System Architecture
 
-        subgraph "Agent Networks"
-            B --> B1[DeanInsights Network]
-            B --> B2[DataFlow Network]
-            B --> B3[ContentCreation Network]
-        end
+    Container_Boundary(agents, "Agent Layer") {
+        Container_Boundary(search, "Search Tools") {
+            Component(brave, "Brave Search")
+            Component(tavily, "Tavily Search")
+            Component(google, "Google Search")
+            Component(calc, "Calculator")
+        }
 
-        subgraph "Specialized Agents"
-            C --> C1[Research Agent]
-            C --> C2[Analyst Agent]
-            C --> C3[Writer Agent]
-            C --> C4[RL Trainer Agent]
-            C --> C5[Data Manager Agent]
-        end
+        Container_Boundary(core, "Core Tools") {
+            Component(doc, "Document Tools")
+            Component(rag, "RAG Tools")
+            Component(rl, "RL Tools")
+            Component(fs, "File System")
+        }
 
-        subgraph "Workflows"
-            D --> D1[RAG Workflow]
-            D --> D2[Weather Workflow]
-        end
+        Container_Boundary(networks, "Agent Networks") {
+            Component(dean, "DeanInsights")
+            Component(data, "DataFlow")
+            Component(content, "ContentCreation")
+        }
+    }
 
-        subgraph "Tools"
-            E1[File System Tools]
-            E2[Document Tools]
-            E3[RAG Tools]
-            E4[RL Feedback Tools]
-            E5[RL Reward Tools]
-            E6[ExaSearch Tool]
-            E7[Vector Query Tool]
-        end
+    Container_Boundary(infra, "Infrastructure") {
+        Container_Boundary(vector, "Vector Storage") {
+            Component(pinecone, "Pinecone DB")
+            Component(turso, "Turso LibSQL")
+        }
 
-        C -.-> E1
-        C -.-> E2
-        C -.-> E3
-        C -.-> E4
-        C -.-> E5
-        C -.-> E6
-        C -.-> E7
-        D -.-> E1
-        D -.-> E2
-        D -.-> E3
-        D -.-> E6
-        D -.-> E7
-    end
+        Container_Boundary(ai, "AI Services") {
+            Component(gemini, "Google Gemini")
+            Component(langsmith, "LangSmith")
+        }
 
-    subgraph "External Services"
-        F1[Google AI]
-        F2[Pinecone DB]
-        F3[LangSmith]
-        F4[Weather API]
-        F5[Exa Search API]
-    end
+        Container_Boundary(apis, "External APIs") {
+            Component(weather, "Weather API")
+            Component(exa, "Exa Search")
+        }
+    }
 
-    A --> F1
-    A --> F2
-    A --> F3
-    D2 --> F4
-    E6 --> F5
+    Rel(networks, search, "Uses")
+    Rel(networks, core, "Uses")
+    Rel(core, vector, "Stores data")
+    Rel(search, apis, "Queries")
+    Rel(networks, ai, "LLM requests")
+    UpdateRelStyle(networks, search, "blue", "thick")
+    UpdateRelStyle(networks, ai, "red", "thick")
 ```
 
 ## 🛠️ Technology Stack
@@ -123,6 +111,11 @@ graph TD
   - Semantic search for relevant content
   - Content analysis and insight generation
   - Formatting for various documentation types
+- **Search Tools**:
+  - **Brave Search**: Web search with privacy focus and customizable results
+  - **Tavily Search**: AI-optimized search engine with comprehensive and quick modes
+  - **Google Custom Search**: Enterprise-grade search with safe search options
+  - **Calculator**: Mathematical expression evaluation and computation
 - **Search & Retrieval**:
   - Exa-powered web search with metadata filtering
   - Vector query with js-tiktoken tokenization
@@ -137,43 +130,117 @@ graph TD
 
 ```mermaid
 gantt
-    title DeanmachinesAI Development Progress
-    dateFormat  YYYY-MM-DD
+    title DeanmachinesAI Development Roadmap
+    dateFormat YYYY-MM-DD
 
-    section Foundation
-    Project Setup               :done, setup, 2025-03-15, 2025-03-30
-    Weather Components          :done, weather, 2025-04-01, 2025-04-15
-    File System Tools           :done, files, 2025-04-05, 2025-04-10
+    section Core Infrastructure
+    Project Foundation           :done, found, 2025-03-15, 2025-03-25
+    Base Architecture           :done, arch, 2025-03-20, 2025-04-01
+    Agent System Core           :done, agent, 2025-03-25, 2025-04-10
+    Memory Integration          :done, mem, 2025-04-01, 2025-04-15
 
-    section Phase 1
-    Memory Integration          :done, mem, 2025-04-10, 2025-04-20
-    RAG Implementation          :done, rag, 2025-04-15, 2025-04-25
-    Agent Networks              :done, networks, 2025-04-25, 2025-05-05
-    RL Feedback & Reward        :done, rl, 2025-05-01, 2025-05-10
+    section Search & Retrieval
+    Vector Store Setup         :done, vec, 2025-04-01, 2025-04-10
+    RAG Implementation        :done, rag, 2025-04-05, 2025-04-20
+    Brave Search              :done, brave, 2025-04-15, 2025-04-20
+    Tavily Integration        :done, tavily, 2025-04-18, 2025-04-25
+    Google CSE Setup          :done, gcse, 2025-04-20, 2025-04-28
+    Search Optimization       :active, sopt, 2025-04-25, 2025-05-10
 
-    section Current
-    Vector Query Implementation :done, vquery, 2025-04-01, 2025-04-06
-    Exa Search Integration      :done, exasearch, 2025-04-03, 2025-04-06
-    Token Optimization          :active, tokens, 2025-04-05, 2025-04-10
+    section Agent Networks
+    Network Architecture      :done, net, 2025-04-15, 2025-04-30
+    Agent Communication       :active, comm, 2025-04-25, 2025-05-15
+    Task Distribution        :active, task, 2025-05-01, 2025-05-20
+    Network Optimization     :pending, netopt, 2025-05-15, 2025-06-01
 
-    section Phase 2
-    Voice Integration           :voice, after tokens, 15d
-    Mobile UI Development       :mobile, after voice, 25d
-    Deployment & Scaling        :deploy, after mobile, 15d
+    section Machine Learning
+    RL Framework             :active, rl, 2025-05-01, 2025-05-25
+    Feedback Systems         :active, feed, 2025-05-10, 2025-06-01
+    Model Fine-tuning        :pending, tune, 2025-05-20, 2025-06-15
+    Performance Analysis     :pending, perf, 2025-06-01, 2025-06-20
 
-    section Phase 3
-    Advanced Analytics          :analytics, after deploy, 20d
-    Enterprise Features         :enterprise, after analytics, 25d
+    section Enterprise Features
+    Security Implementation  :pending, sec, 2025-06-01, 2025-06-25
+    Compliance Framework    :pending, comp, 2025-06-15, 2025-07-10
+    Enterprise UI           :pending, ui, 2025-06-20, 2025-07-15
+    Documentation          :pending, docs, 2025-07-01, 2025-07-25
+
+    section Future Expansion
+    Multi-Modal Support     :pending, multi, 2025-07-15, 2025-08-15
+    Voice Interface         :pending, voice, 2025-08-01, 2025-08-30
+    Mobile Applications     :pending, mobile, 2025-08-15, 2025-09-15
+    Edge Computing         :pending, edge, 2025-09-01, 2025-09-30
 ```
 
-## ✅ Current Progress
+## 🎯 Project Scope
+
+```mermaid
+mindmap
+  root((DeanmachinesAI))
+    Core Features
+      Agent Networks
+        DeanInsights Network
+        DataFlow Network
+        ContentCreation Network
+      Search Systems
+        Brave Search Integration
+        Tavily AI Search
+        Google CSE
+        Vector Search
+      Machine Learning
+        Reinforcement Learning
+        Feedback Systems
+        Model Optimization
+    Infrastructure
+      Storage Solutions
+        Pinecone Vector DB
+        Turso LibSQL
+        File System
+      Processing
+        Task Queue
+        Rate Limiting
+        Load Balancing
+      Monitoring
+        LangSmith Integration
+        Performance Metrics
+        Error Tracking
+    Enterprise
+      Security
+        Role-Based Access
+        Audit Logging
+        Encryption
+      Compliance
+        Data Privacy
+        GDPR/CCPA
+        ISO Standards
+      Scaling
+        Horizontal Scaling
+        Cloud Deployment
+        Edge Computing
+    Future Scope
+      Multi-Modal
+        Voice Interface
+        Image Processing
+        Video Analysis
+      Mobile
+        iOS Application
+        Android Application
+        Cross-Platform SDK
+      Integration
+        API Gateway
+        Third-party APIs
+        Custom Plugins
+```
+
+## 📊 Implementation Status
 
 ```mermaid
 pie
     title Feature Implementation Progress
-    "Complete" : 55
-    "In Progress" : 20
-    "Planned" : 25
+    "Complete" : 35
+    "In Progress" : 25
+    "Planning" : 20
+    "Future Scope" : 20
 ```
 
 ## 🧠 Agent Networks
@@ -405,3 +472,5 @@ graph TB
     LangChain -->|"Monitored by"| LangFuse
     LangChain -->|"Monitored by"| LangSmith
 ```
+
+</div>

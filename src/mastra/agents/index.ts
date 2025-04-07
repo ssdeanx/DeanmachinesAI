@@ -16,6 +16,11 @@ import {
   defineRewardFunctionTool,
   optimizePolicyTool,
   exaSearchTool,
+  braveSearchTools,
+  exaSearchTools,
+  googleSearchTools,
+  wikipediaTools,
+  calculatorTools,
 } from "../tools";
 
 // Configure base agent settings with response hook
@@ -76,6 +81,11 @@ export const researchAgent = new Agent({
     Always cite web sources when using search results in your responses.
   `,
   tools: {
+    braveSearchTools,
+    exaSearchTools,
+    googleSearchTools,
+    wikipediaTools,
+    calculatorTools,
     searchDocumentsTool,
     embedDocumentTool,
     readFileTool,
@@ -93,7 +103,7 @@ export const researchAgent = new Agent({
     },
     workingMemory: {
       enabled: true,
-      type: "tool-call",
+      type: "text-stream",
     },
     threads: {
       generateTitle: true,
@@ -149,7 +159,7 @@ export const analystAgent = new Agent({
     },
     workingMemory: {
       enabled: true,
-      type: "tool-call",
+      type: "text-stream",
     },
     threads: {
       generateTitle: true,
@@ -208,7 +218,7 @@ export const writerAgent = new Agent({
     },
     workingMemory: {
       enabled: true,
-      type: "tool-call",
+      type: "text-stream",
     },
     threads: {
       generateTitle: true,
@@ -263,7 +273,7 @@ export const rlTrainerAgent = new Agent({
     },
     workingMemory: {
       enabled: true,
-      type: "tool-call",
+      type: "text-stream",
     },
     threads: {
       generateTitle: true,
@@ -314,7 +324,7 @@ export const dataManagerAgent = new Agent({
     },
     workingMemory: {
       enabled: true,
-      type: "tool-call",
+      type: "text-stream",
     },
     threads: {
       generateTitle: true,

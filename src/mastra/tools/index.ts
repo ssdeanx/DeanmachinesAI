@@ -1,36 +1,129 @@
+// Core imports
 import { createTool } from "@mastra/core/tools";
 import { z } from "zod";
-import { Pinecone } from "@pinecone-database/pinecone"; // Correct client import
-import { PineconeStore } from "@langchain/pinecone"; // Correct store import for LangChain
+import { Pinecone } from "@pinecone-database/pinecone";
+import { PineconeStore } from "@langchain/pinecone";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { env } from "process";
+import { createAISDKTools } from "@agentic/ai-sdk";
 
-// Re-export document tools
+// Re-export tools
 export * from "./document";
-// Re-export GraphRAG tools
 export * from "./graphRag";
-// Re-export file reading and writing tools
 export * from "./readwrite";
-// Re-export RL feedback tools
 export * from "./rlFeedback";
-// Re-export RL reward tools
 export * from "./rlReward";
-// Re-export exaSearch tool
 export * from "./exasearch";
+export * from "./calculator";
+export * from "./tavily";
+export * from "./google-search";
 
-// Initialize embeddings model
-const embeddings = new GoogleGenerativeAIEmbeddings({
-  apiKey: env.GOOGLE_GENERATIVE_AI_API_KEY!,
-  modelName: env.EMBEDDING_MODEL || "models/gemini-embedding-exp-03-07",
+// Import modular tools
+import { createCalculatorTool } from "./calculator";
+import { createTavilySearchTool } from "./tavily";
+import { createGoogleSearchTool } from "./google-search";
+import { BraveSearchClient } from "@agentic/brave-search"; // Fixed: correct client name
+
+/**
+ * Environment variable validation schema
+ */
+const envSchema = z.object({
+  GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1),
+  PINECONE_API_KEY: z.string().min(1),
+  PINECONE_INDEX: z.string().default("Default"),
+  EMBEDDING_MODEL: z.string().default("models/gemini-embedding-exp-03-07"),
+  BRAVE_API_KEY: z.string().optional(),
+  EXA_API_KEY: z.string().optional(),
+  GOOGLE_CSE_KEY: z.string().optional(),
+  GOOGLE_CSE_ID: z.string().optional(),
+  TAVILY_API_KEY: z.string().optional(),
 });
 
-// Initialize Pinecone client
-const pineconeClient = new Pinecone({
-  apiKey: env.PINECONE_API_KEY!,
-});
+/**
+ * Validates environment variables and returns typed config
+ */
+const getValidatedConfig = () => {
+  try {
+    return envSchema.parse(env);
+  } catch (error) {
+    throw new Error(
+      `Environment validation failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`
+    );
+  }
+};
 
-const pineconeIndex = pineconeClient.Index(env.PINECONE_INDEX || "Default");
+const config = getValidatedConfig();
+
+/**
+ * Rate limiter for API calls
+ */
+class RateLimiter {
+  private timestamps: number[] = [];
+  private readonly windowMs: number;
+  private readonly maxRequests: number;
+
+  constructor(windowMs = 1000, maxRequests = 10) {
+    this.windowMs = windowMs;
+    this.maxRequests = maxRequests;
+  }
+
+  async waitForAvailability(): Promise<void> {
+    const now = Date.now();
+    this.timestamps = this.timestamps.filter((t) => now - t < this.windowMs);
+
+    if (this.timestamps.length >= this.maxRequests) {
+      const oldestTimestamp = this.timestamps[0];
+      const waitTime = this.windowMs - (now - oldestTimestamp);
+      await new Promise((resolve) => setTimeout(resolve, waitTime));
+    }
+
+    this.timestamps.push(now);
+  }
+}
+
+const apiRateLimiter = new RateLimiter();
+
+// Initialize clients with error handling
+let embeddings: GoogleGenerativeAIEmbeddings;
+let pineconeClient: Pinecone;
+let pineconeIndex: any; // TODO: Add proper type when available
+
+try {
+  embeddings = new GoogleGenerativeAIEmbeddings({
+    apiKey: config.GOOGLE_GENERATIVE_AI_API_KEY,
+    modelName: config.EMBEDDING_MODEL,
+  });
+
+  pineconeClient = new Pinecone({
+    apiKey: config.PINECONE_API_KEY,
+  });
+
+  pineconeIndex = pineconeClient.Index(config.PINECONE_INDEX);
+} catch (error) {
+  console.error("Failed to initialize API clients:", error);
+  throw error;
+}
+
+/**
+ * Enhanced tool configuration type
+ */
+interface ToolConfig {
+  validateResponses: boolean;
+  maxRetries: number;
+  timeout: number;
+  rateLimiter?: RateLimiter;
+}
+
+// Base tool configuration with rate limiting
+const baseToolConfig: ToolConfig = {
+  validateResponses: true,
+  maxRetries: 2,
+  timeout: 30000,
+  rateLimiter: apiRateLimiter,
+};
 
 /**
  * Tool for searching documents based on semantic similarity
@@ -51,6 +144,7 @@ export const searchDocumentsTool = createTool({
     ),
   }),
   execute: async ({ context }) => {
+    await baseToolConfig.rateLimiter?.waitForAvailability();
     try {
       const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
         pineconeIndex,
@@ -69,7 +163,11 @@ export const searchDocumentsTool = createTool({
       };
     } catch (error) {
       console.error("Error searching documents:", error);
-      return { documents: [] };
+      throw new Error(
+        `Document search failed: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   },
 });
@@ -98,7 +196,8 @@ export const analyzeContentTool = createTool({
     summary: z.string(),
   }),
   execute: async ({ context }) => {
-    const genAI = new GoogleGenerativeAI(env.GOOGLE_GENERATIVE_AI_API_KEY!);
+    await baseToolConfig.rateLimiter?.waitForAvailability();
+    const genAI = new GoogleGenerativeAI(config.GOOGLE_GENERATIVE_AI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-pro" });
 
     try {
@@ -146,12 +245,11 @@ export const analyzeContentTool = createTool({
       };
     } catch (error) {
       console.error("Error analyzing content:", error);
-      return {
-        topics: [],
-        entities: [],
-        sentiment: { score: 0, label: "neutral" },
-        summary: "Error occurred during content analysis.",
-      };
+      throw new Error(
+        `Content analysis failed: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   },
 });
@@ -173,7 +271,8 @@ export const formatContentTool = createTool({
     formattedContent: z.string(),
   }),
   execute: async ({ context }) => {
-    const genAI = new GoogleGenerativeAI(env.GOOGLE_GENERATIVE_AI_API_KEY!);
+    await baseToolConfig.rateLimiter?.waitForAvailability();
+    const genAI = new GoogleGenerativeAI(config.GOOGLE_GENERATIVE_AI_API_KEY);
     const model = genAI.getGenerativeModel({ model: "models/gemini-2.0-pro" });
 
     try {
@@ -198,9 +297,30 @@ export const formatContentTool = createTool({
       };
     } catch (error) {
       console.error("Error formatting content:", error);
-      return {
-        formattedContent: context.content,
-      };
+      throw new Error(
+        `Content formatting failed: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   },
 });
+
+// Export individual tools - allow agent to choose which to use
+export const searchTools = {
+  calculator: createCalculatorTool(baseToolConfig),
+  tavily: createTavilySearchTool({
+    ...baseToolConfig,
+    apiKey: config.TAVILY_API_KEY,
+  }),
+  google: createGoogleSearchTool({
+    ...baseToolConfig,
+    apiKey: config.GOOGLE_CSE_KEY,
+    searchEngineId: config.GOOGLE_CSE_ID,
+  }),
+  brave: config.BRAVE_API_KEY
+    ? new BraveSearchClient({
+        apiKey: config.BRAVE_API_KEY,
+      })
+    : undefined,
+};
