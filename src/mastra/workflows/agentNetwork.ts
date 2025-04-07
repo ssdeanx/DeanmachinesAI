@@ -8,7 +8,8 @@
  */
 
 import { google } from "@ai-sdk/google";
-import { AgentNetwork } from "@mastra/core/network";
+import { AgentNetwork, type AgentNetworkConfig } from "@mastra/core/network";
+import { createResponseHook } from "../hooks";
 import {
   researchAgent,
   analystAgent,
@@ -18,6 +19,83 @@ import {
 } from "../agents";
 import { env } from "process";
 
+// Base configuration for all networks to match agent configuration
+// NOTE: Hooks are removed here as they are not part of AgentNetworkConfig.
+// Consult @mastra/core documentation for the correct way to configure hooks.
+const baseNetworkConfig: Partial<AgentNetworkConfig> = {
+  model: google("models/gemini-2.0-flash"),
+  // hooks: { ... } // Removed hooks configuration
+};
+
+// Define hooks separately for potential later use if the library provides a method
+const deanInsightsHooks = {
+  onError: async (error: Error) => {
+    console.error("Network error:", error);
+    return {
+      text: "The agent network encountered an error. Please try again or contact support.",
+      error: error.message,
+    };
+  },
+  onGenerateResponse: async (response: any) => {
+    // Using 'any' temporarily, replace with actual response type
+    // Apply base response validation logic if needed (extracted from createResponseHook)
+    const baseHook = createResponseHook({
+      minResponseLength: 50,
+      maxAttempts: 3,
+      validateResponse: (res) => {
+        if (res.object) {
+          return Object.keys(res.object).length > 0;
+        }
+        return res.text ? res.text.length >= 50 : false;
+      },
+    });
+    const validatedResponse = await baseHook(response);
+
+    // Add network-specific metadata
+    return {
+      ...validatedResponse,
+      metadata: {
+        ...(validatedResponse as any).metadata, // Assuming metadata exists
+        network: "deanInsights",
+        timestamp: new Date().toISOString(),
+        agentCount: 5,
+      },
+    };
+  },
+};
+
+const dataFlowHooks = {
+  onError: async (error: Error) => {
+    console.error("Network error:", error);
+    return {
+      text: "The agent network encountered an error. Please try again or contact support.",
+      error: error.message,
+    };
+  },
+  onGenerateResponse: async (response: any) => {
+    const baseHook = createResponseHook({
+      minResponseLength: 50,
+      maxAttempts: 3,
+      validateResponse: (res) => {
+        if (res.object) {
+          return Object.keys(res.object).length > 0;
+        }
+        return res.text ? res.text.length >= 50 : false;
+      },
+    });
+    const validatedResponse = await baseHook(response);
+    return {
+      ...validatedResponse,
+      metadata: {
+        ...(validatedResponse as any).metadata,
+        network: "dataFlow",
+        timestamp: new Date().toISOString(),
+        agentCount: 3,
+      },
+    };
+  },
+};
+
 /**
  * DeanInsights Network
  *
@@ -25,8 +103,9 @@ import { env } from "process";
  * well-structured reports with reinforcement learning-based improvements over time.
  */
 export const deanInsightsNetwork = new AgentNetwork({
+  ...baseNetworkConfig,
+  model: baseNetworkConfig.model!, // Ensure model is explicitly provided and non-null
   name: "DeanInsights Network",
-  model: google("models/gemini-2.0-flash"), // Using Google's Gemini model for routing
   agents: [
     researchAgent,
     analystAgent,
@@ -60,19 +139,35 @@ export const deanInsightsNetwork = new AgentNetwork({
     - Ensure attribution of which agent contributed which information
     - When uncertain about a claim, use the Research Agent to verify it
 
+    Note: Each agent has access to specific capabilities:
+    - Research Agent: Web search (Exa), document search, knowledge base access
+    - Analyst Agent: Data analysis with web search capabilities
+    - Writer Agent: Content formatting with web search integration
+    - RL Trainer Agent: Performance optimization with feedback tools
+    - Data Manager Agent: File operations with knowledge base integration
+
+    Coordinate these capabilities effectively to deliver comprehensive results.
+
     You should maintain a neutral, objective tone and prioritize accuracy and clarity.
   `,
+  // hooks: { ... } // Removed hooks from constructor
 });
+
+// TODO: Apply hooks using the correct method provided by @mastra/core
+// Example (replace with actual API):
+// deanInsightsNetwork.setHooks(deanInsightsHooks);
+// dataFlowNetwork.setHooks(dataFlowHooks);
+// contentCreationNetwork.setHooks(contentCreationHooks);
 
 /**
  * DataFlow Network
  *
  * A specialized network focused on data processing, file operations, and analysis
- * with an emphasis on reinforcement learning and continuous improvement.
  */
 export const dataFlowNetwork = new AgentNetwork({
+  ...baseNetworkConfig,
+  model: baseNetworkConfig.model!, // Ensure model is explicitly provided and non-null
   name: "DataFlow Network",
-  model: google("models/gemini-2.0-flash"),
   agents: [dataManagerAgent, analystAgent, rlTrainerAgent],
   instructions: `
     You are a data processing coordination system that orchestrates specialized agents
@@ -96,19 +191,30 @@ export const dataFlowNetwork = new AgentNetwork({
     - Apply proper error handling at each stage
     - Use the RL Trainer to identify optimization opportunities
 
-    Prioritize efficiency, accuracy, and continuous improvement in all data workflows.
+    Note: Your agents have the following enhanced capabilities:
+    - Data Manager: File operations with knowledge base integration
+    - Analyst: Data analysis with web search capabilities
+    - RL Trainer: Performance optimization with feedback tools
+
+    Use these capabilities in combination for optimal results.
+
+    Focus on producing accurate, engaging, and valuable content that effectively communicates complex information.
   `,
+  // hooks: { ... } // Removed hooks from constructor
 });
+
+// TODO: Apply hooks using the correct method provided by @mastra/core
+// Example (replace with actual API):
+// contentCreationNetwork.setHooks(contentCreationHooks);
 
 /**
  * ContentCreation Network
  *
- * A network specialized in researching topics and producing well-structured,
- * high-quality content with continuous improvement through feedback.
  */
 export const contentCreationNetwork = new AgentNetwork({
+  ...baseNetworkConfig,
+  model: baseNetworkConfig.model!, // Ensure model is explicitly provided and non-null
   name: "ContentCreation Network",
-  model: google("models/gemini-2.0-flash"),
   agents: [researchAgent, writerAgent, rlTrainerAgent],
   instructions: `
     You are a content creation coordination system that orchestrates the process
@@ -132,9 +238,21 @@ export const contentCreationNetwork = new AgentNetwork({
     - Incorporate user feedback to continuously improve content quality
     - Use appropriate formatting and organization for different content types
 
+    Note: Your agents have these enhanced capabilities:
+    - Research Agent: Web search (Exa), document search, knowledge base access
+    - Writer Agent: Content formatting with web search integration
+    - RL Trainer: Content quality optimization through feedback
+
+    Leverage these tools for comprehensive content creation.
+
     Focus on producing accurate, engaging, and valuable content that effectively communicates complex information.
   `,
+  // hooks: { ... } // Removed hooks from constructor
 });
+
+// TODO: Apply hooks using the correct method provided by @mastra/core
+// Example (replace with actual API):
+// contentCreationNetwork.setHooks(contentCreationHooks);
 
 /**
  * Helper function to get a specific agent network by name

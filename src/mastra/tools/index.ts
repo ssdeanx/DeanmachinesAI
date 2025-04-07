@@ -16,6 +16,8 @@ export * from "./readwrite";
 export * from "./rlFeedback";
 // Re-export RL reward tools
 export * from "./rlReward";
+// Re-export exaSearch tool
+export * from "./exasearch";
 
 // Initialize embeddings model
 const embeddings = new GoogleGenerativeAIEmbeddings({

@@ -15,6 +15,7 @@ import {
   calculateRewardTool,
   defineRewardFunctionTool,
   optimizePolicyTool,
+  exaSearchTool,
 } from "../tools";
 
 // Configure base agent settings with response hook
@@ -40,7 +41,7 @@ const baseAgentConfig = {
   }),
 };
 
-// Research Agent
+// Research Agent with Exa search
 export const researchAgent = new Agent({
   ...baseAgentConfig,
   name: "Research Agent",
@@ -65,12 +66,21 @@ export const researchAgent = new Agent({
 
     You have memory capabilities and can recall previous conversations and research.
     When a user returns, try to reference relevant past interactions to provide continuity.
+
+    You can now perform web searches using the exaSearchTool to gather additional information.
+    When searching, you can:
+    - Use RAG mode for better context integration
+    - Apply filters for recent or site-specific content
+    - Control the number of results returned
+
+    Always cite web sources when using search results in your responses.
   `,
   tools: {
     searchDocumentsTool,
     embedDocumentTool,
     readFileTool,
     writeToFileTool,
+    exaSearchTool,
   },
   memory: createMemory({
     lastMessages: 25,
@@ -91,7 +101,7 @@ export const researchAgent = new Agent({
   }),
 });
 
-// Analyst Agent
+// Analyst Agent with Exa search
 export const analystAgent = new Agent({
   ...baseAgentConfig,
   name: "Analyst Agent",
@@ -116,6 +126,9 @@ export const analystAgent = new Agent({
 
     You have memory capabilities and can recall previous analyses and conversations.
     When returning to a topic, reference previous insights and build upon them.
+
+    You can perform web searches using exaSearchTool to gather market data, trends, and statistics.
+    Use search filters to ensure data recency and relevance.
   `,
   tools: {
     analyzeContentTool,
@@ -123,6 +136,7 @@ export const analystAgent = new Agent({
     readFileTool,
     writeToFileTool,
     analyzeFeedbackTool,
+    exaSearchTool,
   },
   memory: createMemory({
     lastMessages: 20,
@@ -143,7 +157,7 @@ export const analystAgent = new Agent({
   }),
 });
 
-// Writer Agent
+// Writer Agent with Exa search
 export const writerAgent = new Agent({
   ...baseAgentConfig,
   name: "Writer Agent",
@@ -168,6 +182,12 @@ export const writerAgent = new Agent({
 
     You have memory capabilities and can recall previous writing projects and user preferences.
     Maintain style consistency with previous content for the same project or user.
+
+    You can perform web searches using exaSearchTool to:
+    - Research topics thoroughly
+    - Find relevant examples and references
+    - Verify facts and statistics
+    - Stay current with latest information
   `,
   tools: {
     formatContentTool,
@@ -175,6 +195,7 @@ export const writerAgent = new Agent({
     readFileTool,
     writeToFileTool,
     collectFeedbackTool,
+    exaSearchTool,
   },
   memory: createMemory({
     lastMessages: 20,
