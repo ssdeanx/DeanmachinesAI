@@ -20,7 +20,7 @@ DeanmachinesAI is a state-of-the-art, Mastra AI‑powered platform that transfor
 
 ## 📋 Project Overview
 
-**DeanmachinesAI** integrates modern TypeScript practices with the Mastra framework to deliver an advanced platform composed of the following key features:
+**DeanmachinesAI** integrates modern TypeScript practices with the Mastra framework to deliver an advanced platform with the following key features:
 
 - **Intelligent Agent Orchestration:**
   Dynamic routing and coordination among an ecosystem of specialized agents:
@@ -50,8 +50,6 @@ DeanmachinesAI is a state-of-the-art, Mastra AI‑powered platform that transfor
 
 ## 🏗️ Detailed System Architecture
 
-The platform employs a multi-layered architecture. The following diagrams (using Mermaid syntax) depict the current system context and container relationships.
-
 ### System Context
 
 ```mermaid
@@ -72,7 +70,7 @@ C4Container
     Container(nextjs, "Next.js Frontend", "Next.js", "Provides an interactive dashboard and real-time monitoring")
     ContainerDb(pinecone, "Pinecone DB", "Vector Database", "Stores vector embeddings and semantic indexes")
     ContainerDb(turso, "Turso (LibSQL)", "SQL Database", "Persistent memory storage for agent state and metadata")
-    Container(redis, "Redis Cache", "Cache", "Serves as a high-speed caching layer for performance")
+    Container(redis, "Redis Cache", "Cache", "High-speed caching for performance")
 
     Rel(deanam, pinecone, "Stores embeddings", "HTTPS/REST")
     Rel(deanam, turso, "Persists agent memory", "SQL")
@@ -82,171 +80,22 @@ C4Container
 
 ---
 
-## 🛠️ In-Depth Technology Stack
-
-### Languages & Frameworks
-
-- **[TypeScript](https://www.typescriptlang.org):**
-  Leveraging ES modules in strict mode, all code adheres to best practices for immutability, purity, and type safety.
-- **[Node.js](https://nodejs.org):**
-  Supports asynchronous operations and high-concurrency, running on version >=18.0.0.
-- **[Mastra AI](https://github.com/mastra-ai):**
-  Provides robust frameworks for orchestrating a network of intelligent agents.
-
-### Core Engine & Services
-
-- **Agent Networking:**
-  - Implements reinforcement learning (RL) feedback loops.
-  - Utilizes Turso (LibSQL) and Redis for memory management.
-  - Distributes document processing across parallel microservices.
-- **Vector Storage & Caching:**
-  - **[Pinecone](https://www.pinecone.io):** Provides efficient vector search.
-  - **[Turso (LibSQL)](https://turso.tech):** Ensures persistent memory storage.
-  - **[Redis](https://redis.io):** Offers fast caching for high performance.
-- **Observability:**
-  - **[LangSmith](https://langsmith.ai)** and **[LangFuse](https://langfuse.com):** Enable comprehensive trace logging and monitoring.
-- **Next.js Integration:**
-  - Planned interactive dashboards and real-time monitoring interfaces using Next.js.
-
-### External Integrations & AI Features
-
-- **Search Providers:**
-  Brave, Google Custom Search, Tavily, and Exa Search each deliver specialized capabilities—from privacy to precision filtering.
-- **Tokenization:**
-  **js‑tiktoken** provides highly efficient textual encoding.
-- **LLM Integration:**
-  Interfaces with **[Google AI](https://ai.google)** (Google Gemini) and **[LangChain](https://github.com/langchain-ai/langchainjs)** for advanced language processing.
-
----
-
-## ⚙️ Comprehensive Tool Registry
-
-DeanmachinesAI is built upon a modular structure of independently testable tools. Below is an exhaustive list with detailed functionality.
-
-### Core Tools
-
-- **Vector Query Tools:**
-  - **vectorQueryTool:**
-    Handles queries using tiktoken-based embeddings.
-  - **googleVectorQueryTool:**
-    Implements semantic search using Google AI embeddings.
-  - **filteredQueryTool:**
-    Applies filtering logic to refine search results.
-
-- **File System Operations:**
-  - **read-file:**
-    Reads files with extensive options:
-    - Supports multiple encodings (UTF8, ASCII, UTF16LE, LATIN1, BASE64, HEX).
-    - Allows reading specific line ranges for large files.
-  - **write-file:**
-    Writes file content in different modes:
-    - OVERWRITE, APPEND, CREATE_NEW.
-    - Checks directory existence and validates file size.
-
-- **Memory & Feedback Tools:**
-  - **memoryQueryTool:**
-    Retrieves stored agent memory.
-  - **collectFeedbackTool:**
-    Gathers both explicit and implicit reinforcement learning feedback.
-  - **analyzeFeedbackTool:**
-    Processes gathered feedback to derive actionable insights.
-  - **applyRLInsightsTool:**
-    Applies RL-derived improvements to optimize agent performance.
-
-- **RL Reward Modules:**
-  - **calculateRewardTool:**
-    Computes rewards for specific state-action pairs.
-  - **defineRewardFunctionTool:**
-    Allows customization of reward functions for tailored agent training.
-  - **optimizePolicyTool:**
-    Adjusts and optimizes agent policies based on collected rewards.
-
-### Search Tools
-
-- **Brave Search:**
-  Delivers privacy-first and rapid web search.
-- **Google Custom Search:**
-  Provides enterprise-grade search with safe filtering.
-- **Tavily Search:**
-  Designed for comprehensive and swift results.
-- **Exa Search:**
-  Enhances metadata filtering for precise search outcomes.
-
-### Document Processing Tools
-
-- **Document Tools:**
-  - **searchDocumentsTool:**
-    Enables semantic search over extensive document corpora.
-  - **embedDocumentTool:**
-    Generates high-quality embeddings for document content.
-- **Content Analysis & Formatting:**
-  - **analyzeContentTool:**
-    Extracts insights, summaries, and semantic data from text.
-  - **formatContentTool:**
-    Reformats documents to improve visual clarity and structure.
-
-### Extra & Third-Party Tools
-
-- **GitHub Client:**
-  Facilitates seamless integration with GitHub for source management and automation tasks.
-- **E2B:**
-  Bridges functionality between external services.
-- **AISDK:**
-  Provides additional utility functions and auxiliary AI capabilities.
-- **McpTools:**
-  Includes miscellaneous utility functions supporting diverse tasks.
-- **GraphRag Tools:**
-  - **createGraphRagTool & graphRagQueryTool:**
-    Enable advanced graph-based document linking and retrieval.
-  - **GraphRag Alias ("graph-rag"):**
-    A dedicated alias for the data-manager-agent.
-- **LlamaIndex Tools:**
-  Ensures efficient indexing and retrieval of document embeddings.
-- **WikiBase Client:**
-  Interfaces with external knowledge bases such as Wikipedia.
-
----
-
-## ⏱️ Performance & Trace Timing Metrics
-
-Below is a detailed table summarizing key function performance as measured during recent stress tests. These metrics guide optimizations and help ensure a responsive system.
-
-| Function                   | ID                                    | Timestamp                   | Duration   |
-|----------------------------|---------------------------------------|-----------------------------|------------|
-| **getMemory**              | 11ab634e44c3e254041a98a296d711ac       | 2025-04-08, 14:40:47         | 0.066ms    |
-| **stream**                 | 1237ac5c008c595a8ba1bf324aba1383       | 2025-04-08, 14:40:47         | 4916.513ms |
-| **getMemory**              | 84271942d8bad66c973bc7971d1918a5       | 2025-04-08, 14:40:38         | 0.183ms    |
-| **getMemory**              | e55f1fa720185c70f10ae4680a738db6       | 2025-04-08, 14:40:38         | 0.084ms    |
-| **getMemory**              | 222b2bf7450e0ea4f47945265c4f21da       | 2025-04-08, 14:40:38         | 0.053ms    |
-| **__registerMastra**       | cc0a56c8150039935d52e30813f212b7       | 2025-04-08, 14:37:21         | 0.009ms    |
-| **__registerPrimitives**   | 988500080a031e3340a831a4bfa409ea       | 2025-04-08, 14:37:21         | 0.161ms    |
-
-*Note: These timings are updated periodically as further optimizations are implemented.*
-
----
-
-## 📈 Current Progress & Next Steps
+## ⏱️ Planned Enhancements & Real Roadmap
 
 ### Current Achievements
 
 - **Complete Tool Integration:**
   All core, search, document processing, reinforcement learning, and extra tool modules are fully integrated.
-
 - **High-Performance Vector Search:**
   Multiple embedding strategies using Pinecone and js‑tiktoken have been successfully implemented.
-
 - **Full Observability Setup:**
   End-to-end trace logging and performance monitoring are operational via LangSmith and LangFuse.
-
 - **Robust Memory Infrastructure:**
-  Turso and Redis are successfully integrated for persistent memory and caching.
-
+  Turso and Redis are integrated for persistent memory and caching.
 - **Initial Next.js API Integration:**
   Early groundwork for the Next.js frontend is complete, providing a foundation for interactive dashboards and real-time monitoring.
 
-### Planned Enhancements & Real Roadmap
-
-#### Near-Term Roadmap (May–August 2025)
+### Near-Term Roadmap (May–August 2025)
 
 - **May 2025:**
   - **Next.js Dashboard Integration:**
@@ -255,15 +104,40 @@ Below is a detailed table summarizing key function performance as measured durin
 - **June 2025:**
   - **Toolset Expansion & Agent Evolution:**
     Develop additional specialized tools and implement auto-configuration for new agents via the Builder Agent.
-    *Milestone: New tools are deployed and an experimental agent-building feature is available for internal testing.*
+    *Milestone: New tools deployed and experimental agent-building feature available for internal testing.*
 - **July 2025:**
   - **Reinforcement Learning Enhancements:**
     Introduce multi-objective RL frameworks and cross-agent transfer learning to boost decision making and responsiveness.
-    *Milestone: RL modules report improved learning curves and reduced latency in action optimization.*
+    *Milestone: RL modules report improved learning curves and reduced action optimization latency.*
 - **August 2025:**
   - **System Optimization & Final Frontend Integration:**
     Optimize clustering, load balancing, and caching; finalize full Next.js frontend integration for production monitoring.
     *Milestone: Complete, production-ready frontend with full interactivity and real-time analytics.*
+
+### Gantt Chart
+
+```mermaid
+gantt
+    title DeanmachinesAI Development Roadmap
+    dateFormat  YYYY-MM-DD
+    excludes    weekends
+
+    section Next.js Dashboard Integration
+    Finalize API Endpoints       :done,    api,    2025-05-01, 2025-05-05
+    Integrate Next.js Dashboard  :active,  nxjs,   2025-05-06, 2025-05-31
+
+    section Toolset Expansion & Agent Evolution
+    Develop Additional Tools     :active,  tools,  2025-06-01, 2025-06-15
+    Implement Builder Agent      :pending, ab,     2025-06-16, 2025-06-30
+
+    section Reinforcement Learning Enhancements
+    Multi-Objective RL Framework :pending,  rlmo,   2025-07-01, 2025-07-15
+    Cross-Agent Transfer Learning:pending,  catl,   2025-07-16, 2025-07-31
+
+    section System Optimization & Final Frontend Integration
+    Optimize Clustering & Load Balancing :pending, opt, 2025-08-01, 2025-08-15
+    Finalize Next.js Frontend Integration   :pending, fin, 2025-08-16, 2025-08-31
+```
 
 ---
 
@@ -272,7 +146,7 @@ Below is a detailed table summarizing key function performance as measured durin
 ### Prerequisites
 
 - **Node.js (>=18.0.0)**
-- **pnpm** (or your preferred package manager, configured for ES modules)
+- **pnpm** (or your preferred package manager configured for ES modules)
 - **Next.js** (for upcoming frontend development)
 
 ### Installation
@@ -323,7 +197,7 @@ For detailed developer guides, architecture documents, and integration tutorials
 - **[Swagger UI](http://localhost:4111/swagger-ui)**
 - **[Project Playground](http://localhost:4111/)**
 
-For more in-depth technical details on agent orchestration, tool integrations, and system design, please consult our comprehensive documentation within the `/docs` folder.
+For more technical details on agent orchestration, tool integrations, and system design, please consult our comprehensive documentation within the `/docs` folder.
 
 ---
 
@@ -347,7 +221,6 @@ DeanmachinesAI is licensed under the ISC License. See the [LICENSE](LICENSE) fil
   - Next.js dashboard integration with live performance monitoring.
   - Introduction of experimental agent-building features.
   - Expansion of specialized tools and API endpoint enhancements.
-
 - **v1.2.0 (June–August 2025):**
   - Finalization of Next.js frontend with full production readiness.
   - Enhanced reinforcement learning capabilities and system optimizations.
@@ -356,3 +229,110 @@ DeanmachinesAI is licensed under the ISC License. See the [LICENSE](LICENSE) fil
 ---
 
 *This README is continually maintained as part of our project’s continuous improvement initiative. For any questions, contributions, or feedback, please open an issue or submit a pull request on GitHub.*
+
+```mermaid
+graph TB
+    User((External User))
+
+    subgraph "DeanmachinesAI System"
+        subgraph "Core Service Layer"
+            MastraCore["Mastra Core Service<br>(TypeScript/Node.js)"]
+
+            subgraph "Agent Network Container"
+                DeanInsights["DeanInsights Network<br>(Agent Network)"]
+                DataFlow["DataFlow Network<br>(Agent Network)"]
+                ContentCreation["ContentCreation Network<br>(Agent Network)"]
+
+                subgraph "Agent Components"
+                    ResearchAgent["Research Agent<br>(LLM-based)"]
+                    AnalystAgent["Analyst Agent<br>(LLM-based)"]
+                    WriterAgent["Writer Agent<br>(LLM-based)"]
+                    RLTrainerAgent["RL Trainer Agent<br>(LLM-based)"]
+                    DataManagerAgent["Data Manager Agent<br>(LLM-based)"]
+                end
+            end
+
+            subgraph "Database Container"
+                VectorStore["Vector Store<br>(Pinecone)"]
+                SharedMemory["Shared Memory<br>(LibSQL)"]
+                Redis["Cache Store<br>(Redis)"]
+            end
+
+            subgraph "Service Components"
+                LangChain["LangChain Service<br>(LangChain)"]
+                LangFuse["LangFuse Service<br>(Telemetry)"]
+                LangSmith["LangSmith Service<br>(Monitoring)"]
+                ExaSearch["ExaSearch Service<br>(Search)"]
+            end
+
+            subgraph "Tool Container"
+                SearchTools["Search Tools<br>(Multiple Providers)"]
+                VectorTools["Vector Tools<br>(Pinecone)"]
+                FileTools["File Tools<br>(Node.js)"]
+                RLTools["RL Tools<br>(Custom)"]
+                ContentTools["Content Tools<br>(Custom)"]
+                DocumentTools["Document Tools<br>(Custom)"]
+            end
+
+            subgraph "Workflow Container"
+                RAGWorkflow["RAG Workflow<br>(Custom)"]
+                ResearchWorkflow["Research Workflow<br>(Custom)"]
+            end
+        end
+    end
+
+    subgraph "External Services"
+        GoogleAI["Google AI<br>(Gemini)"]
+        PineconeDB["Pinecone DB<br>(Vector Database)"]
+        ExternalAPIs["External APIs<br>(Multiple)"]
+    end
+
+    %% Relationships
+    User -->|"Interacts with"| MastraCore
+    MastraCore -->|"Orchestrates"| DeanInsights
+    MastraCore -->|"Orchestrates"| DataFlow
+    MastraCore -->|"Orchestrates"| ContentCreation
+
+    %% Agent Network Relationships
+    DeanInsights -->|"Uses"| ResearchAgent
+    DeanInsights -->|"Uses"| AnalystAgent
+    DeanInsights -->|"Uses"| WriterAgent
+    DeanInsights -->|"Uses"| RLTrainerAgent
+    DeanInsights -->|"Uses"| DataManagerAgent
+
+    DataFlow -->|"Uses"| DataManagerAgent
+    DataFlow -->|"Uses"| AnalystAgent
+    DataFlow -->|"Uses"| RLTrainerAgent
+
+    ContentCreation -->|"Uses"| ResearchAgent
+    ContentCreation -->|"Uses"| WriterAgent
+    ContentCreation -->|"Uses"| RLTrainerAgent
+
+    %% Service Relationships
+    MastraCore -->|"Uses"| LangChain
+    MastraCore -->|"Monitors with"| LangFuse
+    MastraCore -->|"Tracks with"| LangSmith
+    MastraCore -->|"Searches with"| ExaSearch
+
+    %% Database Relationships
+    MastraCore -->|"Stores vectors in"| VectorStore
+    MastraCore -->|"Uses"| SharedMemory
+    MastraCore -->|"Caches in"| Redis
+
+    %% Tool Relationships
+    ResearchAgent -->|"Uses"| SearchTools
+    DataManagerAgent -->|"Uses"| FileTools
+    AnalystAgent -->|"Uses"| VectorTools
+    RLTrainerAgent -->|"Uses"| RLTools
+    WriterAgent -->|"Uses"| ContentTools
+    ResearchAgent -->|"Uses"| DocumentTools
+
+    %% External Service Relationships
+    LangChain -->|"Calls"| GoogleAI
+    VectorStore -->|"Stores in"| PineconeDB
+    SearchTools -->|"Queries"| ExternalAPIs
+
+    %% Workflow Relationships
+    MastraCore -->|"Executes"| RAGWorkflow
+    MastraCore -->|"Executes"| ResearchWorkflow
+```
