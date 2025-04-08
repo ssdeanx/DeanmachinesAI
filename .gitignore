@@ -8,3 +8,9 @@ dist
 .repomix/bundles.json
 .repomix
 gcp-vertexai-credentials.json
+.github
+.github/
+/.github
+/.github/
+/.github/*
+/.github/work
