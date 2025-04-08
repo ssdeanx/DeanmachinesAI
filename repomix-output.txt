@@ -1,0 +1,3267 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+The content has been processed where content has been formatted for parsing in markdown style, content has been compressed (code blocks are separated by ⋮---- delimiter).
+
+# File Summary
+
+## Purpose
+
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+
+## File Format
+
+The content is organized as follows:
+
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Multiple file entries, each consisting of:
+  a. A header with the file path (## File: path/to/file)
+  b. The full contents of the file in a code block
+
+## Usage Guidelines
+
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+
+## Notes
+
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Content has been formatted for parsing in markdown style
+- Content has been compressed - code blocks are separated by ⋮---- delimiter
+- Files are sorted by Git change count (files with more changes are at the bottom)
+
+## Additional Info
+
+# Directory Structure
+
+```
+knowledge/archive/
+knowledge/categories/
+knowledge/domain-knowledge/
+knowledge/schemas/
+knowledge/templates/
+.env.example
+.gitignore
+mastra.config.ts
+package.json
+README.md
+src/mastra/agents/index.ts
+src/mastra/database/examples.ts
+src/mastra/database/index.ts
+src/mastra/database/vector-store.ts
+src/mastra/hooks/index.ts
+src/mastra/index.ts
+src/mastra/services/exasearch.ts
+src/mastra/services/langchain.ts
+src/mastra/services/langsmith.ts
+src/mastra/tools/brave-search.ts
+src/mastra/tools/calculator.ts
+src/mastra/tools/document.ts
+src/mastra/tools/exasearch.ts
+src/mastra/tools/google-search.ts
+src/mastra/tools/graphRag.ts
+src/mastra/tools/index.ts
+src/mastra/tools/mcp.ts
+src/mastra/tools/readwrite.ts
+src/mastra/tools/rlFeedback.ts
+src/mastra/tools/rlReward.ts
+src/mastra/tools/tavily.ts
+src/mastra/tools/vectorquerytool.ts
+src/mastra/utils/index.ts
+src/mastra/utils/memory-diagnostics.ts
+src/mastra/utils/thread-manager.ts
+src/mastra/voice/elevenlabs.ts
+src/mastra/voice/googlevoice.ts
+src/mastra/voice/index.ts
+src/mastra/workflows/agentNetwork.ts
+src/mastra/workflows/index.ts
+```
+
+# Files
+
+## File: mastra.config.ts
+
+````typescript
+import { Mastra } from "@mastra/core";
+import { createLogger } from "@mastra/core/logger";
+import {
+  researchAgent,
+  analystAgent,
+  writerAgent,
+  rlTrainerAgent,
+  dataManagerAgent,
+} from "./src/mastra/agents";
+import { ragWorkflow } from "./src/mastra/workflows";
+import { networks } from "./src/mastra/workflows/agentNetwork";
+import { memory } from "./src/mastra/database";
+⋮----
+// Track request timing for RL metrics
+````
+
+## File: src/mastra/database/examples.ts
+
+````typescript
+/**
+ * Example usage of memory persistence in agents
+ *
+ * This file demonstrates how to use memory persistence to maintain context
+ * across multiple interactions with the same user or topic.
+ */
+⋮----
+import { randomUUID } from "crypto";
+import { researchAgent, writerAgent } from "../agents";
+import { threadManager } from "../utils";
+⋮----
+/**
+ * Demonstrates how to use memory persistence in a conversation with proper thread management
+ */
+export async function memoryConversationExample()
+⋮----
+// Generate a consistent user ID (in a real app, this would be your actual user ID)
+⋮----
+// Get or create a thread for this user - ensures consistent thread ID
+⋮----
+// Use the consistent thread ID for all interactions
+⋮----
+// Follow-up message using the same thread ID
+⋮----
+// Simulate returning later - retrieve the same thread
+⋮----
+// Get the same thread for the returning user
+⋮----
+// The agent will have access to the previous conversation history
+⋮----
+/**
+ * Demonstrates how memory can be shared between different agent types with consistent thread IDs
+ */
+export async function multiAgentMemoryExample()
+⋮----
+// Create a consistent thread for multi-agent workflow
+⋮----
+// First agent (Research) gathers information
+⋮----
+threadId: threadInfo.id, // Use the same thread ID for all agents
+⋮----
+// Second agent (Writer) uses the same memory context to continue the work
+⋮----
+threadId: threadInfo.id, // Same thread ID ensures memory continuity
+⋮----
+/**
+ * Helper function to test if memory is correctly reading from the database
+ *
+ * @param threadId - Thread ID to debug
+ * @param userId - User ID associated with the thread
+ */
+export async function debugMemoryReading(threadId: string, userId: string)
+⋮----
+// Direct memory verification via agent
+⋮----
+// Use explicit memory options to ensure reading happens
+⋮----
+lastMessages: 50, // Request a larger message history
+⋮----
+topK: 10, // Request more semantic matches
+````
+
+## File: src/mastra/database/vector-store.ts
+
+````typescript
+/**
+ * Vector store configuration for document embedding and retrieval.
+ *
+ * This module configures Pinecone as the primary vector database for
+ * semantic search and RAG functionality with fallback to Upstash.
+ */
+⋮----
+import { PineconeStore } from "@langchain/pinecone";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { env } from "process";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { EmbeddingModelV1, EmbeddingModelV1Embedding } from "@ai-sdk/provider";
+⋮----
+/**
+ * Adapter class that extends GoogleGenerativeAIEmbeddings to implement the EmbeddingModelV1 interface
+ * required by Mastra's Memory system.
+ */
+export class MastraEmbeddingAdapter
+extends GoogleGenerativeAIEmbeddings
+⋮----
+/**
+   * Version of the embedding specification
+   */
+⋮----
+/**
+   * Provider of the embedding model
+   */
+⋮----
+/**
+   * ID of the embedding model being used
+   */
+⋮----
+/**
+   * Maximum number of embeddings allowed per API call
+   */
+⋮----
+/**
+   * Maximum input token length for the model
+   */
+⋮----
+/**
+   * Dimensionality of the embedding vectors
+   */
+⋮----
+/**
+   * Creates a new Mastra embedding adapter
+   *
+   * @param options - Configuration options for the embeddings model
+   */
+constructor(options: {
+    apiKey?: string;
+    modelName?: string;
+    maxEmbeddingsPerCall?: number;
+    dimensions?: number;
+})
+⋮----
+doEmbed(options: { values: string[]; abortSignal?: AbortSignal; headers?: Record<string, string | undefined>; }): PromiseLike<{ embeddings: Array<EmbeddingModelV1Embedding>; usage? /** Pinecone environment (e.g., 'us-east-1') */: { tokens: number; }; rawResponse?: { headers?: Record<string, string>; }; }> {
+⋮----
+/**
+ * Configuration for Pinecone vector store
+ */
+export interface PineconeConfig {
+  /** Pinecone API key from environment */
+  apiKey: string;
+  /** Pinecone environment (e.g., 'us-east-1') */
+  environment: string;
+  /** Pinecone index name */
+  index: string;
+  /** Optional namespace for organization */
+  namespace?: string;
+  /** Dimension size for embeddings */
+  dimension?: number;
+  /** Distance metric for similarity search */
+  metric?: "cosine" | "euclidean" | "dotproduct";
+}
+⋮----
+/** Pinecone API key from environment */
+⋮----
+/** Pinecone environment (e.g., 'us-east-1') */
+⋮----
+/** Pinecone index name */
+⋮----
+/** Optional namespace for organization */
+⋮----
+/** Dimension size for embeddings */
+⋮----
+/** Distance metric for similarity search */
+⋮----
+/**
+ * Creates and initializes a Pinecone vector store
+ *
+ * @param embeddings - GoogleGenerativeAIEmbeddings instance for embedding generation
+ * @param config - Pinecone configuration options
+ * @returns An initialized PineconeStore instance
+ * @throws If Pinecone client initialization fails
+ */
+export async function createPineconeVectorStore(
+  embeddings: GoogleGenerativeAIEmbeddings | MastraEmbeddingAdapter,
+  config?: Partial<PineconeConfig>
+)
+⋮----
+// Validate environment variables and configuration
+⋮----
+// Initialize Pinecone client
+⋮----
+/**
+ * Creates and initializes embeddings model for vector storage
+ *
+ * @param apiKey - Google API key for generating embeddings
+ * @param modelName - Name of the embedding model to use
+ * @returns MastraEmbeddingAdapter instance that implements all required interface properties
+ */
+export function createEmbeddings(
+  apiKey?: string,
+  modelName?: string
+): MastraEmbeddingAdapter
+⋮----
+/**
+ * Creates a vector store backup using Upstash
+ * Uses Upstash as a fallback if Pinecone is unavailable
+ *
+ * @param embeddings - Embeddings to use with Upstash
+ * @returns Upstash vector store instance or undefined if not configured
+ */
+export function createUpstashBackup(embeddings: MastraEmbeddingAdapter)
+⋮----
+// Note: The Upstash integration would need actual implementation
+// based on the specific Upstash client for Mastra
+⋮----
+return undefined; // Replace with actual implementation when needed
+````
+
+## File: src/mastra/hooks/index.ts
+
+````typescript
+// Define the AgentResponse type locally based on usage
+interface AgentResponse {
+  text?: string;
+  object?: unknown; // Consider using a more specific type if the object structure is known
+  error?: string;
+  // Include other potential properties if needed based on the agent's actual response structure
+}
+⋮----
+object?: unknown; // Consider using a more specific type if the object structure is known
+⋮----
+// Include other potential properties if needed based on the agent's actual response structure
+⋮----
+/**
+ * Response hook configuration interface
+ */
+interface ResponseHookConfig {
+  minResponseLength?: number;
+  maxAttempts?: number;
+  validateResponse?: (response: AgentResponse) => boolean;
+}
+⋮----
+/**
+ * Creates an onResponse hook for handling agent responses
+ * @param config - Configuration options for the response hook
+ */
+export function createResponseHook(config: ResponseHookConfig =
+⋮----
+// Check if response is valid according to custom validation
+⋮----
+// Handle empty or invalid responses
+⋮----
+// Check response length if text is present
+````
+
+## File: src/mastra/services/langsmith.ts
+
+````typescript
+/**
+ * LangSmith integration service for Mastra AI.
+ *
+ * Provides tracing and evaluation capabilities for monitoring and
+ * improving LLM interactions within Mastra agents.
+ */
+⋮----
+import { Client as LangSmithClient } from "langsmith";
+import { env } from "process";
+import { v4 as uuidv4 } from "uuid";
+⋮----
+/**
+ * Configuration options for LangSmith tracing
+ */
+export interface LangSmithConfig {
+  /** API key for LangSmith access */
+  apiKey?: string;
+  /** LangSmith API endpoint URL */
+  endpoint?: string;
+  /** Project name for organizing traces */
+  projectName?: string;
+  /** Whether to enable tracing */
+  enabled?: boolean;
+}
+⋮----
+/** API key for LangSmith access */
+⋮----
+/** LangSmith API endpoint URL */
+⋮----
+/** Project name for organizing traces */
+⋮----
+/** Whether to enable tracing */
+⋮----
+/**
+ * Global LangSmith client instance
+ */
+⋮----
+/**
+ * Configures LangSmith tracing for the application
+ *
+ * @param config - Configuration options for LangSmith
+ * @returns The configured LangSmith client
+ * @throws If LangSmith configuration fails due to missing API key
+ */
+export function configureLangSmithTracing(
+  config?: LangSmithConfig
+): LangSmithClient | null
+⋮----
+// Skip if explicitly disabled
+⋮----
+// Use existing client if available
+⋮----
+// Set environment variables that LangSmith SDK relies on
+⋮----
+// Create LangSmith client
+⋮----
+/**
+ * Creates a new LangSmith run for tracking a specific operation
+ *
+ * @param name - Name of the operation to trace
+ * @param tags - Optional tags for categorizing the run
+ * @returns A Promise resolving to the run ID for tracking the operation, or a fallback UUID
+ */
+export async function createLangSmithRun(
+  name: string,
+  tags?: string[]
+): Promise<string>
+⋮----
+// Fallback to generating a UUID if LangSmith is unavailable
+⋮----
+// Generate a UUID locally to use as the run ID
+⋮----
+// Attempt to create the run in LangSmith, potentially passing the generated ID
+// Note: createRun might return void, so we don't rely on its return value for the ID.
+⋮----
+id: runId, // Pass the generated UUID as the run ID if supported
+⋮----
+inputs: {}, // Add required inputs property
+⋮----
+// Return the locally generated UUID
+⋮----
+return uuidv4(); // Fallback UUID on error
+⋮----
+/**
+ * Tracks feedback for a specific operation in LangSmith
+ *
+ * @param runId - The ID of the run to attach feedback to
+ * @param feedback - Feedback information (rating, comment, etc.)
+ * @returns Boolean indicating success or failure
+ */
+export async function trackFeedback(
+  runId: string,
+  feedback: {
+    score?: number;
+    comment?: string;
+    key?: string;
+    value?: any;
+  }
+): Promise<boolean>
+⋮----
+// Initialize LangSmith on module import
+````
+
+## File: src/mastra/tools/brave-search.ts
+
+````typescript
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { BraveSearchClient } from "@agentic/brave-search";
+import { env } from "process";
+⋮----
+/**
+ * Configuration for Brave search
+ */
+interface BraveSearchConfig {
+  apiKey?: string;
+  maxResults?: number;
+  timeout?: number;
+}
+⋮----
+/**
+ * Creates a configured Brave search tool
+ */
+export function createBraveSearchTool(config: BraveSearchConfig =
+⋮----
+// BraveSearchClient.search only accepts query string
+⋮----
+// Filter results after receiving them
+⋮----
+// score is optional and not directly provided by this API result structure
+````
+
+## File: src/mastra/tools/calculator.ts
+
+````typescript
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { calculator } from "@agentic/calculator";
+⋮----
+/**
+ * Configuration for the calculator tool
+ */
+interface CalculatorConfig {
+  maxRetries?: number;
+  timeout?: number;
+}
+⋮----
+/**
+ * Creates a configured calculator client
+ */
+export function createCalculatorTool(config: CalculatorConfig =
+⋮----
+// Updated to match calculator function signature
+⋮----
+steps: [], // Calculator doesn't return steps
+````
+
+## File: src/mastra/tools/document.ts
+
+````typescript
+/**
+ * Document processing tools for Mastra AI.
+ *
+ * This module provides tools for document chunking, parsing, and embedding
+ * to support various document-based operations within Mastra agents.
+ */
+⋮----
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { Document } from "langchain/document";
+import { Pinecone } from "@pinecone-database/pinecone"; // Import the main Pinecone client
+import { PineconeStore } from "@langchain/pinecone"; // Import the LangChain Pinecone vector store
+import { createEmbeddings } from "../database/vector-store";
+import { createLangSmithRun, trackFeedback } from "../services/langsmith";
+import { env } from "process";
+⋮----
+/**
+ * Options for chunking documents
+ */
+interface ChunkingOptions {
+  /** Maximum size of each chunk in characters */
+  chunkSize?: number;
+  /** Overlap between chunks to maintain context */
+  chunkOverlap?: number;
+  /** Minimum chunk size to include */
+  minChunkSize?: number;
+}
+⋮----
+/** Maximum size of each chunk in characters */
+⋮----
+/** Overlap between chunks to maintain context */
+⋮----
+/** Minimum chunk size to include */
+⋮----
+/**
+ * Chunks text into smaller segments for processing
+ *
+ * @param text - The text content to chunk
+ * @param options - Chunking configuration options
+ * @returns Array of document chunks
+ */
+async function chunkText(
+  text: string,
+  options: ChunkingOptions = {}
+): Promise<Document[]>
+⋮----
+/**
+ * Tool for embedding documents into the vector store
+ */
+⋮----
+// Create embeddings for vector store
+⋮----
+// Create document chunks
+⋮----
+// Enrich chunks with metadata
+⋮----
+// Initialize Pinecone client
+⋮----
+// Store document in vector database
+⋮----
+// Track successful embedding in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Tool for retrieving documents from vector storage
+ */
+⋮----
+// Initialize Pinecone client
+⋮----
+// Perform similarity search with metadata filter if provided
+⋮----
+// Format results
+⋮----
+score: (doc as any).score ?? (doc.metadata as any)?.score, // Attempt to get score if available
+⋮----
+// Track successful retrieval in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+}, // Added comma here
+````
+
+## File: src/mastra/tools/exasearch.ts
+
+````typescript
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import {
+  searchWeb,
+  searchWithFilters,
+  searchForRAG,
+  type ExaSearchConfig,
+  type ExaSearchResult,
+} from "../services/exasearch";
+⋮----
+// Export types for consumers
+⋮----
+/**
+ * Exa search tool for web content retrieval
+ */
+⋮----
+// Default export for easier importing
+````
+
+## File: src/mastra/tools/graphRag.ts
+
+````typescript
+/**
+ * Graph-based Retrieval Augmented Generation (GraphRAG) tools for Mastra AI.
+ *
+ * This module provides advanced document retrieval that leverages graph relationships
+ * between documents to improve context and relevance of retrieved information.
+ */
+⋮----
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { PineconeStore } from "@langchain/pinecone";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { Document } from "langchain/document";
+import { createEmbeddings } from "../database/vector-store";
+import { createLangSmithRun, trackFeedback } from "../services/langsmith";
+import { createLangChainModel } from "../services/langchain";
+import { env } from "process";
+⋮----
+/**
+ * Graph node representing a document or chunk with its connections
+ */
+interface GraphNode {
+  /** Unique identifier for the node */
+  id: string;
+  /** Document content */
+  content: string;
+  /** Metadata about the document */
+  metadata: Record<string, any>;
+  /** IDs of connected nodes */
+  connections: string[];
+  /** Connection weights/strengths (0-1) */
+  connectionWeights: Record<string, number>;
+}
+⋮----
+/** Unique identifier for the node */
+⋮----
+/** Document content */
+⋮----
+/** Metadata about the document */
+⋮----
+/** IDs of connected nodes */
+⋮----
+/** Connection weights/strengths (0-1) */
+⋮----
+/**
+ * Creates graph relationships between documents based on semantic similarity
+ *
+ * @param documents - List of documents to create relationships between
+ * @param embeddings - Embeddings model for calculating similarity
+ * @param threshold - Similarity threshold for creating connections (0-1)
+ * @returns Documents enriched with graph relationship metadata
+ */
+async function createGraphRelationships(
+  documents: Document[],
+  embeddings: GoogleGenerativeAIEmbeddings,
+  threshold: number = 0.7
+): Promise<Document[]>
+⋮----
+// Create a unique ID for each document if not present
+⋮----
+connections: [] as string[], // Explicitly type as string array
+⋮----
+// Create embeddings for all documents
+⋮----
+// Calculate similarity between all pairs of documents
+⋮----
+// Create a connection if similarity exceeds threshold
+⋮----
+// Add bidirectional connections
+⋮----
+/**
+ * Calculates cosine similarity between two vectors
+ *
+ * @param vec1 - First vector
+ * @param vec2 - Second vector
+ * @returns Similarity score between 0 and 1
+ */
+function calculateCosineSimilarity(vec1: number[], vec2: number[]): number
+⋮----
+/**
+ * Tool for creating a graph-based document store with relationships
+ */
+⋮----
+// Create embeddings model
+⋮----
+// Convert to LangChain Document format
+⋮----
+// Create graph relationships between documents
+⋮----
+// Count total connections (edges)
+⋮----
+// Store graph in vector database
+⋮----
+// Track success in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Tool for graph-based document retrieval with relationship exploration
+ */
+⋮----
+// Initialize Pinecone client
+⋮----
+// Connect to vector store
+⋮----
+// Initial document retrieval
+⋮----
+// Process and normalize initial results
+⋮----
+// Add initial documents to the result set
+⋮----
+// Explore graph up to maxHopCount
+⋮----
+// Queue of nodes to explore: [nodeId, hopDistance]
+⋮----
+// Explore graph by following connections
+⋮----
+// Skip if we've reached max hop distance
+⋮----
+continue; // Skip if node not found
+⋮----
+// For each connection, retrieve the connected document
+⋮----
+// Skip if we already have this node
+⋮----
+// Get the connected document by ID
+⋮----
+// Add connected node to results
+⋮----
+score: nodeInfo.score * connectionWeight, // Decay score by connection weight
+⋮----
+// Add to exploration queue
+⋮----
+// Format and sort results
+⋮----
+// Remove internal graph structure from output
+⋮----
+// Track success in LangSmith
+⋮----
+// Track failure in LangSmith
+````
+
+## File: src/mastra/tools/mcp.ts
+
+````typescript
+import { createAISDKTools } from "@agentic/ai-sdk";
+import { createMcpTools } from "@agentic/mcp";
+import { google } from "@ai-sdk/google";
+import { generateText } from "ai";
+⋮----
+async function main()
+⋮----
+// Create an MCP tools provider, which will start a local MCP server process
+// and use the stdio transport to communicate with it.
+⋮----
+// This example uses a built-in example MCP server from Anthropic, which
+// provides a set of tools to access the local filesystem.
+⋮----
+// Allow the MCP server to access the current working directory.
+⋮----
+// Feel free to add additional directories the tool should have access to.
+⋮----
+// Use the MCP tools provider to create a set of tools for the AI model.
+````
+
+## File: src/mastra/tools/tavily.ts
+
+````typescript
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { TavilyClient } from "@agentic/tavily";
+import { env } from "process";
+⋮----
+/**
+ * Configuration for Tavily search
+ */
+interface TavilyConfig {
+  apiKey?: string;
+}
+⋮----
+/**
+ * Creates a configured Tavily search tool
+ */
+export function createTavilySearchTool(config: TavilyConfig =
+````
+
+## File: src/mastra/utils/index.ts
+
+````typescript
+/**
+ * Utility exports for DeanmachinesAI
+ *
+ * This module exports various utilities to support the application's functionality.
+ */
+````
+
+## File: src/mastra/utils/memory-diagnostics.ts
+
+````typescript
+/**
+ * Extremely simplified memory diagnostics utility
+ */
+⋮----
+import { randomUUID } from "crypto";
+import { memory } from "../database";
+⋮----
+/**
+ * Run a simple memory diagnostic test
+ *
+ * @returns Diagnostic result
+ */
+export async function runMemoryDiagnostics()
+⋮----
+// Generate test IDs
+````
+
+## File: src/mastra/utils/thread-manager.ts
+
+````typescript
+/**
+ * Thread Manager for consistent memory persistence
+ *
+ * This utility helps manage thread IDs consistently across conversations,
+ * ensuring that memory context is properly maintained and retrieved.
+ */
+⋮----
+import { randomUUID } from "crypto";
+⋮----
+/**
+ * Thread information with creation metadata
+ */
+interface ThreadInfo {
+  /** Unique thread identifier */
+  id: string;
+  /** User or entity associated with the thread */
+  resourceId: string;
+  /** When the thread was created */
+  createdAt: Date;
+  /** Optional metadata for thread categorization */
+  metadata?: Record<string, unknown>;
+}
+⋮----
+/** Unique thread identifier */
+⋮----
+/** User or entity associated with the thread */
+⋮----
+/** When the thread was created */
+⋮----
+/** Optional metadata for thread categorization */
+⋮----
+/**
+ * Thread creation options
+ */
+interface CreateThreadOptions {
+  /** Optional predefined thread ID (generates UUID if not provided) */
+  threadId?: string;
+  /** User or entity associated with the thread */
+  resourceId: string;
+  /** Optional metadata for thread categorization */
+  metadata?: Record<string, unknown>;
+}
+⋮----
+/** Optional predefined thread ID (generates UUID if not provided) */
+⋮----
+/** User or entity associated with the thread */
+⋮----
+/** Optional metadata for thread categorization */
+⋮----
+/**
+ * Manages conversation threads to ensure consistent memory access
+ */
+export class ThreadManager {
+⋮----
+/**
+   * Creates a new conversation thread
+   *
+   * @param options - Thread creation options
+   * @returns Thread information including the ID
+   */
+public createThread(options: CreateThreadOptions): ThreadInfo
+⋮----
+// Track threads by resource ID for easier lookup
+⋮----
+/**
+   * Retrieves a thread by its ID
+   *
+   * @param threadId - The ID of the thread to retrieve
+   * @returns Thread information or undefined if not found
+   */
+public getThread(threadId: string): ThreadInfo | undefined
+⋮----
+/**
+   * Gets all threads associated with a resource ID
+   *
+   * @param resourceId - The resource ID to look up threads for
+   * @returns Array of thread information objects
+   */
+public getThreadsByResource(resourceId: string): ThreadInfo[]
+⋮----
+/**
+   * Gets the most recent thread for a resource
+   *
+   * @param resourceId - The resource ID to find the most recent thread for
+   * @returns Most recent thread information or undefined if none exists
+   */
+public getMostRecentThread(resourceId: string): ThreadInfo | undefined
+⋮----
+/**
+   * Creates or retrieves a thread for a resource ID
+   *
+   * @param resourceId - The resource ID to get or create a thread for
+   * @param metadata - Optional metadata for the thread if created
+   * @returns Thread information with a consistent ID
+   */
+public getOrCreateThread(
+    resourceId: string,
+    metadata?: Record<string, unknown>
+): ThreadInfo
+⋮----
+// Export a singleton instance for app-wide use
+````
+
+## File: src/mastra/voice/elevenlabs.ts
+
+````typescript
+/**
+ * ElevenLabs Voice implementation for Mastra
+ *
+ * This module provides high-quality text-to-speech capabilities
+ * using the ElevenLabs API with the Mastra voice interface.
+ */
+⋮----
+import { MastraVoice } from "@mastra/core/voice";
+import { ElevenLabsVoice } from "@mastra/voice-elevenlabs";
+⋮----
+/**
+ * Interface for ElevenLabs voice configuration options
+ */
+interface ElevenLabsConfig {
+  /** API key for ElevenLabs services */
+  apiKey?: string;
+  /** Default speaker/voice ID */
+  speaker?: string;
+  /** Model name to use for speech synthesis */
+  modelName?: string;
+}
+⋮----
+/** API key for ElevenLabs services */
+⋮----
+/** Default speaker/voice ID */
+⋮----
+/** Model name to use for speech synthesis */
+⋮----
+/**
+ * Create an ElevenLabs voice provider with the specified configuration
+ *
+ * @param config - Configuration options for the ElevenLabs voice provider
+ * @returns Configured ElevenLabs voice provider instance
+ * @throws Error if required environment variables are missing
+ */
+export function createElevenLabsVoice(
+  config: ElevenLabsConfig = {}
+): MastraVoice
+⋮----
+speaker: voiceName, // Use the defined voiceName variable
+````
+
+## File: src/mastra/voice/googlevoice.ts
+
+````typescript
+/**
+ * Google Voice implementation for Mastra
+ *
+ * This module provides text-to-speech and speech-to-text capabilities
+ * using Google Cloud services with the Mastra voice interface.
+ */
+⋮----
+import { MastraVoice } from "@mastra/core/voice";
+import { GoogleVoice as GoogleVoiceProvider } from "@mastra/voice-google";
+⋮----
+/**
+ * Interface for Google voice configuration options
+ */
+interface GoogleVoiceConfig {
+  /** API key for Google Cloud services */
+  apiKey?: string;
+  /** Default speaker/voice ID */
+  speaker?: string;
+  /** Options for speech-to-text model */
+  listeningOptions?: {
+    /** Language code for speech recognition */
+    languageCode?: string;
+    /** Audio encoding format */
+    encoding?: string;
+  };
+  /** Options for text-to-speech model */
+  speechOptions?: {
+    /** Language code for speech synthesis */
+    languageCode?: string;
+    /** Audio encoding format */
+    audioEncoding?: string;
+  };
+}
+⋮----
+/** API key for Google Cloud services */
+⋮----
+/** Default speaker/voice ID */
+⋮----
+/** Options for speech-to-text model */
+⋮----
+/** Language code for speech recognition */
+⋮----
+/** Audio encoding format */
+⋮----
+/** Options for text-to-speech model */
+⋮----
+/** Language code for speech synthesis */
+⋮----
+/** Audio encoding format */
+⋮----
+/**
+ * Create a Google voice provider with the specified configuration
+ *
+ * @param config - Configuration options for the Google voice provider
+ * @returns Configured Google voice provider instance
+ * @throws Error if required environment variables are missing
+ */
+export function createGoogleVoice(config: GoogleVoiceConfig =
+````
+
+## File: src/mastra/voice/index.ts
+
+````typescript
+/**
+ * Voice module for Mastra
+ *
+ * This module provides voice capabilities for Mastra agents,
+ * including text-to-speech, speech-to-text, and speech-to-speech
+ * functionalities using different provider implementations.
+ */
+⋮----
+import { MastraVoice } from "@mastra/core/voice";
+import { createGoogleVoice } from "./googlevoice";
+import { createElevenLabsVoice } from "./elevenlabs";
+⋮----
+/**
+ * Available voice provider types
+ */
+export enum VoiceProvider {
+  GOOGLE = "google",
+  ELEVENLABS = "elevenlabs",
+}
+⋮----
+/**
+ * Configuration for voice providers
+ */
+export interface VoiceConfig {
+  /** Provider type to use */
+  provider: VoiceProvider;
+  /** API key for the voice service */
+  apiKey?: string;
+  /** Default speaker ID */
+  speaker?: string;
+  /** Provider-specific options */
+  options?: Record<string, unknown>;
+}
+⋮----
+/** Provider type to use */
+⋮----
+/** API key for the voice service */
+⋮----
+/** Default speaker ID */
+⋮----
+/** Provider-specific options */
+⋮----
+/**
+ * Create a voice provider based on the specified configuration
+ *
+ * @param config - Voice provider configuration
+ * @returns Configured voice provider instance
+ * @throws Error if the specified provider is not supported
+ */
+export function createVoice(config: VoiceConfig): MastraVoice
+⋮----
+/**
+ * Helper to get a Google voice provider with default settings
+ *
+ * @returns Google voice provider instance
+ */
+export function getGoogleVoice(): MastraVoice
+⋮----
+/**
+ * Helper to get an ElevenLabs voice provider with default settings
+ *
+ * @returns ElevenLabs voice provider instance
+ */
+export function getElevenLabsVoice(): MastraVoice
+⋮----
+// Export all voice-related functions and types
+⋮----
+// Re-export the MastraVoice type for external use
+````
+
+## File: .gitignore
+
+````
+output.txt
+node_modules
+dist
+.mastra
+.env.development
+.env
+*.db
+.repomix/bundles.json
+.repomix
+````
+
+## File: src/mastra/services/exasearch.ts
+
+````typescript
+/**
+ * Exa Search service for Mastra AI.
+ *
+ * Provides utility functions to integrate Exa search capabilities
+ * with Mastra agents and workflows.
+ */
+⋮----
+import Exa from "exa-js";
+import { env } from "process";
+⋮----
+/**
+ * Configuration options for Exa search
+ */
+export interface ExaSearchConfig {
+  /** API key for Exa (defaults to environment variable) */
+  apiKey?: string;
+  /** Number of search results to return */
+  numResults?: number;
+  /** Whether to use highlights in search results */
+  useHighlights?: boolean;
+  /** Whether to include query in search results */
+  includeQuery?: boolean;
+  /** Whether to include raw content in search results */
+  includeRawContent?: boolean;
+}
+⋮----
+/** API key for Exa (defaults to environment variable) */
+⋮----
+/** Number of search results to return */
+⋮----
+/** Whether to use highlights in search results */
+⋮----
+/** Whether to include query in search results */
+⋮----
+/** Whether to include raw content in search results */
+⋮----
+/**
+ * Search result from Exa
+ */
+export interface ExaSearchResult {
+  /** Title of the search result */
+  title: string;
+  /** URL of the search result */
+  url: string;
+  /** Text content of the search result */
+  text: string;
+  /** Highlighted text snippets (if enabled) */
+  highlights?: string[];
+  /** Score/relevance of the result */
+  score?: number;
+  /** Published date of the content (if available) */
+  published?: string;
+}
+⋮----
+/** Title of the search result */
+⋮----
+/** URL of the search result */
+⋮----
+/** Text content of the search result */
+⋮----
+/** Highlighted text snippets (if enabled) */
+⋮----
+/** Score/relevance of the result */
+⋮----
+/** Published date of the content (if available) */
+⋮----
+/**
+ * Creates an Exa client with the provided configuration
+ *
+ * @param config - Configuration options for Exa
+ * @returns An initialized Exa client
+ */
+export function createExaClient(config: ExaSearchConfig =
+⋮----
+/**
+ * Performs a web search using Exa
+ *
+ * @param query - The search query
+ * @param config - Configuration options for the search
+ * @returns Array of search results
+ */
+export async function searchWeb(
+  query: string,
+  config: ExaSearchConfig = {}
+): Promise<ExaSearchResult[]>
+⋮----
+// Use the correct method signature for search based on exa-js documentation
+⋮----
+// The useHighlights property is not supported in RegularSearchOptions
+⋮----
+// Get content for each result
+⋮----
+// Use getContents with the correct parameter (ID from the result)
+⋮----
+highlights: [], // Exa SearchResult type doesn't include highlights
+⋮----
+highlights: [], // Exa SearchResult type doesn't include highlights
+⋮----
+/**
+ * Performs a search with specific filters using Exa
+ *
+ * @param query - The search query
+ * @param filters - Filters to apply to the search (e.g., site, date)
+ * @param config - Configuration options for the search
+ * @returns Array of search results
+ */
+export async function searchWithFilters(
+  query: string,
+  filters: {
+    site?: string;
+    startDate?: string;
+    endDate?: string;
+    recentOnly?: boolean;
+  },
+  config: ExaSearchConfig = {}
+): Promise<ExaSearchResult[]>
+⋮----
+// Set up search parameters
+⋮----
+// The useHighlights property is not supported in RegularSearchOptions
+⋮----
+// Add filters if provided
+⋮----
+// If recentOnly is true, set startPublishedDate to 30 days ago if not already set
+⋮----
+// Use the correct method signature for search
+⋮----
+// Get content for each result
+⋮----
+// Use getContents with the correct parameter (ID from the result)
+⋮----
+highlights: [], // Exa SearchResult type doesn't include highlights
+⋮----
+/**
+ * Performs a search and returns results formatted for RAG (Retrieval Augmented Generation)
+ *
+ * @param query - The search query
+ * @param config - Configuration options for the search
+ * @returns Formatted text for RAG
+ */
+export async function searchForRAG(
+  query: string,
+  config: ExaSearchConfig = {}
+): Promise<string>
+⋮----
+// Format results for RAG
+⋮----
+// If no highlights but we have text, use a snippet
+⋮----
+/**
+ * Example function showing how to use the Exa search service
+ *
+ * @param query - The search query
+ * @returns Formatted search results
+ */
+export async function exampleSearch(query: string): Promise<string>
+⋮----
+// Basic search
+⋮----
+// Filtered search (last 30 days)
+⋮----
+// RAG-formatted results
+````
+
+## File: src/mastra/services/langchain.ts
+
+````typescript
+/**
+ * LangChain integration service for Mastra AI.
+ *
+ * Provides utility functions to integrate LangChain functionalities
+ * with Mastra agents and workflows.
+ */
+⋮----
+import { BaseCallbackHandler } from "@langchain/core/callbacks/base";
+import { ChatOpenAI } from "@langchain/openai";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ConversationChain } from "langchain/chains";
+import { SystemMessage } from "@langchain/core/messages";
+import { PromptTemplate, ChatPromptTemplate } from "@langchain/core/prompts";
+import { env } from "process";
+import { configureLangSmithTracing } from "./langsmith";
+⋮----
+/**
+ * Model provider options for LangChain
+ */
+export type ModelProvider = "openai" | "google" | "anthropic";
+⋮----
+/**
+ * Configuration options for LangChain models
+ */
+export interface LangChainConfig {
+  /** The model provider to use */
+  provider?: ModelProvider;
+  /** Specific model name to use */
+  modelName?: string;
+  /** Whether to enable tracing with LangSmith */
+  enableTracing?: boolean;
+  /** Temperature setting for model responses (0-1) */
+  temperature?: number;
+  /** Maximum number of tokens in response */
+  maxTokens?: number;
+  /** Custom callback handlers for LangChain */
+  callbacks?: BaseCallbackHandler[];
+}
+⋮----
+/** The model provider to use */
+⋮----
+/** Specific model name to use */
+⋮----
+/** Whether to enable tracing with LangSmith */
+⋮----
+/** Temperature setting for model responses (0-1) */
+⋮----
+/** Maximum number of tokens in response */
+⋮----
+/** Custom callback handlers for LangChain */
+⋮----
+/**
+ * Creates a configured LangChain chat model based on provider
+ *
+ * @param config - Configuration options for the LangChain model
+ * @returns A configured chat model ready for use with LangChain
+ */
+export function createLangChainModel(config: LangChainConfig =
+⋮----
+// Set up LangSmith tracing if enabled
+⋮----
+// Create model based on provider
+⋮----
+/**
+ * Creates a conversation chain with system instructions
+ *
+ * @param systemPrompt - System instructions for the conversation
+ * @param config - LangChain model configuration
+ * @returns A configured conversation chain
+ */
+export function createConversationChain(
+  systemPrompt: string,
+  config?: LangChainConfig
+)
+⋮----
+/**
+ * Creates a chain using LangChain Expression Language (LCEL) with a custom prompt template
+ *
+ * @param promptTemplate - The prompt template string with {variables}
+ * @param config - LangChain model configuration
+ * @returns A configured LCEL chain
+ */
+export function createLLMChain(
+  promptTemplate: string,
+  config?: LangChainConfig
+)
+⋮----
+// Using LCEL pipe pattern instead of deprecated LLMChain
+````
+
+## File: src/mastra/tools/google-search.ts
+
+````typescript
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { GoogleCustomSearchClient } from "@agentic/google-custom-search"; // Fixed: correct client name
+import { env } from "process";
+⋮----
+/**
+ * Configuration for Google Custom Search
+ */
+interface GoogleSearchConfig {
+  apiKey?: string;
+  searchEngineId?: string;
+  maxResults?: number;
+  timeout?: number;
+}
+⋮----
+/**
+ * Creates a configured Google Custom Search tool
+ */
+export function createGoogleSearchTool(config: GoogleSearchConfig =
+⋮----
+cseId: config.searchEngineId ?? env.GOOGLE_CSE_ID, // Fixed: property name is cseId
+⋮----
+// Updated to match correct search parameters - search method expects only query
+// Options like num and safe might need to be handled post-retrieval or
+// might not be directly supported by this client's search method signature.
+⋮----
+// Manually limit results if maxResults is provided
+⋮----
+// Note: Safe search filtering needs to be configured in the CSE control panel
+// or handled by filtering results if the API/client doesn't support it directly.
+````
+
+## File: src/mastra/tools/readwrite.ts
+
+````typescript
+/**
+ * File Reading and Writing Tools for Mastra AI.
+ *
+ * This module provides tools for reading from and writing to files in the filesystem
+ * with support for different file formats, encodings, and write modes.
+ */
+⋮----
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { promises as fs } from "fs";
+import { resolve, dirname, extname, join } from "path";
+import { createLangSmithRun, trackFeedback } from "../services/langsmith";
+⋮----
+/**
+ * Supported file encoding types
+ */
+export enum FileEncoding {
+  /** UTF-8 text encoding */
+  UTF8 = "utf8",
+  /** ASCII text encoding */
+  ASCII = "ascii",
+  /** UTF-16 Little Endian encoding */
+  UTF16LE = "utf16le",
+  /** Latin1 encoding */
+  LATIN1 = "latin1",
+  /** Base64 encoding */
+  BASE64 = "base64",
+  /** Hex encoding */
+  HEX = "hex",
+}
+⋮----
+/** UTF-8 text encoding */
+⋮----
+/** ASCII text encoding */
+⋮----
+/** UTF-16 Little Endian encoding */
+⋮----
+/** Latin1 encoding */
+⋮----
+/** Base64 encoding */
+⋮----
+/** Hex encoding */
+⋮----
+/**
+ * File write modes
+ */
+export enum FileWriteMode {
+  /** Overwrite the file if it exists */
+  OVERWRITE = "overwrite",
+  /** Append to the file if it exists */
+  APPEND = "append",
+  /** Create a new file, fail if the file exists */
+  CREATE_NEW = "create-new",
+}
+⋮----
+/** Overwrite the file if it exists */
+⋮----
+/** Append to the file if it exists */
+⋮----
+/** Create a new file, fail if the file exists */
+⋮----
+/**
+ * Base path for knowledge folder
+ */
+⋮----
+/**
+ * Validates if a path is within the knowledge folder
+ */
+function isKnowledgePath(path: string): boolean
+⋮----
+/**
+ * Resolves a knowledge folder path
+ */
+function resolveKnowledgePath(path: string): string
+⋮----
+/**
+ * Tool for reading files from the filesystem
+ */
+⋮----
+// Resolve the absolute path
+⋮----
+// Check if the file exists
+⋮----
+// Get file stats
+⋮----
+// Check file size
+⋮----
+// Read the file
+⋮----
+// Handle line-based reading if requested
+⋮----
+// Extract the requested lines
+⋮----
+// Track success in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Tool for writing content to files in the filesystem
+ */
+⋮----
+// Resolve the absolute path
+⋮----
+// Check content size
+⋮----
+// Create parent directories if requested
+⋮----
+// Check if the file exists
+⋮----
+// File doesn't exist, which is fine
+⋮----
+// Handle write mode
+⋮----
+// Write or append to the file based on the mode
+⋮----
+// Track success in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+// Ensure the execute method exists before calling it
+⋮----
+// Modify context to use knowledge path and provide default startLine
+⋮----
+// Track failure in LangSmith
+⋮----
+// Ensure the execute method exists before calling it
+⋮----
+// Modify context to use knowledge path and include default maxSizeBytes
+⋮----
+// Provide the default value from writeToFileTool's schema
+⋮----
+// Track failure in LangSmith
+⋮----
+// Original tools are already exported when defined
+````
+
+## File: src/mastra/tools/rlFeedback.ts
+
+````typescript
+/**
+ * Reinforcement Learning Feedback Tools for Mastra AI.
+ *
+ * This module provides tools for collecting, analyzing, and applying
+ * feedback for reinforcement learning to improve agent performance over time.
+ */
+⋮----
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { LibSQLStore } from "@mastra/core/storage/libsql";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createLangSmithRun, trackFeedback } from "../services/langsmith";
+import { Memory } from "@mastra/memory";
+⋮----
+// Helper function to get environment variable with fallback
+const getEnvVar = (name: string, fallback: string = ''): string =>
+⋮----
+// Create a storage instance
+const getStorage = (): LibSQLStore =>
+⋮----
+// For development, use in-memory database if env variables aren't set
+⋮----
+// Fallback to in-memory database
+⋮----
+// Initialize a Memory instance for storing RL feedback data
+⋮----
+/**
+ * Types of feedback that can be collected for RL
+ */
+export enum FeedbackType {
+  /** User explicitly rates agent response */
+  EXPLICIT = "explicit",
+  /** System infers quality from user behavior */
+  IMPLICIT = "implicit",
+  /** Model evaluates its own performance */
+  SELF_CRITIQUE = "self_critique",
+}
+⋮----
+/** User explicitly rates agent response */
+⋮----
+/** System infers quality from user behavior */
+⋮----
+/** Model evaluates its own performance */
+⋮----
+/**
+ * Feedback metrics that can be tracked
+ */
+export interface FeedbackMetrics {
+  /** Overall quality score (1-10) */
+  quality: number;
+  /** Accuracy of information (1-10) */
+  accuracy?: number;
+  /** Relevance to user request (1-10) */
+  relevance?: number;
+  /** Helpfulness of the response (1-10) */
+  helpfulness?: number;
+  /** Time taken to respond (ms) */
+  latencyMs?: number;
+  /** Free-form comment about the response */
+  comment?: string;
+}
+⋮----
+/** Overall quality score (1-10) */
+⋮----
+/** Accuracy of information (1-10) */
+⋮----
+/** Relevance to user request (1-10) */
+⋮----
+/** Helpfulness of the response (1-10) */
+⋮----
+/** Time taken to respond (ms) */
+⋮----
+/** Free-form comment about the response */
+⋮----
+/**
+ * Tool for collecting feedback on agent responses
+ */
+⋮----
+// Generate a unique ID for this feedback
+⋮----
+// Instead of using the LibSQLStore directly, use Memory API to store feedback
+// First, create or get an existing thread for the agent's RL feedback
+⋮----
+// Thread doesn't exist yet, create it
+⋮----
+// Format the feedback data as a system message
+⋮----
+// Add a message to the thread with the feedback content
+// Include metadata in the content as the addMessage method doesn't support metadata directly
+⋮----
+role: "assistant", // Changed from "system" to "assistant" as Mastra only supports "user" or "assistant"
+⋮----
+// Track in LangSmith as well if available
+⋮----
+score: context.feedback.metrics.quality / 10, // Normalize to 0-1
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Tool for analyzing collected feedback to derive insights
+ */
+⋮----
+// Get memory adapter for retrieving feedback
+⋮----
+// Query parameters for feedback retrieval
+⋮----
+// Retrieve feedback for analysis
+// Note: In a real implementation, you would query by date range and agent ID
+// This is a simplified version that would need to be adapted to your specific
+// LibSQLStore implementation details
+⋮----
+// For demonstration, we'll generate sample feedback data
+⋮----
+// Use LLM to generate insights from feedback data
+⋮----
+// Aggregate metrics
+⋮----
+// Generate insights using LLM
+⋮----
+// Extract JSON from the response
+⋮----
+// Track success in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Tool for applying RL insights to improve agent performance
+ */
+⋮----
+// Use LLM to generate improved instructions based on insights
+⋮----
+// Generate summary of changes
+⋮----
+// Extract JSON from the response
+⋮----
+// Track success in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Helper function to generate sample feedback data for testing
+ *
+ * @param agentId - ID of the agent
+ * @param startDate - Start date for generated data
+ * @param endDate - End date for generated data
+ * @param count - Number of feedback entries to generate
+ * @returns Array of simulated feedback entries
+ */
+function generateSampleFeedback(
+  agentId: string,
+  startDate: Date,
+  endDate: Date,
+  count: number
+): Array<
+⋮----
+// Sort by timestamp
+⋮----
+/**
+ * Aggregate metrics from feedback entries
+ *
+ * @param feedback - Array of feedback entries
+ * @returns Aggregated metrics
+ */
+function aggregateMetrics(
+  feedback: Array<{
+    metrics: FeedbackMetrics;
+    timestamp: string;
+  }>
+): Array<
+⋮----
+// Initialize result structure with known metrics
+⋮----
+// Aggregate data
+⋮----
+// Skip non-numeric metrics
+⋮----
+// Initialize metric if not exists
+⋮----
+// Calculate averages and format result
+⋮----
+/**
+ * Determine trend from a series of values
+ *
+ * @param values - Array of values with timestamps
+ * @returns Trend description ("improving", "declining", "stable")
+ */
+function determineTrend(
+  values: Array<{
+    value: number;
+    timestamp: string;
+  }>
+): string
+⋮----
+// Need at least 2 values to determine trend
+⋮----
+// Sort by timestamp
+⋮----
+// Split into two halves to compare
+⋮----
+// Calculate averages
+⋮----
+// Determine trend
+````
+
+## File: src/mastra/tools/rlReward.ts
+
+````typescript
+/**
+ * Reinforcement Learning Reward Function Tools for Mastra AI.
+ *
+ * This module provides tools for defining, managing, and optimizing RL reward functions
+ * to guide agent learning through numerical feedback on actions taken in different states.
+ */
+⋮----
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { LibSQLStore } from "@mastra/core/storage/libsql";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createLangSmithRun, trackFeedback } from "../services/langsmith";
+import { Memory } from "@mastra/memory";
+import { env } from "process";
+⋮----
+// Helper function to get environment variable with fallback
+const getEnvVar = (name: string, fallback: string = ''): string =>
+⋮----
+// Create a storage instance
+const getStorage = (): LibSQLStore =>
+⋮----
+// For development, use in-memory database if env variables aren't set
+⋮----
+// Fallback to in-memory database
+⋮----
+// Initialize a Memory instance for storing RL reward data
+⋮----
+/**
+ * Represents a state-action pair in reinforcement learning
+ */
+export interface StateAction {
+  /** Current state representation (can be any serializable data) */
+  state: Record<string, unknown>;
+  /** Action taken by the agent */
+  action: string;
+  /** Additional context about the action (optional) */
+  context?: Record<string, unknown>;
+}
+⋮----
+/** Current state representation (can be any serializable data) */
+⋮----
+/** Action taken by the agent */
+⋮----
+/** Additional context about the action (optional) */
+⋮----
+/**
+ * Types of reward signals that can be used
+ */
+export enum RewardType {
+  /** Simple scalar reward (number) */
+  SCALAR = "scalar",
+  /** Vector reward (multiple dimensions) */
+  VECTOR = "vector",
+  /** Binary reward (success/failure) */
+  BINARY = "binary",
+  /** Human feedback reward */
+  HUMAN = "human",
+}
+⋮----
+/** Simple scalar reward (number) */
+⋮----
+/** Vector reward (multiple dimensions) */
+⋮----
+/** Binary reward (success/failure) */
+⋮----
+/** Human feedback reward */
+⋮----
+/**
+ * Configuration for a reward function
+ */
+export interface RewardFunctionConfig {
+  /** Unique identifier for this reward function */
+  id: string;
+  /** Human-readable name */
+  name: string;
+  /** Functional description */
+  description: string;
+  /** Type of rewards provided */
+  rewardType: RewardType;
+  /** Whether to normalize rewards to [-1,1] range */
+  normalize?: boolean;
+  /** Discount factor for future rewards (gamma) */
+  discountFactor?: number;
+  /** Weight for this reward if combined with others */
+  weight?: number;
+}
+⋮----
+/** Unique identifier for this reward function */
+⋮----
+/** Human-readable name */
+⋮----
+/** Functional description */
+⋮----
+/** Type of rewards provided */
+⋮----
+/** Whether to normalize rewards to [-1,1] range */
+⋮----
+/** Discount factor for future rewards (gamma) */
+⋮----
+/** Weight for this reward if combined with others */
+⋮----
+/**
+ * Reward tracking data structure
+ */
+export interface RewardRecord {
+  /** Timestamp when the reward was recorded */
+  timestamp: string;
+  /** Agent that received the reward */
+  agentId: string;
+  /** Episode or interaction identifier */
+  episodeId: string;
+  /** State-action pair that led to this reward */
+  stateAction: StateAction;
+  /** Numerical reward value */
+  reward: number;
+  /** Cumulative reward for the episode so far */
+  cumulativeReward: number;
+  /** Step number within the episode */
+  stepNumber: number;
+  /** Whether this is a terminal reward (end of episode) */
+  isTerminal: boolean;
+  /** Additional metadata */
+  metadata?: Record<string, unknown>;
+}
+⋮----
+/** Timestamp when the reward was recorded */
+⋮----
+/** Agent that received the reward */
+⋮----
+/** Episode or interaction identifier */
+⋮----
+/** State-action pair that led to this reward */
+⋮----
+/** Numerical reward value */
+⋮----
+/** Cumulative reward for the episode so far */
+⋮----
+/** Step number within the episode */
+⋮----
+/** Whether this is a terminal reward (end of episode) */
+⋮----
+/** Additional metadata */
+⋮----
+/**
+ * Tool for calculating rewards based on state-action pairs
+ */
+⋮----
+// Create the state-action pair
+⋮----
+// Calculate the reward based on the state-action pair
+⋮----
+// Generate a unique ID for this reward record
+⋮----
+// Get previous cumulative reward by querying the episode thread
+⋮----
+// Try to get existing thread for this episode
+⋮----
+// If thread exists, get previous messages and calculate cumulative reward
+⋮----
+selectBy: { last: 1 } // Get most recent message
+⋮----
+// Parse the content which should contain the RewardRecord
+⋮----
+// Continue with just the current reward
+⋮----
+// Create the reward record
+⋮----
+// Create or get thread for this episode
+⋮----
+// Thread doesn't exist yet, create it
+⋮----
+// Store the reward record as a message in the thread
+// Include metadata in the content as the addMessage method doesn't support metadata directly
+⋮----
+// Track in LangSmith for observability
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Tool for defining custom reinforcement learning reward functions
+ */
+⋮----
+// Create the reward function configuration
+⋮----
+// Generate a unique thread ID for storing reward functions
+⋮----
+// Create or get thread for reward functions
+⋮----
+// Thread doesn't exist yet, create it
+⋮----
+// Store the reward function definition as a message
+⋮----
+// Include metadata in the content as the addMessage method doesn't support metadata directly
+⋮----
+// Track in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Tool for analyzing reinforcement learning rewards and optimizing policies
+ */
+⋮----
+// Get memory adapter for retrieving reward data
+⋮----
+// Query parameters
+⋮----
+// Retrieve reward records for the specified agent and time period
+// Note: This is a simplified implementation - in practice, you would need to
+// implement a query mechanism for LibSQLStore that supports filtering by agent, date, etc.
+⋮----
+// Use LLM to analyze rewards and suggest policy improvements
+⋮----
+// Prepare reward data summary for analysis
+⋮----
+// Generate policy improvements
+⋮----
+// Extract JSON from the response
+⋮----
+// Track success in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Calculates reward for a given state-action pair
+ *
+ * @param stateAction - The state-action pair to evaluate
+ * @param rewardFunctionId - Optional specific reward function to use
+ * @returns Reward value and breakdown
+ */
+async function calculateStateActionReward(
+  stateAction: StateAction,
+  rewardFunctionId?: string
+): Promise<
+⋮----
+// This is a simplified implementation - in a real system you would:
+// 1. Retrieve the specific reward function from the database
+// 2. Apply the function's formula to the state-action pair
+// 3. Return the calculated reward
+⋮----
+// For demonstration, we'll implement a simple reward calculation
+⋮----
+// Example reward calculation - adapt this to your specific use case
+⋮----
+// Example component: task completion reward
+⋮----
+// Example component: efficiency reward (negative for high latency)
+⋮----
+const efficiencyReward = Math.max(-5, -latency / 1000); // Cap at -5
+⋮----
+// Example component: accuracy reward
+⋮----
+const accuracyReward = accuracy * 5; // Scale 0-1 accuracy to 0-5 reward
+⋮----
+// Default small reward for taking any action (encourages exploration)
+⋮----
+return { reward: 0 }; // Default to zero reward on error
+⋮----
+/**
+ * Normalizes a reward value to the range [-1, 1]
+ *
+ * @param reward - Raw reward value
+ * @returns Normalized reward in range [-1, 1]
+ */
+function normalizeReward(reward: number): number
+⋮----
+// Simple normalization using tanh
+⋮----
+/**
+ * Retrieves previous rewards for a specific agent and episode
+ *
+ * @param storage - Storage adapter for reward data
+ * @param agentId - ID of the agent
+ * @param episodeId - ID of the episode
+ * @returns Array of reward records, or undefined if none found
+ */
+async function retrievePreviousRewards(
+  storage: LibSQLStore,
+  agentId: string,
+  episodeId: string
+): Promise<RewardRecord[] | undefined>
+⋮----
+// This is a simplified placeholder - in a real implementation you would:
+// 1. Query the database for rewards matching the agent and episode IDs
+// 2. Sort and return the results
+⋮----
+// For demonstration purposes, we return an empty array
+// Replace this with actual database query logic
+⋮----
+/**
+ * Retrieves reward records for an agent within a time period
+ *
+ * @param storage - Storage adapter for reward data
+ * @param agentId - ID of the agent
+ * @param episodeIds - Optional specific episodes to include
+ * @param startDate - Start of the time period
+ * @param endDate - End of the time period
+ * @returns Array of reward records
+ */
+async function retrieveAgentRewards(
+  storage: LibSQLStore,
+  agentId: string,
+  episodeIds?: string[],
+  startDate?: Date,
+  endDate?: Date
+): Promise<RewardRecord[]>
+⋮----
+// This is a simplified placeholder - in a real implementation you would:
+// 1. Query the database for rewards matching the criteria
+// 2. Filter by dates and episodes if provided
+// 3. Sort and return the results
+⋮----
+// For demonstration purposes, we generate sample data
+⋮----
+/**
+ * Generates sample reward records for testing and demonstration
+ *
+ * @param agentId - ID of the agent
+ * @param episodeCount - Number of episodes to generate
+ * @param actionsPerEpisode - Number of actions per episode
+ * @returns Array of sample reward records
+ */
+function generateSampleRewardRecords(
+  agentId: string,
+  episodeCount: number,
+  actionsPerEpisode: number
+): RewardRecord[]
+⋮----
+const reward = Math.random() * 2 - 0.5; // Random between -0.5 and 1.5
+⋮----
+action: `action_${a % 3}`, // One of 3 possible actions
+⋮----
+// Sort by timestamp
+⋮----
+/**
+ * Summarizes reward records for analysis
+ *
+ * @param records - Array of reward records
+ * @returns Summary statistics for the rewards
+ */
+function summarizeRewards(records: RewardRecord[]):
+⋮----
+// Extract episodes
+⋮----
+// Calculate average reward
+⋮----
+// Calculate average episode return (sum of rewards in each episode)
+⋮----
+// Analyze state-actions
+⋮----
+// Create a simple hash of the state-action for grouping
+⋮----
+// Calculate average rewards per state-action
+⋮----
+// Sort by average reward
+⋮----
+// Get top and worst performers
+````
+
+## File: src/mastra/tools/vectorquerytool.ts
+
+````typescript
+/**
+ * Vector Query Tool for semantic search over vector databases.
+ *
+ * This module creates and exports a tool for semantic search over vector stores,
+ * with support for reranking to improve search result relevance.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import { encodingForModel } from "js-tiktoken";
+import { createVectorQueryTool } from "@mastra/rag";
+import { env } from "process";
+import { MastraEmbeddingAdapter, createEmbeddings } from "../database/vector-store";
+⋮----
+/**
+ * Configuration options for Vector Query Tool
+ */
+export interface VectorQueryConfig {
+  /** Name of the vector store to use */
+  vectorStoreName: string;
+  /** Name of the index within the vector store */
+  indexName: string;
+  /** Whether to enable filters for query processing */
+  enableFilters?: boolean;
+  /** Custom ID for the tool */
+  id?: string;
+  /** Custom description for the tool */
+  description?: string;
+  /** Embedding model provider to use */
+  embeddingProvider?: "google" | "tiktoken";
+  /** Top-K results to return */
+  topK?: number;
+  /** Custom tokenizer encoding name */
+  tokenEncoding?: string;
+}
+⋮----
+/** Name of the vector store to use */
+⋮----
+/** Name of the index within the vector store */
+⋮----
+/** Whether to enable filters for query processing */
+⋮----
+/** Custom ID for the tool */
+⋮----
+/** Custom description for the tool */
+⋮----
+/** Embedding model provider to use */
+⋮----
+/** Top-K results to return */
+⋮----
+/** Custom tokenizer encoding name */
+⋮----
+/**
+ * Creates a tokenizer using js-tiktoken
+ *
+ * @param encodingName - Name of the encoding model to use
+ * @returns Tokenizer object with encode and decode methods
+ */
+function createTokenizer(encodingName = 'o200_base')
+⋮----
+// Initialize the tokenizer with o200 encoding
+⋮----
+/**
+     * Encodes text into tokens
+     *
+     * @param text - Text to encode
+     * @returns Array of token IDs
+     */
+⋮----
+/**
+     * Decodes tokens back to text
+     *
+     * @param tokens - Array of token IDs
+     * @returns Decoded text
+     */
+⋮----
+/**
+     * Gets token count for text
+     *
+     * @param text - Text to count tokens for
+     * @returns Number of tokens
+     */
+⋮----
+/**
+ * Creates a Vector Query Tool with the specified configuration
+ *
+ * @param config - Configuration options for the Vector Query Tool
+ * @returns Configured Vector Query Tool
+ */
+export function createMastraVectorQueryTool(config?: Partial<VectorQueryConfig>)
+⋮----
+// Get configuration values with defaults
+⋮----
+// Initialize tokenizer
+⋮----
+// Choose embedding model based on provider
+⋮----
+// Create a custom embedding adapter using tiktoken
+⋮----
+// Convert text to vector using tokenizer
+⋮----
+// Create a normalized embedding from tokens
+// This is a simplified approach - in production you'd use a proper embedding model
+⋮----
+// Use Google embeddings with models/ prefix
+⋮----
+// Create a custom embedding adapter using our existing configuration
+⋮----
+// Create reranker configuration
+⋮----
+semantic: 0.5, // Semantic relevance weight
+vector: 0.3,   // Vector similarity weight
+position: 0.2, // Original position weight
+⋮----
+// Create and return the vector query tool
+⋮----
+/**
+ * Default vector query tool instance with tiktoken-based embeddings
+ * Using Pinecone as the default vector store
+ */
+⋮----
+/**
+ * Vector query tool for Pinecone vector store with Google embeddings
+ */
+⋮----
+/**
+ * Example of using the vector query tool with filters
+ * This can be used when you need to filter results by metadata
+ */
+````
+
+## File: .env.example
+
+````
+# Sample Google Generative AI API key, replace with your own
+GOOGLE_GENERATIVE_AI_API_KEY="google_api_key_here"
+MODEL="models/gemini-2.0-flash"
+EMBEDDING_MODEL="models/gemini-embedding-exp-03-07"
+
+# Sample Google Custom Search Engine ID, rconstructor using the cseId
+GOOGLE_CSE_ID="cse-id_here"
+# Key constructor using the apiKey
+GOOGLE_API_KEY="google_api_key_here"
+
+# Sample Langchain API key, replace with your own
+LANGCHAIN_API_KEY="langchain_api_key"
+
+# Sample Turso database URL and key, replace with your own
+TURSO_DATABASE_URL="libsql://<id>.aws-us-east-1.turso.io"
+TURSO_DATABASE_KEY="the_turso_database_key_here"
+
+# Sample Langsmith API key and service key, replace with your own
+LANGSMITH_TRACING_V2="true"
+LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
+LANGSMITH_API_KEY="langsmith_api_key"
+LANGSMITH_SERVICE_KEY="langsmith_service_key"
+
+# Sample Pinecone API key, replace with your own
+PINECONE_API_KEY="pinecone_api_key"
+PINECONE_ENV="us-east-1"
+PINECONE_HOST="https://<id here>.pinecone.io"
+PINECONE_MODEL="llama-text-embed-v2"
+PINECONE_INDEX="Default"
+PINECONE_DIMENSION="2048"
+PINECONE_METRIC="cosine"
+PINECONE_NAMESPACE="Default"
+
+# Sample Upstash Vector REST URL, replace with your own
+UPSTASH_VECTOR_REST_URL="https://<id here>.us1-vector.upstash.io"
+UPSTASH_VECTOR_REST_TOKEN="vector-rest-token"
+UPSTASH_INDEX="name_of_your_index"
+UPSTASH_REDIS_URL="url"
+UPSTASH_REDIS_TOKEN="upstash_redis_token"
+
+# Sample ElevenLabs API key, replace with your own
+ELEVENLABS_API="elevenslabs_voice_api_key"
+
+EXA_API_KEY="exa-search-api-key"
+
+# Langfuse API keys
+LANGFUSE_PUBLIC_KEY="your_actual_langfuse_public_key"
+LANGFUSE_SECRET_KEY="your_actual_langfuse_secret_key"
+LANGFUSE_HOST="https://us.cloud.langfuse.com"
+
+# Sample E2B API key, replace with your own
+E2B_API_KEY="your_e2b_api_key"
+````
+
+## File: src/mastra/index.ts
+
+````typescript
+import { Mastra } from "@mastra/core";
+import { createLogger } from "@mastra/core/logger";
+import {
+  researchAgent,
+  analystAgent,
+  writerAgent,
+  rlTrainerAgent,
+  dataManagerAgent,
+} from "./agents";
+import { ragWorkflow } from "./workflows";
+import {
+  deanInsightsNetwork,
+  dataFlowNetwork,
+  contentCreationNetwork,
+  networks,
+} from "./workflows/agentNetwork";
+import { sharedMemory as memory } from "./database";
+import {
+  collectFeedbackTool,
+  analyzeFeedbackTool,
+  applyRLInsightsTool,
+} from "./tools/rlFeedback";
+import {
+  calculateRewardTool,
+  defineRewardFunctionTool,
+  optimizePolicyTool,
+} from "./tools/rlReward";
+⋮----
+// Re-export the RL tools for easier access
+⋮----
+// Re-export agent networks for easier access
+⋮----
+// Create and export the Mastra instance
+⋮----
+// Use the properly configured memory from the database module
+⋮----
+// Track request timing for RL metrics
+````
+
+## File: src/mastra/database/index.ts
+
+````typescript
+/**
+ * Database configuration for memory persistence using LibSQL.
+ *
+ * This module sets up the LibSQL adapter for Mastra memory persistence,
+ * allowing agent conversations and context to be stored reliably.
+ */
+⋮----
+import { LibSQLStore } from "@mastra/core/storage/libsql";
+import { LibSQLVector } from "@mastra/core/vector/libsql";
+import { Memory } from "@mastra/memory";
+import type { MastraStorage, MastraVector } from "@mastra/core";
+⋮----
+// Define the memory configuration type
+export interface MemoryConfig {
+  lastMessages: number;
+  semanticRecall: {
+    topK: number;
+    messageRange: {
+      before: number;
+      after: number;
+    };
+  };
+  workingMemory: {
+    enabled: boolean;
+    type: "text-stream";
+  };
+  threads: {
+    generateTitle: boolean;
+  };
+}
+⋮----
+// Default memory configuration that works well for most agents
+⋮----
+/**
+ * Creates a new Memory instance with LibSQL storage and vector capabilities.
+ * @param options Memory configuration options
+ * @returns Configured Memory instance
+ */
+export function createMemory(
+  options: Partial<MemoryConfig> = defaultMemoryConfig
+): Memory
+⋮----
+// Initialize LibSQL storage
+⋮----
+// Initialize LibSQL vector store for semantic search
+⋮----
+// Export shared memory instance
+⋮----
+// Re-export Memory type for convenience
+````
+
+## File: src/mastra/tools/index.ts
+
+````typescript
+// Core imports
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { PineconeStore } from "@langchain/pinecone";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { env } from "process";
+import { createAISDKTools } from "@agentic/ai-sdk";
+⋮----
+// Re-export tools
+⋮----
+// Import modular tools
+import { createCalculatorTool } from "./calculator";
+import { createTavilySearchTool } from "./tavily";
+import { createGoogleSearchTool } from "./google-search";
+import { BraveSearchClient } from "@agentic/brave-search"; // Fixed: correct client name
+⋮----
+/**
+ * Environment variable validation schema
+ */
+⋮----
+/**
+ * Validates environment variables and returns typed config
+ */
+const getValidatedConfig = () =>
+⋮----
+/**
+ * Rate limiter for API calls
+ */
+class RateLimiter
+⋮----
+constructor(windowMs = 1000, maxRequests = 10)
+⋮----
+async waitForAvailability(): Promise<void>
+⋮----
+// Initialize clients with error handling
+⋮----
+let pineconeIndex: any; // TODO: Add proper type when available
+⋮----
+/**
+ * Enhanced tool configuration type
+ */
+interface ToolConfig {
+  validateResponses: boolean;
+  maxRetries: number;
+  timeout: number;
+  rateLimiter?: RateLimiter;
+}
+⋮----
+// Base tool configuration with rate limiting
+⋮----
+/**
+ * Tool for searching documents based on semantic similarity
+ */
+⋮----
+/**
+ * Tool for content analysis using Google Generative AI
+ */
+⋮----
+// Extract JSON from the response
+⋮----
+// Fallback
+⋮----
+/**
+ * Tool for formatting content into well-structured documents
+ */
+⋮----
+// Export individual tools - allow agent to choose which to use
+````
+
+## File: src/mastra/workflows/agentNetwork.ts
+
+````typescript
+/**
+ * AgentNetwork Implementation for DeanmachinesAI
+ *
+ * This module implements a collaborative network of specialized agents that can
+ * dynamically work together to solve complex tasks. Unlike traditional workflows
+ * with predefined execution paths, the AgentNetwork uses an LLM-based router to
+ * determine which agent to call next based on the requirements of the task.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import { AgentNetwork, type AgentNetworkConfig } from "@mastra/core/network";
+import { createResponseHook } from "../hooks";
+import {
+  researchAgent,
+  analystAgent,
+  writerAgent,
+  rlTrainerAgent,
+  dataManagerAgent,
+} from "../agents";
+import { env } from "process";
+⋮----
+// Base configuration for all networks to match agent configuration
+// NOTE: Hooks are removed here as they are not part of AgentNetworkConfig.
+// Consult @mastra/core documentation for the correct way to configure hooks.
+⋮----
+// hooks: { ... } // Removed hooks configuration
+⋮----
+// Define hooks separately for potential later use if the library provides a method
+⋮----
+// Using 'any' temporarily, replace with actual response type
+// Apply base response validation logic if needed (extracted from createResponseHook)
+⋮----
+// Add network-specific metadata
+⋮----
+...(validatedResponse as any).metadata, // Assuming metadata exists
+⋮----
+/**
+ * DeanInsights Network
+ *
+ * A collaborative network focused on researching topics, analyzing data, and producing
+ * well-structured reports with reinforcement learning-based improvements over time.
+ */
+⋮----
+model: baseNetworkConfig.model!, // Ensure model is explicitly provided and non-null
+⋮----
+// hooks: { ... } // Removed hooks from constructor
+⋮----
+// TODO: Apply hooks using the correct method provided by @mastra/core
+// Example (replace with actual API):
+// deanInsightsNetwork.setHooks(deanInsightsHooks);
+// dataFlowNetwork.setHooks(dataFlowHooks);
+// contentCreationNetwork.setHooks(contentCreationHooks);
+⋮----
+/**
+ * DataFlow Network
+ *
+ * A specialized network focused on data processing, file operations, and analysis
+ */
+⋮----
+model: baseNetworkConfig.model!, // Ensure model is explicitly provided and non-null
+⋮----
+// hooks: { ... } // Removed hooks from constructor
+⋮----
+// TODO: Apply hooks using the correct method provided by @mastra/core
+// Example (replace with actual API):
+// contentCreationNetwork.setHooks(contentCreationHooks);
+⋮----
+/**
+ * ContentCreation Network
+ *
+ */
+⋮----
+model: baseNetworkConfig.model!, // Ensure model is explicitly provided and non-null
+⋮----
+// hooks: { ... } // Removed hooks from constructor
+⋮----
+// TODO: Apply hooks using the correct method provided by @mastra/core
+// Example (replace with actual API):
+// contentCreationNetwork.setHooks(contentCreationHooks);
+⋮----
+/**
+ * Helper function to get a specific agent network by name
+ *
+ * @param networkName - Name of the network to retrieve
+ * @returns The requested AgentNetwork or undefined if not found
+ */
+export function getAgentNetwork(networkName: string): AgentNetwork | undefined
+⋮----
+/**
+ * Export all networks in a format compatible with the Mastra instance configuration
+ */
+````
+
+## File: src/mastra/workflows/index.ts
+
+````typescript
+import { Agent } from "@mastra/core/agent";
+import { Step, Workflow } from "@mastra/core/workflows";
+import { z } from "zod";
+import { researchAgent, analystAgent, writerAgent } from "../agents";
+import { sharedMemory as memory } from "../database";
+import { PineconeStore } from "@langchain/pinecone";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+⋮----
+// Create a research step that gathers relevant information
+⋮----
+// Use the research agent to gather information
+⋮----
+// Return the research findings
+⋮----
+// Create an analysis step that processes the research findings
+⋮----
+// Use the analyst agent to analyze the findings
+⋮----
+// Return the analysis
+⋮----
+// Create a documentation step that creates a final report
+⋮----
+// Use the writer agent to create documentation
+⋮----
+// Store the final document in Pinecone for future retrieval
+⋮----
+// Initialize the Pinecone client
+⋮----
+// Get the index from the client
+⋮----
+// Return the final document
+⋮----
+// RL Feedback Collection Step (for reinforcement learning)
+⋮----
+// For simulation purposes, we'll use a simple model to evaluate the document
+⋮----
+// Extract JSON from the response
+⋮----
+// Default feedback if parsing fails
+⋮----
+// Store feedback in memory for reinforcement learning
+⋮----
+// Create a unique thread for storing this feedback entry
+⋮----
+// Store feedback as metadata on a new thread
+⋮----
+// Create the complete RAG workflow
+⋮----
+// Commit the workflow
+⋮----
+/**
+ * Workflows Index
+ *
+ * This file exports all workflows and agent networks available in the DeanmachinesAI system.
+ * Workflows provide predefined execution paths, while AgentNetworks use LLM-based routing
+ * for dynamic agent collaboration.
+ */
+⋮----
+// Export all available workflows
+⋮----
+// Export agent networks
+⋮----
+// TODO: Add and export additional workflow definitions here as they are developed
+// export * from "./researchWorkflow";
+````
+
+## File: package.json
+
+````json
+{
+  "name": "deanmachinesai",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "mastra dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "dependencies": {
+    "@agentic/ai-sdk": "^7.6.3",
+    "@agentic/arxiv": "^7.6.3",
+    "@agentic/brave-search": "^7.6.3",
+    "@agentic/calculator": "^7.6.3",
+    "@agentic/e2b": "^7.6.3",
+    "@agentic/exa": "^7.6.3",
+    "@agentic/firecrawl": "^7.6.3",
+    "@agentic/google-custom-search": "^7.6.3",
+    "@agentic/langchain": "^7.6.3",
+    "@agentic/llamaindex": "^7.6.3",
+    "@agentic/mastra": "^7.6.3",
+    "@agentic/mcp": "^7.6.3",
+    "@agentic/notion": "^7.6.3",
+    "@agentic/serper": "^7.6.3",
+    "@agentic/tavily": "^7.6.3",
+    "@agentic/wikipedia": "^7.6.3",
+    "@ai-sdk/google": "^1.2.8",
+    "@e2b/code-interpreter": "^1.1.0",
+    "@google/generative-ai": "^0.24.0",
+    "@langchain/community": "^0.3.39",
+    "@langchain/core": "^0.3.43",
+    "@langchain/google-genai": "^0.2.2",
+    "@langchain/pinecone": "^0.2.0",
+    "@mastra/client-js": "^0.1.13",
+    "@mastra/core": "^0.7.0",
+    "@mastra/deployer": "^0.2.5",
+    "@mastra/evals": "^0.1.14",
+    "@mastra/github": "^1.1.14",
+    "@mastra/loggers": "^0.1.14",
+    "@mastra/mcp": "^0.3.6",
+    "@mastra/memory": "^0.2.6",
+    "@mastra/pinecone": "^0.2.4",
+    "@mastra/rag": "^0.1.14",
+    "@mastra/upstash": "^0.2.1",
+    "@mastra/vector-libsql": "^0.1.0-alpha.24",
+    "@mastra/vector-pinecone": "^0.1.5",
+    "@mastra/vector-upstash": "^0.1.5",
+    "@mastra/voice-elevenlabs": "^0.1.9",
+    "@mastra/voice-google": "^0.1.9",
+    "@opentelemetry/instrumentation": "^0.200.0",
+    "@opentelemetry/semantic-conventions": "^1.30.0",
+    "@pinecone-database/pinecone": "^5.1.1",
+    "@upstash/vector": "^1.2.1",
+    "ai": "^4.3.2",
+    "dotenv": "^16.4.7",
+    "exa-js": "^1.5.13",
+    "langchain": "^0.3.20",
+    "langfuse": "^3.37.1",
+    "langsmith": "^0.3.15",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "js-tiktoken": "^1.0.19",
+    "mastra": "^0.4.4",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
+  }
+}
+````
+
+## File: src/mastra/agents/index.ts
+
+````typescript
+import { google } from "@ai-sdk/google";
+import { Agent } from "@mastra/core/agent";
+import { createMemory, sharedMemory } from "../database";
+import { createResponseHook } from "../hooks";
+import {
+  searchDocumentsTool,
+  embedDocumentTool,
+  analyzeContentTool,
+  formatContentTool,
+  readFileTool,
+  writeToFileTool,
+  collectFeedbackTool,
+  analyzeFeedbackTool,
+  applyRLInsightsTool,
+  calculateRewardTool,
+  defineRewardFunctionTool,
+  optimizePolicyTool,
+  exaSearchTool,
+  searchTools,
+  googleSearchTools,
+  wikipediaTools,
+  calculatorTools,
+} from "../tools";
+⋮----
+// Configure base agent settings with response hook
+⋮----
+// Research Agent with Exa search
+⋮----
+// Analyst Agent with Exa search
+⋮----
+// Writer Agent with Exa search
+⋮----
+// RL Trainer Agent
+⋮----
+// Data Manager Agent
+⋮----
+// Export agents object for Mastra configuration
+⋮----
+// Export type for OpenAPI/Swagger documentation
+export type AgentIds = keyof typeof Agent;
+````
+
+## File: README.md
+
+````markdown
+<div align="center">
+
+# DeanmachinesAI
+
+A Mastra AI-powered application with intelligent agents, networks, and workflows for research, analysis, and document processing with reinforcement learning capabilities and enhanced search functionality.
+
+![alt text](image.png)
+
+## 📋 Project Overview
+
+DeanmachinesAI leverages the Mastra TypeScript framework to build advanced AI applications with specialized agents, flexible tools, and collaborative workflows. The system utilizes agent networks for dynamic task routing and reinforcement learning for continuous improvement, enabling sophisticated information processing and knowledge generation through vector search and web retrieval capabilities.
+
+## 🏗️ Current Architecture
+
+```mermaid
+C4Component
+    title DeanmachinesAI System Architecture
+
+    Container_Boundary(agents, "Agent Layer") {
+        Container_Boundary(search, "Search Tools") {
+            Component(brave, "Brave Search")
+            Component(tavily, "Tavily Search")
+            Component(google, "Google Search")
+            Component(calc, "Calculator")
+        }
+
+        Container_Boundary(core, "Core Tools") {
+            Component(doc, "Document Tools")
+            Component(rag, "RAG Tools")
+            Component(rl, "RL Tools")
+            Component(fs, "File System")
+        }
+
+        Container_Boundary(networks, "Agent Networks") {
+            Component(dean, "DeanInsights")
+            Component(data, "DataFlow")
+            Component(content, "ContentCreation")
+        }
+    }
+
+    Container_Boundary(infra, "Infrastructure") {
+        Container_Boundary(vector, "Vector Storage") {
+            Component(pinecone, "Pinecone DB")
+            Component(turso, "Turso LibSQL")
+        }
+
+        Container_Boundary(ai, "AI Services") {
+            Component(gemini, "Google Gemini")
+            Component(langsmith, "LangSmith")
+        }
+
+        Container_Boundary(apis, "External APIs") {
+            Component(weather, "Weather API")
+            Component(exa, "Exa Search")
+        }
+    }
+
+    Rel(networks, search, "Uses")
+    Rel(networks, core, "Uses")
+    Rel(core, vector, "Stores data")
+    Rel(search, apis, "Queries")
+    Rel(networks, ai, "LLM requests")
+    UpdateRelStyle(networks, search, "blue", "thick")
+    UpdateRelStyle(networks, ai, "red", "thick")
+```
+
+## 🛠️ Technology Stack
+
+- **Framework**: Mastra AI (TypeScript)
+- **LLM Provider**: Google AI (Gemini 2.0 Pro/Flash)
+- **Storage**:
+  - Turso (LibSQL) for agent memory
+  - Pinecone for vector database
+  - Upstash for backup vector storage
+- **APIs**:
+  - Open-Meteo for weather data
+  - Exa for enhanced web search
+- **Tokenization**: js-tiktoken with o200 encoding
+- **Monitoring & Evaluation**:
+  - LangSmith for tracing and observability
+  - Custom reinforcement learning feedback loops
+
+## 🔍 Key Features
+
+### Agent Systems
+
+- **Dynamic Agent Networks**: LLM-based routing between specialized agents
+- **Collaborative Workflows**: Predefined execution paths for complex tasks
+- **Specialized Agents**:
+  - Research Agent for information gathering
+  - Analyst Agent for data interpretation
+  - Writer Agent for documentation
+  - RL Trainer Agent for system improvement
+  - Data Manager Agent for file operations
+
+### Tools & Capabilities
+
+- **File System Tools**:
+  - Reading from files with encoding options
+  - Writing to files with backup options
+  - Line-based file access for large files
+- **RL Feedback System**:
+  - Collection of explicit and implicit feedback
+  - Analysis of performance metrics
+  - Automated policy improvement
+- **RL Reward System**:
+  - Custom reward function definitions
+  - State-action pair evaluation
+  - Policy optimization based on observed rewards
+- **Document Processing**:
+  - Semantic search for relevant content
+  - Content analysis and insight generation
+  - Formatting for various documentation types
+- **Search Tools**:
+  - **Brave Search**: Web search with privacy focus and customizable results
+  - **Tavily Search**: AI-optimized search engine with comprehensive and quick modes
+  - **Google Custom Search**: Enterprise-grade search with safe search options
+  - **Calculator**: Mathematical expression evaluation and computation
+- **Search & Retrieval**:
+  - Exa-powered web search with metadata filtering
+  - Vector query with js-tiktoken tokenization
+  - Hybrid semantic search with reranking capabilities
+
+### Workflow Implementations
+
+- **RAG Research Workflow**: Research, analysis and documentation generation
+- **Weather Workflow**: Location-based forecasts and activity recommendations
+
+## 📈 Development Progress
+
+```mermaid
+gantt
+    title DeanmachinesAI Development Roadmap
+    dateFormat YYYY-MM-DD
+
+    section Core Infrastructure
+    Project Foundation           :done, found, 2025-03-15, 2025-03-25
+    Base Architecture           :done, arch, 2025-03-20, 2025-04-01
+    Agent System Core           :done, agent, 2025-03-25, 2025-04-10
+    Memory Integration          :done, mem, 2025-04-01, 2025-04-15
+
+    section Search & Retrieval
+    Vector Store Setup         :done, vec, 2025-04-01, 2025-04-10
+    RAG Implementation        :done, rag, 2025-04-05, 2025-04-20
+    Brave Search              :done, brave, 2025-04-15, 2025-04-20
+    Tavily Integration        :done, tavily, 2025-04-18, 2025-04-25
+    Google CSE Setup          :done, gcse, 2025-04-20, 2025-04-28
+    Search Optimization       :active, sopt, 2025-04-25, 2025-05-10
+
+    section Agent Networks
+    Network Architecture      :done, net, 2025-04-15, 2025-04-30
+    Agent Communication       :active, comm, 2025-04-25, 2025-05-15
+    Task Distribution        :active, task, 2025-05-01, 2025-05-20
+    Network Optimization     :pending, netopt, 2025-05-15, 2025-06-01
+
+    section Machine Learning
+    RL Framework             :active, rl, 2025-05-01, 2025-05-25
+    Feedback Systems         :active, feed, 2025-05-10, 2025-06-01
+    Model Fine-tuning        :pending, tune, 2025-05-20, 2025-06-15
+    Performance Analysis     :pending, perf, 2025-06-01, 2025-06-20
+
+    section Enterprise Features
+    Security Implementation  :pending, sec, 2025-06-01, 2025-06-25
+    Compliance Framework    :pending, comp, 2025-06-15, 2025-07-10
+    Enterprise UI           :pending, ui, 2025-06-20, 2025-07-15
+    Documentation          :pending, docs, 2025-07-01, 2025-07-25
+
+    section Future Expansion
+    Multi-Modal Support     :pending, multi, 2025-07-15, 2025-08-15
+    Voice Interface         :pending, voice, 2025-08-01, 2025-08-30
+    Mobile Applications     :pending, mobile, 2025-08-15, 2025-09-15
+    Edge Computing         :pending, edge, 2025-09-01, 2025-09-30
+```
+
+## 🎯 Project Scope
+
+```mermaid
+mindmap
+  root((DeanmachinesAI))
+    Core Features
+      Agent Networks
+        DeanInsights Network
+        DataFlow Network
+        ContentCreation Network
+      Search Systems
+        Brave Search Integration
+        Tavily AI Search
+        Google CSE
+        Vector Search
+      Machine Learning
+        Reinforcement Learning
+        Feedback Systems
+        Model Optimization
+    Infrastructure
+      Storage Solutions
+        Pinecone Vector DB
+        Turso LibSQL
+        File System
+      Processing
+        Task Queue
+        Rate Limiting
+        Load Balancing
+      Monitoring
+        LangSmith Integration
+        Performance Metrics
+        Error Tracking
+    Enterprise
+      Security
+        Role-Based Access
+        Audit Logging
+        Encryption
+      Compliance
+        Data Privacy
+        GDPR/CCPA
+        ISO Standards
+      Scaling
+        Horizontal Scaling
+        Cloud Deployment
+        Edge Computing
+    Future Scope
+      Multi-Modal
+        Voice Interface
+        Image Processing
+        Video Analysis
+      Mobile
+        iOS Application
+        Android Application
+        Cross-Platform SDK
+      Integration
+        API Gateway
+        Third-party APIs
+        Custom Plugins
+```
+
+## 📊 Implementation Status
+
+```mermaid
+pie
+    title Feature Implementation Progress
+    "Complete" : 35
+    "In Progress" : 25
+    "Planning" : 20
+    "Future Scope" : 20
+```
+
+## 🧠 Agent Networks
+
+DeanmachinesAI implements three specialized agent networks that enable dynamic collaboration between agents:
+
+### 1. DeanInsights Network
+
+Orchestrates all specialized agents to deliver comprehensive research and analysis with well-structured outputs.
+
+### 2. DataFlow Network
+
+Focused on data processing operations with an emphasis on reinforcement learning and continuous improvement.
+
+### 3. ContentCreation Network
+
+Specializes in researching topics and producing high-quality content with continuous improvement through feedback.
+
+## 🔎 Enhanced Search & Retrieval
+
+The system implements advanced search capabilities:
+
+### ExaSearch Tool
+
+- Provides high-quality web search results
+- Supports filtering by site, date ranges, and content types
+- Returns formatted results for RAG applications
+- Handles full content retrieval for comprehensive analysis
+
+### Vector Query Tool
+
+- Uses js-tiktoken with o200 encoding for efficient tokenization
+- Integrates with Pinecone for high-performance vector search
+- Supports semantic reranking with configurable weight balancing
+- Enables metadata filtering for precise result targeting
+
+## 🤖 Reinforcement Learning
+
+The system implements two reinforcement learning subsystems:
+
+### RL Feedback System
+
+- Collects explicit feedback from users
+- Derives implicit feedback from system metrics
+- Analyzes patterns to identify improvement opportunities
+- Applies insights to improve agent prompts and behavior
+
+### RL Reward System
+
+- Defines custom reward functions for specific tasks
+- Evaluates state-action pairs to calculate rewards
+- Tracks reward history for policy optimization
+- Suggests improvements based on historical performance
+
+## 🌐 Environment Configuration
+
+The project requires configuration for:
+
+- Google AI API for LLM capabilities
+- Turso Database for persistent agent memory
+- LangSmith for observability and tracing
+- Pinecone for vector database functionality
+- Exa API for advanced web search
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- API keys for Google AI, Turso, Exa, and other services
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/DeanmachinesAI.git
+
+# Navigate to project directory
+cd DeanmachinesAI
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env.example .env.development
+# Edit .env.development with your API keys
+```
+
+### Running the Project
+
+```bash
+# Start the development server
+npm run dev
+```
+
+## 🔮 Future Scope
+
+### Planned Enhancements
+
+1. **Extended Agent Networks**
+   - Domain-specific agent networks
+   - Cross-network collaboration
+   - Hierarchical decision making
+
+2. **Advanced RL Capabilities**
+   - Multi-objective reinforcement learning
+   - Exploration vs. exploitation balancing
+   - Transfer learning between agents
+
+3. **Multi-Modal Support**
+   - Voice interface integration
+   - Image recognition capabilities
+   - Cross-modal reasoning
+
+4. **Enterprise Features**
+   - Role-based access controls
+   - Audit logging and compliance
+   - High-availability deployment options
+
+## 📝 License
+
+This project is licensed under the ISC License - see the LICENSE file for details.
+
+## 📊 System Architecture
+
+```mermaid
+graph TB
+    User((External User))
+
+    subgraph "Mastra AI System"
+        subgraph "Agent Networks Container"
+            DeanInsights["DeanInsights Network<br>AgentNetwork"]
+            DataFlow["DataFlow Network<br>AgentNetwork"]
+            ContentCreation["ContentCreation Network<br>AgentNetwork"]
+
+            subgraph "Agent Components"
+                Research["Research Agent<br>LLM Agent"]
+                Analyst["Analyst Agent<br>LLM Agent"]
+                Writer["Writer Agent<br>LLM Agent"]
+                RLTrainer["RL Trainer Agent<br>LLM Agent"]
+                DataManager["Data Manager Agent<br>LLM Agent"]
+            end
+        end
+
+        subgraph "Database Container"
+            LibSQL["LibSQL Store<br>SQLite"]
+            VectorStore["Vector Store<br>Pinecone"]
+
+            subgraph "Memory Components"
+                ThreadManager["Thread Manager<br>TypeScript"]
+                MemoryManager["Memory Manager<br>LibSQL"]
+                VectorIndex["Vector Index<br>Pinecone"]
+            end
+        end
+
+        subgraph "Services Container"
+            LangChain["LangChain Service<br>TypeScript"]
+            LangFuse["LangFuse Service<br>TypeScript"]
+            LangSmith["LangSmith Service<br>TypeScript"]
+            ExaSearch["ExaSearch Service<br>TypeScript"]
+
+            subgraph "LLM Components"
+                GoogleAI["Google AI<br>Gemini"]
+                Embeddings["Embeddings<br>Google AI"]
+                ModelRouter["Model Router<br>TypeScript"]
+            end
+        end
+
+        subgraph "Tools Container"
+            subgraph "Core Tools"
+                DocumentTools["Document Tools<br>TypeScript"]
+                SearchTools["Search Tools<br>TypeScript"]
+                RLTools["RL Tools<br>TypeScript"]
+                FileTools["File Tools<br>TypeScript"]
+            end
+        end
+    end
+
+    %% External Service Connections
+    User -->|"Interacts with"| DeanInsights
+    User -->|"Interacts with"| DataFlow
+    User -->|"Interacts with"| ContentCreation
+
+    %% Agent Network Relationships
+    DeanInsights -->|"Uses"| Research
+    DeanInsights -->|"Uses"| Analyst
+    DeanInsights -->|"Uses"| Writer
+    DeanInsights -->|"Uses"| RLTrainer
+    DeanInsights -->|"Uses"| DataManager
+
+    DataFlow -->|"Uses"| DataManager
+    DataFlow -->|"Uses"| Analyst
+    DataFlow -->|"Uses"| RLTrainer
+
+    ContentCreation -->|"Uses"| Research
+    ContentCreation -->|"Uses"| Writer
+    ContentCreation -->|"Uses"| RLTrainer
+
+    %% Database Relationships
+    Research -->|"Stores data"| LibSQL
+    Analyst -->|"Stores data"| LibSQL
+    Writer -->|"Stores data"| LibSQL
+    Research -->|"Uses"| VectorStore
+    Analyst -->|"Uses"| VectorStore
+
+    LibSQL -->|"Managed by"| MemoryManager
+    VectorStore -->|"Indexed by"| VectorIndex
+    MemoryManager -->|"Uses"| ThreadManager
+
+    %% Service Relationships
+    Research -->|"Uses"| LangChain
+    Analyst -->|"Uses"| LangChain
+    Writer -->|"Uses"| LangChain
+
+    LangChain -->|"Routes to"| ModelRouter
+    ModelRouter -->|"Uses"| GoogleAI
+    ModelRouter -->|"Uses"| Embeddings
+
+    Research -->|"Uses"| ExaSearch
+    Writer -->|"Uses"| ExaSearch
+
+    %% Tool Relationships
+    Research -->|"Uses"| DocumentTools
+    Research -->|"Uses"| SearchTools
+    DataManager -->|"Uses"| FileTools
+    RLTrainer -->|"Uses"| RLTools
+
+    %% Monitoring Services
+    LangChain -->|"Monitored by"| LangFuse
+    LangChain -->|"Monitored by"| LangSmith
+```
+
+</div>
+````

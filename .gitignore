@@ -7,3 +7,4 @@ dist
 *.db
 .repomix/bundles.json
 .repomix
+gcp-vertexai-credentials.json
