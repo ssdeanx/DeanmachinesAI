@@ -15,17 +15,19 @@ import { createEmbeddings } from "../database/vector-store";
 import { createLangSmithRun, trackFeedback } from "../services/langsmith";
 import { createLangChainModel } from "../services/langchain";
 import { env } from "process";
+// Import Langfuse service for observability.
+import { langfuse } from "../services/langfuse";
 
 /**
- * Graph node representing a document or chunk with its connections
+ * Graph node representing a document or chunk with its connections.
  */
-interface GraphNode {
+export interface GraphNode {
   /** Unique identifier for the node */
   id: string;
   /** Document content */
   content: string;
   /** Metadata about the document */
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   /** IDs of connected nodes */
   connections: string[];
   /** Connection weights/strengths (0-1) */
@@ -33,37 +35,46 @@ interface GraphNode {
 }
 
 /**
- * Creates graph relationships between documents based on semantic similarity
+ * GraphDocument augments a LangChain Document with GraphNode metadata.
+ */
+export type GraphDocument = Document & { metadata: GraphNode };
+
+/**
+ * Creates graph relationships between documents based on semantic similarity.
  *
- * @param documents - List of documents to create relationships between
- * @param embeddings - Embeddings model for calculating similarity
- * @param threshold - Similarity threshold for creating connections (0-1)
- * @returns Documents enriched with graph relationship metadata
+ * @param documents - List of documents to create relationships between.
+ * @param embeddings - Embeddings model for calculating similarity.
+ * @param threshold - Similarity threshold for creating connections (default 0.7).
+ * @returns Documents enriched with graph relationship metadata.
+ * @throws {Error} If vector dimensions mismatch.
  */
 async function createGraphRelationships(
   documents: Document[],
   embeddings: GoogleGenerativeAIEmbeddings,
   threshold: number = 0.7
-): Promise<Document[]> {
-  // Create a unique ID for each document if not present
-  const docsWithIds = documents.map((doc, index) => {
-    const id = doc.metadata.id || `node-${Date.now()}-${index}`;
+): Promise<GraphDocument[]> {
+  // Map input documents to GraphDocuments ensuring metadata conforms to GraphNode.
+  const docsWithIds: GraphDocument[] = documents.map((doc, index) => {
+    const id =
+      (doc.metadata && typeof doc.metadata === "object" && "id" in doc.metadata
+        ? String((doc.metadata as Record<string, unknown>).id)
+        : `node-${Date.now()}-${index}`) || `node-${index}`;
     return {
       ...doc,
       metadata: {
-        ...doc.metadata,
+        ...(doc.metadata as Record<string, unknown>),
         id,
-        connections: [] as string[], // Explicitly type as string array
+        connections: [] as string[],
         connectionWeights: {} as Record<string, number>,
       },
-    };
+    } as GraphDocument;
   });
 
-  // Create embeddings for all documents
+  // Create embeddings for all documents.
   const contents = docsWithIds.map((doc) => doc.pageContent);
   const embeddingVectors = await embeddings.embedDocuments(contents);
 
-  // Calculate similarity between all pairs of documents
+  // Calculate similarity between all pairs of documents.
   for (let i = 0; i < docsWithIds.length; i++) {
     for (let j = i + 1; j < docsWithIds.length; j++) {
       const similarity = calculateCosineSimilarity(
@@ -71,12 +82,11 @@ async function createGraphRelationships(
         embeddingVectors[j]
       );
 
-      // Create a connection if similarity exceeds threshold
+      // Create a connection if similarity exceeds threshold.
       if (similarity >= threshold) {
         const nodeI = docsWithIds[i];
         const nodeJ = docsWithIds[j];
 
-        // Add bidirectional connections
         const idI = nodeI.metadata.id;
         const idJ = nodeJ.metadata.id;
 
@@ -93,39 +103,35 @@ async function createGraphRelationships(
 }
 
 /**
- * Calculates cosine similarity between two vectors
+ * Calculates cosine similarity between two vectors.
  *
- * @param vec1 - First vector
- * @param vec2 - Second vector
- * @returns Similarity score between 0 and 1
+ * @param vec1 - First vector.
+ * @param vec2 - Second vector.
+ * @returns Similarity score between 0 and 1.
+ * @throws {Error} If vector lengths differ.
  */
 function calculateCosineSimilarity(vec1: number[], vec2: number[]): number {
   if (vec1.length !== vec2.length) {
     throw new Error("Vectors must have the same dimensions");
   }
-
   let dotProduct = 0;
   let magnitude1 = 0;
   let magnitude2 = 0;
-
   for (let i = 0; i < vec1.length; i++) {
     dotProduct += vec1[i] * vec2[i];
-    magnitude1 += vec1[i] * vec1[i];
-    magnitude2 += vec2[i] * vec2[i];
+    magnitude1 += vec1[i] ** 2;
+    magnitude2 += vec2[i] ** 2;
   }
-
-  magnitude1 = Math.sqrt(magnitude1);
-  magnitude2 = Math.sqrt(magnitude2);
-
-  if (magnitude1 === 0 || magnitude2 === 0) {
+  const mag1 = Math.sqrt(magnitude1);
+  const mag2 = Math.sqrt(magnitude2);
+  if (mag1 === 0 || mag2 === 0) {
     return 0;
   }
-
-  return dotProduct / (magnitude1 * magnitude2);
+  return dotProduct / (mag1 * mag2);
 }
 
 /**
- * Tool for creating a graph-based document store with relationships
+ * Tool for creating a graph-based document store with relationships.
  */
 export const createGraphRagTool = createTool({
   id: "create-graph-rag",
@@ -159,54 +165,45 @@ export const createGraphRagTool = createTool({
   }),
   execute: async ({ context }) => {
     const runId = await createLangSmithRun("create-graph-rag", ["graph", "rag"]);
-
     try {
-      // Create embeddings model
+      // Create embeddings model.
       const embeddings = createEmbeddings();
 
-      // Convert to LangChain Document format
-      const documents = context.documents.map((doc) => {
+      // Convert input to GraphDocuments.
+      const documents = context.documents.map((doc: unknown) => {
         return new Document({
-          pageContent: doc.content,
-          metadata: doc.metadata || {},
+          pageContent: (doc as any).content,
+          metadata: (doc as any).metadata || {},
         });
       });
 
-      // Create graph relationships between documents
+      // Create graph relationships.
       const graphDocuments = await createGraphRelationships(
         documents,
         embeddings,
         context.similarityThreshold
       );
 
-      // Count total connections (edges)
+      // Count total connections (edges).
       let edgeCount = 0;
       graphDocuments.forEach((doc) => {
         edgeCount += doc.metadata.connections?.length || 0;
       });
       edgeCount = Math.floor(edgeCount / 2);
 
-      // Store graph in vector database
-      const pineconeClient = new Pinecone({
-        apiKey: env.PINECONE_API_KEY!,
-      });
-
-
+      // Store graph in vector database.
+      const pineconeClient = new Pinecone({ apiKey: env.PINECONE_API_KEY! });
       const indexName = env.PINECONE_INDEX || "Default";
       const namespace = context.namespace || "graph-rag";
-
       const pineconeIndex = pineconeClient.Index(indexName);
-
       const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
         pineconeIndex,
         namespace,
       });
-
       await vectorStore.addDocuments(graphDocuments);
-
       const graphId = `graph-${Date.now()}`;
 
-      // Track success in LangSmith
+      // Track success in LangSmith.
       await trackFeedback(runId, {
         score: 1,
         comment: `Created graph with ${graphDocuments.length} nodes and ${edgeCount} edges`,
@@ -220,31 +217,29 @@ export const createGraphRagTool = createTool({
         nodeCount: graphDocuments.length,
         edgeCount,
       };
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error creating graph RAG:", error);
-
-      // Track failure in LangSmith
       await trackFeedback(runId, {
         score: 0,
-        comment: error instanceof Error ? error.message : "Unknown error",
+        comment:
+          error instanceof Error ? error.message : "Unknown error during graph creation",
         key: "graph_creation_failure",
       });
-
       return {
         success: false,
         nodeCount: 0,
         edgeCount: 0,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Unknown error during graph creation",
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   },
 });
 
 /**
- * Tool for graph-based document retrieval with relationship exploration
+ * Tool for graph-based document retrieval with relationship exploration.
+ *
+ * Now uses createLangChainModel to ensure the LangChain model is instantiated and functional,
+ * and logs a generation event via Langfuse.
  */
 export const graphRagQueryTool = createTool({
   id: "graph-rag-query",
@@ -286,45 +281,35 @@ export const graphRagQueryTool = createTool({
       "rag",
       "query",
     ]);
-
     try {
+      // Instantiate LangChain model to ensure createLangChainModel is read and functional.
+      const langChainModel = createLangChainModel();
+      // Log model instantiation via Langfuse.
+      langfuse.createTrace("graph-rag-query", { userId: "system" });
+      console.info("LangChain model instantiated:", { model: langChainModel });
+
       const embeddings = createEmbeddings();
-
-      // Initialize Pinecone client
-      const pineconeClient = new Pinecone({
-        apiKey: env.PINECONE_API_KEY!,
-      });
-
-
+      // Initialize Pinecone client.
+      const pineconeClient = new Pinecone({ apiKey: env.PINECONE_API_KEY! });
       const indexName = env.PINECONE_INDEX || "Default";
       const namespace = context.namespace || "graph-rag";
-
       const pineconeIndex = pineconeClient.Index(indexName);
-
-      // Connect to vector store
+      // Connect to vector store.
       const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
         pineconeIndex,
         namespace,
       });
-
-      // Initial document retrieval
+      // Initial document retrieval.
       const initialResults = await vectorStore.similaritySearchWithScore(
         context.query,
         context.initialDocumentCount,
         { minScore: context.minSimilarity }
       );
-
-      // Process and normalize initial results
+      // Process and normalize results.
       const retrievedNodes: Record<
         string,
-        {
-          document: Document;
-          score: number;
-          hopDistance: number;
-        }
+        { document: Document; score: number; hopDistance: number }
       > = {};
-
-      // Add initial documents to the result set
       initialResults.forEach(([doc, score]) => {
         const id = doc.metadata.id;
         if (id) {
@@ -335,76 +320,44 @@ export const graphRagQueryTool = createTool({
           };
         }
       });
-
-      // Explore graph up to maxHopCount
+      // Explore graph up to maxHopCount.
       const maxHops = context.maxHopCount || 2;
-
-      // Queue of nodes to explore: [nodeId, hopDistance]
       const exploreQueue: [string, number][] = Object.keys(retrievedNodes).map(
         (id) => [id, 0]
       );
-
-      // Explore graph by following connections
       while (exploreQueue.length > 0) {
         const [nodeId, hopDistance] = exploreQueue.shift()!;
-
-        // Skip if we've reached max hop distance
-        if (hopDistance >= maxHops) {
-          continue;
-        }
-
+        if (hopDistance >= maxHops) continue;
         const nodeInfo = retrievedNodes[nodeId];
-        if (!nodeInfo) {
-          continue; // Skip if node not found
-        }
-
+        if (!nodeInfo) continue;
         const connections = nodeInfo.document.metadata.connections || [];
         const weights = nodeInfo.document.metadata.connectionWeights || {};
-
-        // For each connection, retrieve the connected document
         for (const connectedId of connections) {
-          // Skip if we already have this node
-          if (retrievedNodes[connectedId]) {
-            continue;
-          }
-
+          if (retrievedNodes[connectedId]) continue;
           try {
-            // Get the connected document by ID
-            const filterResults = await vectorStore.similaritySearch("", 1, {
-              id: connectedId,
-            });
-
+            const filterResults = await vectorStore.similaritySearch("", 1, { id: connectedId });
             if (filterResults.length > 0) {
               const connectedDoc = filterResults[0];
               const connectionWeight = weights[connectedId] || 0.5;
-
-              // Add connected node to results
               retrievedNodes[connectedId] = {
                 document: connectedDoc,
-                score: nodeInfo.score * connectionWeight, // Decay score by connection weight
+                score: nodeInfo.score * connectionWeight,
                 hopDistance: hopDistance + 1,
               };
-
-              // Add to exploration queue
               exploreQueue.push([connectedId, hopDistance + 1]);
             }
           } catch (error) {
-            console.warn(
-              `Error retrieving connected node ${connectedId}:`,
-              error
-            );
+            console.warn(`Error retrieving connected node ${connectedId}:`, error);
           }
         }
       }
-
-      // Format and sort results
+      // Format and sort results.
       const results = Object.values(retrievedNodes)
         .sort((a, b) => b.score - a.score)
         .map((node) => ({
           content: node.document.pageContent,
           metadata: {
             ...node.document.metadata,
-            // Remove internal graph structure from output
             connections: undefined,
             connectionWeights: undefined,
           },
@@ -412,32 +365,31 @@ export const graphRagQueryTool = createTool({
           hopDistance: node.hopDistance,
         }));
 
-      // Track success in LangSmith
+      // Log generation event using Langfuse.
+      langfuse.logGeneration("graph-rag-query-generation", {
+        traceId: runId,
+        input: context.query,
+        output: { documentCount: results.length },
+      });
+
       await trackFeedback(runId, {
         score: 1,
         comment: `Retrieved ${results.length} documents via graph exploration`,
         key: "graph_query_success",
         value: { documentCount: results.length },
       });
-
       return {
         documents: results,
         count: results.length,
       };
     } catch (error) {
       console.error("Error querying graph RAG:", error);
-
-      // Track failure in LangSmith
       await trackFeedback(runId, {
         score: 0,
         comment: error instanceof Error ? error.message : "Unknown error",
         key: "graph_query_failure",
       });
-
-      return {
-        documents: [],
-        count: 0,
-      };
+      return { documents: [], count: 0 };
     }
   },
 });

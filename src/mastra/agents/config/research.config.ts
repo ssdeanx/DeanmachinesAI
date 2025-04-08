@@ -1,33 +1,34 @@
 /**
  * Research Agent Configuration
  *
- * This module defines the specific configuration for the Research Agent,
- * which specializes in finding, gathering, and synthesizing information
- * from various sources.
+ * This module defines the configuration for the Research Agent, which specializes in
+ * gathering, synthesizing, and analyzing information from various sources.
  */
 
 import { google } from "@ai-sdk/google";
 import {
   BaseAgentConfig,
   defaultResponseValidation,
-  DEFAULT_MODEL_ID, // Import the shared constant
+  DEFAULT_MODEL_ID,
 } from "./base.config";
 
 /**
- * Configuration for the Research Agent
+ * Configuration for the Research Agent.
  *
  * @remarks
  * The Research Agent focuses on information gathering and synthesis
  * using web searches, document analysis, and file operations.
+ *
+ * @property {string[]} toolIds - The list of tool IDs required by the agent.
  */
 export const researchAgentConfig: BaseAgentConfig = {
   id: "research-agent",
   name: "Research Agent",
   description:
     "Specialized in finding, gathering, and synthesizing information from various sources.",
-  model: google(DEFAULT_MODEL_ID), // Use the constant here
+  model: google(DEFAULT_MODEL_ID),
   responseValidation: defaultResponseValidation,
-  instructions: ` // Changed from systemPrompt to instructions
+  instructions: `
     You are a specialized research agent designed to find, gather, and synthesize information.
 
     Your primary functions:

@@ -73,11 +73,11 @@ const memoryQueryInputSchema = z.object({
  * Returns an array of matching messages found in memory.
  */
 const memoryQueryOutputSchema = z.object({
-  // Using z.any() for messages as CoreMessage structure might be complex or not fully defined here
+  // Using z.unknown() for messages as CoreMessage structure might be complex or not fully defined here
   messages: z
-    .array(z.any())
+    .array(z.unknown())
     .describe("An array of message objects matching the query criteria."),
-  // uiMessages: z.array(z.any()).optional().describe("Optional array of messages formatted for UI display."), // Include if needed
+  // uiMessages: z.array(z.unknown()).optional().describe("Optional array of messages formatted for UI display."), // Include if needed
 });
 
 /**

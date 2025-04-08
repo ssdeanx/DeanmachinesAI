@@ -3,17 +3,23 @@ import { z } from "zod";
 import { calculator } from "@agentic/calculator";
 
 /**
- * Configuration for the calculator tool
+ * Configuration for the calculator tool.
+ *
+ * @interface CalculatorConfig
  */
-interface CalculatorConfig {
+export interface CalculatorConfig {
   maxRetries?: number;
   timeout?: number;
 }
 
 /**
- * Creates a configured calculator client
+ * Creates a configured calculator client.
+ *
+ * @param _config Calculator configuration options.
+ * @returns A tool instance that performs mathematical calculations.
+ * @throws {Error} If the calculation fails.
  */
-export function createCalculatorTool(config: CalculatorConfig = {}) {
+export function createCalculatorTool(_config: CalculatorConfig = {}) {
   return createTool({
     id: "calculator",
     description: "Performs mathematical calculations",
@@ -24,15 +30,16 @@ export function createCalculatorTool(config: CalculatorConfig = {}) {
       result: z.number(),
       steps: z.array(z.string()).optional(),
     }),
-    execute: async ({ context }) => {
+    execute: async ({ context }): Promise<{ result: number; steps?: string[] }> => {
       try {
-        // Updated to match calculator function signature
-        const result = await calculator(context.expression);
+        // Use the validated input from context
+        const { expression } = context;
+        const result = await calculator(expression);
         return {
           result: result,
           steps: [], // Calculator doesn't return steps
         };
-      } catch (error) {
+      } catch (error: unknown) {
         throw new Error(
           `Calculation failed: ${error instanceof Error ? error.message : "Unknown error"}`
         );

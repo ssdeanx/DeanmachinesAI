@@ -268,10 +268,15 @@ export const readFileTool = createTool({
 });
 
 /**
+ * TOOL NAME UPDATE: Changed export id from "write-to-file" to "write-file"
+ * to match the research-agent's requirement.
+ */
+
+/**
  * Tool for writing content to files in the filesystem
  */
 export const writeToFileTool = createTool({
-  id: "write-to-file",
+  id: "write-file",
   description:
     "Writes content to a file in the filesystem with support for various modes and encodings",
   inputSchema: z.object({
@@ -280,22 +285,11 @@ export const writeToFileTool = createTool({
       .describe("Path to the file to write (absolute or relative)"),
     content: z.string().describe("Content to write to the file"),
     mode: z
-      .enum([
-        FileWriteMode.OVERWRITE,
-        FileWriteMode.APPEND,
-        FileWriteMode.CREATE_NEW,
-      ])
+      .enum([FileWriteMode.OVERWRITE, FileWriteMode.APPEND, FileWriteMode.CREATE_NEW])
       .default(FileWriteMode.OVERWRITE)
       .describe("Write mode"),
     encoding: z
-      .enum([
-        FileEncoding.UTF8,
-        FileEncoding.ASCII,
-        FileEncoding.UTF16LE,
-        FileEncoding.LATIN1,
-        FileEncoding.BASE64,
-        FileEncoding.HEX,
-      ])
+      .enum([FileEncoding.UTF8, FileEncoding.ASCII, FileEncoding.UTF16LE, FileEncoding.LATIN1, FileEncoding.BASE64, FileEncoding.HEX])
       .default(FileEncoding.UTF8)
       .describe("Encoding to use when writing the file"),
     createDirectory: z
@@ -318,10 +312,7 @@ export const writeToFileTool = createTool({
       mode: z.string().describe("Write mode used"),
     }),
     success: z.boolean().describe("Whether the operation was successful"),
-    error: z
-      .string()
-      .optional()
-      .describe("Error message if the operation failed"),
+    error: z.string().optional().describe("Error message if the operation failed"),
   }),
   execute: async ({ context }) => {
     const runId = await createLangSmithRun("write-file", ["file", "write"]);
@@ -363,7 +354,7 @@ export const writeToFileTool = createTool({
         await fs.access(absolutePath);
         fileExists = true;
       } catch (error) {
-        // File doesn't exist, which is fine
+        // File doesn't exist
       }
 
       // Handle write mode
@@ -399,11 +390,7 @@ export const writeToFileTool = createTool({
         score: 1,
         comment: `Successfully wrote to file: ${absolutePath} (${contentSize} bytes)`,
         key: "file_write_success",
-        value: {
-          path: absolutePath,
-          size: contentSize,
-          mode: context.mode,
-        },
+        value: { path: absolutePath, size: contentSize, mode: context.mode },
       });
 
       return {
@@ -435,10 +422,7 @@ export const writeToFileTool = createTool({
           mode: context.mode,
         },
         success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Unknown error writing to file",
+        error: error instanceof Error ? error.message : "Unknown error writing to file",
       };
     }
   },

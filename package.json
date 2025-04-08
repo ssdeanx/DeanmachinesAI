@@ -6,11 +6,41 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "mastra dev"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "mastra",
+    "agentic",
+    "deanmachines",
+    "ai",
+    "sdk",
+    "openai",
+    "google",
+    "langchain",
+    "mastra-sdk",
+    "mastra-ai",
+    "ai-sdk",
+    "agentic-ai",
+    "agentic-sdk",
+    "ai-agents",
+    "deanmachines-ai",
+    "agents",
+    "agent"
+  ],
+  "author": "Deanmachines",
   "license": "ISC",
   "description": "",
   "type": "module",
+  "overrides": {
+    "pathe": "^1.1.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "src",
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {
     "@agentic/ai-sdk": "^7.6.3",
     "@agentic/arxiv": "^7.6.3",
@@ -26,6 +56,7 @@
     "@agentic/llamaindex": "^7.6.3",
     "@agentic/mastra": "^7.6.3",
     "@agentic/mcp": "^7.6.3",
+    "@agentic/midjourney": "^7.6.3",
     "@agentic/notion": "^7.6.3",
     "@agentic/serper": "^7.6.3",
     "@agentic/tavily": "^7.6.3",
@@ -33,9 +64,12 @@
     "@ai-sdk/google": "^1.2.10",
     "@e2b/code-interpreter": "^1.1.0",
     "@google/genai": "^0.7.0",
+    "@google/generative-ai": "^0.1.3",
+    "@hyperbrowser/sdk": "^0.43.0",
     "@langchain/community": "^0.3.39",
     "@langchain/core": "^0.3.43",
     "@langchain/google-genai": "^0.2.2",
+    "@langchain/openai": "^0.5.4",
     "@langchain/pinecone": "^0.2.0",
     "@mastra/client-js": "^0.1.13",
     "@mastra/core": "^0.7.0",
@@ -59,17 +93,28 @@
     "@pinecone-database/pinecone": "^5.1.1",
     "@upstash/vector": "^1.2.1",
     "ai": "^4.3.4",
+    "commander": "^13.1.0",
     "dotenv": "^16.4.7",
     "exa-js": "^1.5.13",
     "fast-xml-parser": "^5.2.0",
+    "fs-extra": "^11.3.0",
     "genkit": "^1.5.0",
+    "husky": "^9.1.7",
+    "inversify": "^7.5.0",
+    "json": "^11.0.0",
     "ky": "^1.8.0",
     "langchain": "^0.3.20",
     "langfuse": "^3.37.1",
     "langsmith": "^0.3.15",
     "llamaindex": "^0.9.16",
+    "lodash": "^4.17.21",
     "octokit": "^4.1.2",
     "p-throttle": "^6.2.0",
+    "puppeteer-core": "^24.6.0",
+    "ramda": "^0.30.1",
+    "ts-node": "^10.9.2",
+    "uuid": "^11.1.0",
+    "winston": "^3.17.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -90,9 +135,5 @@
       "sharp",
       "tree-sitter"
     ]
-  },
-  "overrides": {
-  "pathe": "^1.1.2"
   }
-
 }
