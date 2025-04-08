@@ -12,5 +12,5 @@ export * from "./analyst.config";
 export * from "./writer.config";
 export * from "./rlTrainer.config";
 export * from "./dataManager.config";
-
+export * from "./agentic.config";
 // All agent configurations are now exported here

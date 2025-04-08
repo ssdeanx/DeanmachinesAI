@@ -5,11 +5,16 @@
  * ensuring consistent agent creation patterns across the application.
  */
 
+import { google } from "@ai-sdk/google";
 import { Agent } from "@mastra/core/agent";
 import { Tool } from "@mastra/core/tools";
 import { createLogger } from "@mastra/core/logger";
 import { sharedMemory } from "../database";
-import { BaseAgentConfig, defaultErrorHandler } from "./config/base.config";
+import {
+  BaseAgentConfig,
+  defaultErrorHandler,
+  DEFAULT_MODEL_ID,
+} from "./config/base.config";
 import { createResponseHook } from "../hooks";
 import { allToolsMap } from "../tools";
 
@@ -38,7 +43,6 @@ export function createAgentFromConfig(config: BaseAgentConfig): Agent {
   for (const toolId of config.toolIds) {
     const tool = allToolsMap.get(toolId);
     if (tool) {
-      // Use the tool's id as the key if available, otherwise use the toolId
       const key = tool.id || toolId;
       tools[key] = tool;
     } else {
@@ -48,7 +52,9 @@ export function createAgentFromConfig(config: BaseAgentConfig): Agent {
 
   // Log and throw error for missing tools
   if (missingTools.length > 0) {
-    const errorMsg = `Missing required tools for agent ${config.id}: ${missingTools.join(", ")}`;
+    const errorMsg = `Missing required tools for agent ${
+      config.id
+    }: ${missingTools.join(", ")}`;
     logger.error(errorMsg);
     throw new Error(errorMsg);
   }
@@ -57,10 +63,12 @@ export function createAgentFromConfig(config: BaseAgentConfig): Agent {
   const responseHook = config.responseValidation
     ? createResponseHook(config.responseValidation)
     : undefined;
+
   // Create and return the agent instance
   logger.info(
     `Creating agent: ${config.id} with ${Object.keys(tools).length} tools`
   );
+
   try {
     return new Agent({
       model: config.model,
@@ -69,11 +77,12 @@ export function createAgentFromConfig(config: BaseAgentConfig): Agent {
       instructions: config.instructions,
       tools,
       ...(responseHook ? { onResponse: responseHook } : {}),
-      // onError: defaultErrorHandler, // Removed: Not a valid property in AgentConfig
     });
   } catch (error) {
     logger.error(
-      `Failed to create agent ${config.id}: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to create agent ${config.id}: ${
+        error instanceof Error ? error.message : String(error)
+      }`
     );
     throw error;
   }

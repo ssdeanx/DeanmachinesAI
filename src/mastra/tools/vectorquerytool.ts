@@ -1,184 +1,224 @@
 /**
  * Vector Query Tool for semantic search over vector databases.
  *
- * This module creates and exports a tool for semantic search over vector stores,
+ * This module creates and exports tools for semantic search over vector stores,
  * with support for reranking to improve search result relevance.
  */
 
 import { google } from "@ai-sdk/google";
+import { z } from "zod";
 import { encodingForModel } from "js-tiktoken";
 import { createVectorQueryTool } from "@mastra/rag";
 import { env } from "process";
-import { MastraEmbeddingAdapter, createEmbeddings } from "../database/vector-store";
+import { createLogger } from "@mastra/core/logger";
+import {
+  MastraEmbeddingAdapter,
+  createEmbeddings,
+} from "../database/vector-store";
+import { AsyncCaller } from "@langchain/core/utils/async_caller";
+
+// Configure logger
+const logger = createLogger({ name: "vector-query-tool", level: "info" });
+
+// Environment validation
+const envSchema = z.object({
+  GOOGLE_AI_API_KEY: z.string().min(1, "Google AI API key is required"),
+  PINECONE_INDEX: z.string().default("Default"),
+  PINECONE_DIMENSION: z.coerce.number().default(2048),
+  VECTOR_STORE_NAME: z.string().default("pinecone"),
+});
+
+// Validate environment
+const validatedEnv = (() => {
+  try {
+    return envSchema.parse(env);
+  } catch (error) {
+    logger.error("Environment validation failed:", { error });
+    throw new Error(
+      `Vector query tool configuration error: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
+  }
+})();
 
 /**
- * Configuration options for Vector Query Tool
+ * Configuration for Vector Query Tool
  */
 export interface VectorQueryConfig {
-  /** Name of the vector store to use */
-  vectorStoreName: string;
-  /** Name of the index within the vector store */
-  indexName: string;
-  /** Whether to enable filters for query processing */
+  vectorStoreName?: string;
+  indexName?: string;
   enableFilters?: boolean;
-  /** Custom ID for the tool */
   id?: string;
-  /** Custom description for the tool */
   description?: string;
-  /** Embedding model provider to use */
   embeddingProvider?: "google" | "tiktoken";
-  /** Top-K results to return */
   topK?: number;
-  /** Custom tokenizer encoding name */
   tokenEncoding?: string;
+  dimensions?: number;
+  apiKey?: string;
 }
 
 /**
- * Creates a tokenizer using js-tiktoken
- *
- * @param encodingName - Name of the encoding model to use
- * @returns Tokenizer object with encode and decode methods
+ * Creates a Vector Query Tool with specified configuration
  */
-function createTokenizer(encodingName = 'o200_base') {
-  // Initialize the tokenizer with o200 encoding
-  const tokenizer = encodingForModel(encodingName as any);
+export function createMastraVectorQueryTool(config: VectorQueryConfig = {}) {
+  try {
+    // Get configuration values with defaults
+    const vectorStoreName =
+      config.vectorStoreName || validatedEnv.VECTOR_STORE_NAME;
+    const indexName = config.indexName || validatedEnv.PINECONE_INDEX;
+    const embeddingProvider = config.embeddingProvider || "google";
+    const tokenEncoding = config.tokenEncoding || "cl100k_base";
+    const dimensions = config.dimensions || validatedEnv.PINECONE_DIMENSION;
+    const apiKey = config.apiKey || validatedEnv.GOOGLE_AI_API_KEY;
+    const topK = config.topK || 5;
 
-  return {
-    /**
-     * Encodes text into tokens
-     *
-     * @param text - Text to encode
-     * @returns Array of token IDs
-     */
-    encode: (text: string): number[] => {
-      return tokenizer.encode(text);
-    },
+    logger.info(
+      `Creating vector query tool for ${vectorStoreName}:${indexName}`
+    );
 
-    /**
-     * Decodes tokens back to text
-     *
-     * @param tokens - Array of token IDs
-     * @returns Decoded text
-     */
-    decode: (tokens: number[]): string => {
-      return tokenizer.decode(tokens);
-    },
+    // Create embedding model
+    let embeddingModel: MastraEmbeddingAdapter;
 
-    /**
-     * Gets token count for text
-     *
-     * @param text - Text to count tokens for
-     * @returns Number of tokens
-     */
-    countTokens: (text: string): number => {
-      return tokenizer.encode(text).length;
+    if (embeddingProvider === "tiktoken") {
+      logger.info(`Using tiktoken embeddings with encoding: ${tokenEncoding}`);
+
+      // Create a tiktoken adapter - using type assertion to avoid issues with private properties
+      const tiktokenAdapter = {
+        specificationVersion: "v1",
+        provider: "tiktoken",
+        modelId: tokenEncoding,
+        dimensions,
+        // client property is removed as it's private
+        doEmbed: async (options: {
+          values: string[];
+          abortSignal?: AbortSignal;
+          headers?: Record<string, string | undefined>;
+        }) => {
+          try {
+            const text = options.values[0];
+            // Get tokenizer
+            const tokenizer = encodingForModel(tokenEncoding as any);
+            // Convert text to tokens
+            const tokens = tokenizer.encode(text);
+            // Create embedding from tokens
+            let embedding = tokens.slice(
+              0,
+              Math.min(tokens.length, dimensions)
+            );
+
+            // Pad embedding if needed
+            if (embedding.length < dimensions) {
+              embedding = [
+                ...embedding,
+                ...Array(dimensions - embedding.length).fill(0),
+              ];
+            }
+
+            return { embeddings: [{ embedding }] };
+          } catch (error: unknown) {
+            logger.error("Tiktoken embedding error:", { error });
+            throw new Error(
+              `Tiktoken embedding failed: ${error instanceof Error ? error.message : String(error)}`
+            );
+          }
+        },
+        maxEmbeddingsPerCall: 0,
+        maxInputLength: 0,
+        supportsParallelCalls: false,
+        modelName: "",
+        model: "",
+        stripNewLines: false,
+        maxBatchSize: 0,
+        _convertToContent: undefined,
+        _embedQueryContent: function (_text: string): Promise<number[]> {
+          throw new Error("Function not implemented.");
+        },
+        _embedDocumentsContent: function (
+          _documents: string[]
+        ): Promise<number[][]> {
+          throw new Error("Function not implemented.");
+        },
+        embedQuery: function (_document: string): Promise<number[]> {
+          throw new Error("Function not implemented.");
+        },
+        embedDocuments: function (_documents: string[]): Promise<number[][]> {
+          throw new Error("Function not implemented.");
+        },
+        caller: new AsyncCaller({})
+      };
+
+      // Use the adapter with createEmbeddings with type assertion
+      embeddingModel = tiktokenAdapter as unknown as MastraEmbeddingAdapter;
+    } else {
+      // Use Google embeddings
+      logger.info("Using Google embeddings");
+      embeddingModel = createEmbeddings(apiKey, "models/gemini-embedding-1.0");
     }
-  };
-}
 
-/**
- * Creates a Vector Query Tool with the specified configuration
- *
- * @param config - Configuration options for the Vector Query Tool
- * @returns Configured Vector Query Tool
- */
-export function createMastraVectorQueryTool(config?: Partial<VectorQueryConfig>) {
-  // Get configuration values with defaults
-  const vectorStoreName = config?.vectorStoreName || env.VECTOR_STORE_NAME || "pinecone";
-  const indexName = config?.indexName || env.PINECONE_INDEX || "documentation";
-  const embeddingProvider = config?.embeddingProvider || "google";
-  const tokenEncoding = config?.tokenEncoding || "o200_base";
-
-  // Initialize tokenizer
-  const tokenizer = createTokenizer(tokenEncoding);
-
-  // Choose embedding model based on provider
-  let embeddingModel;
-
-  if (embeddingProvider === "tiktoken") {
-    // Create a custom embedding adapter using tiktoken
-    embeddingModel = {
-      specificationVersion: "v1" as const,
-      provider: "tiktoken",
-      modelId: tokenEncoding,
-      dimensions: Number(env.PINECONE_DIMENSION) || 2048,
-      embed: async (text: string) => {
-        // Convert text to vector using tokenizer
-        const tokens = tokenizer.encode(text);
-        // Create a normalized embedding from tokens
-        // This is a simplified approach - in production you'd use a proper embedding model
-        return {
-          embedding: tokens.slice(0, Math.min(tokens.length, 2048))
-        };
-      }
-    };
-  } else {
-    // Use Google embeddings with models/ prefix
-    embeddingModel = google.embedding("models/gemini-embedding-1.0");
-  }
-
-  // Create a custom embedding adapter using our existing configuration
-  const customAdapter = createEmbeddings(
-    env.GOOGLE_GENERATIVE_AI_API_KEY,
-    "models/gemini-embedding-1.0"
-  );
-
-  // Create reranker configuration
-  const reranker = {
-    model: google("models/gemini-2.0-flash"),
-    options: {
-      weights: {
-        semantic: 0.5, // Semantic relevance weight
-        vector: 0.3,   // Vector similarity weight
-        position: 0.2, // Original position weight
+    // Create reranker
+    const reranker = {
+      model: google("models/gemini-2.0-flash"),
+      options: {
+        weights: {
+          semantic: 0.5,
+          vector: 0.3,
+          position: 0.2,
+        },
+        topK,
       },
-      topK: config?.topK || 5,
-    },
-  };
+    };
 
-  // Create and return the vector query tool
-  return createVectorQueryTool({
-    vectorStoreName,
-    indexName,
-    model: embeddingModel,
-    reranker,
-    id: config?.id,
-    description: config?.description || "Access knowledge base to find relevant information"
-  });
+    // Tool ID and description
+    const toolId = config.id || `vector-query-${embeddingProvider}`;
+    const description =
+      config.description ||
+      `Access knowledge base using ${embeddingProvider} embeddings`;
+
+    // Create and return the tool
+    const tool = createVectorQueryTool({
+      vectorStoreName,
+      indexName,
+      model: embeddingModel,
+      reranker,
+      id: toolId,
+      description,
+      enableFilter: config.enableFilters,
+    });
+
+    logger.info(`Vector query tool created: ${toolId}`);
+    return tool;
+  } catch (error) {
+    logger.error("Failed to create vector query tool:", { error });
+    throw new Error(
+      `Vector query tool creation failed: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
+  }
 }
 
-/**
- * Default vector query tool instance with tiktoken-based embeddings
- * Using Pinecone as the default vector store
- */
+// Default vector query tool instance with tiktoken
 export const vectorQueryTool = createMastraVectorQueryTool({
-  vectorStoreName: "pinecone",
-  indexName: env.PINECONE_INDEX || "Default",
   embeddingProvider: "tiktoken",
-  tokenEncoding: "o200_base"
+  id: "vector-query",
+  description: "Search through knowledge base using token-based embeddings",
 });
 
-/**
- * Vector query tool for Pinecone vector store with Google embeddings
- */
+// Google embeddings variant
 export const googleVectorQueryTool = createMastraVectorQueryTool({
-  vectorStoreName: "pinecone",
-  indexName: env.PINECONE_INDEX || "Default",
   embeddingProvider: "google",
-  description: "Search through Pinecone vector database using Google embeddings"
+  id: "google-vector-query",
+  description:
+    "Search through knowledge base using Google's semantic embeddings",
 });
 
-/**
- * Example of using the vector query tool with filters
- * This can be used when you need to filter results by metadata
- */
+// Tool with filters enabled
 export const filteredQueryTool = createMastraVectorQueryTool({
-  vectorStoreName: "pinecone",
-  indexName: env.PINECONE_INDEX || "Default",
   embeddingProvider: "tiktoken",
-  tokenEncoding: "o200_base",
   enableFilters: true,
-  description: "Search with metadata filtering support through the Pinecone vector database"
+  id: "filtered-vector-query",
+  description: "Search with metadata filtering through the vector database",
 });
 
 export default vectorQueryTool;

@@ -54,7 +54,7 @@ async function createGraphRelationships(
         ...doc.metadata,
         id,
         connections: [] as string[], // Explicitly type as string array
-        connectionWeights: {},
+        connectionWeights: {} as Record<string, number>,
       },
     };
   });

@@ -5,12 +5,10 @@
  * for all agents in the system. It serves as a foundation for more
  * specialized agent configurations.
  */
-
-// Import the actual model type if available, otherwise use a placeholder
-import { LanguageModelV1 } from "@ai-sdk/provider"; // Use the actual type from the SDK
+import { google } from "@ai-sdk/google";
 
 /** Default Google AI Model ID */
-export const DEFAULT_MODEL_ID = "models/gemini-2.0-flash";
+export const DEFAULT_MODEL_ID = "gemini-2.0-flash";
 
 /** Default Maximum Tokens for Model Output */
 export const DEFAULT_MAX_TOKENS = 8192;
@@ -42,8 +40,8 @@ export interface BaseAgentConfig {
   /** Brief description of the agent's purpose and capabilities */
   description: string;
 
-  /** The AI model instance (e.g., from google(), openai()) */
-  model: LanguageModelV1; // Use the imported type from the SDK
+  /** Model instance from @ai-sdk/google */
+  model: ReturnType<typeof google>;
 
   /** Main instructions that define the agent's behavior */
   instructions: string;
@@ -57,7 +55,6 @@ export interface BaseAgentConfig {
 
 /**
  * Standard response validation options
- * These settings help ensure high-quality agent responses
  */
 export const defaultResponseValidation: ResponseHookOptions = {
   minResponseLength: 20,

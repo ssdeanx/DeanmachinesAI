@@ -12,7 +12,7 @@ import { analystAgent } from "./analyst.agent";
 import { writerAgent } from "./writer.agent";
 import { rlTrainerAgent } from "./rlTrainer.agent";
 import { dataManagerAgent } from "./dataManager.agent";
-
+import { agenticAssistant } from "./agentic.agent";
 // Export individual agents
 export {
   researchAgent,
@@ -20,6 +20,7 @@ export {
   writerAgent,
   rlTrainerAgent,
   dataManagerAgent,
+  agenticAssistant,
 };
 
 // Define the agents object
@@ -29,6 +30,7 @@ const agents = {
   writerAgent,
   rlTrainerAgent,
   dataManagerAgent,
+  agenticAssistant,
 };
 
 // Export agents object for Mastra configuration

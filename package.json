@@ -16,6 +16,7 @@
     "@agentic/arxiv": "^7.6.3",
     "@agentic/brave-search": "^7.6.3",
     "@agentic/calculator": "^7.6.3",
+    "@agentic/core": "^7.6.3",
     "@agentic/e2b": "^7.6.3",
     "@agentic/exa": "^7.6.3",
     "@agentic/firecrawl": "^7.6.3",
@@ -29,9 +30,9 @@
     "@agentic/serper": "^7.6.3",
     "@agentic/tavily": "^7.6.3",
     "@agentic/wikipedia": "^7.6.3",
-    "@ai-sdk/google": "^1.2.9",
+    "@ai-sdk/google": "^1.2.10",
     "@e2b/code-interpreter": "^1.1.0",
-    "@google/generative-ai": "^0.24.0",
+    "@google/genai": "^0.7.0",
     "@langchain/community": "^0.3.39",
     "@langchain/core": "^0.3.43",
     "@langchain/google-genai": "^0.2.2",
@@ -52,17 +53,23 @@
     "@mastra/vector-upstash": "^0.1.5",
     "@mastra/voice-elevenlabs": "^0.1.9",
     "@mastra/voice-google": "^0.1.9",
+    "@modelcontextprotocol/sdk": "^1.9.0",
     "@opentelemetry/instrumentation": "^0.200.0",
     "@opentelemetry/semantic-conventions": "^1.30.0",
     "@pinecone-database/pinecone": "^5.1.1",
     "@upstash/vector": "^1.2.1",
-    "ai": "^4.3.3",
+    "ai": "^4.3.4",
     "dotenv": "^16.4.7",
     "exa-js": "^1.5.13",
+    "fast-xml-parser": "^5.2.0",
     "genkit": "^1.5.0",
+    "ky": "^1.8.0",
     "langchain": "^0.3.20",
     "langfuse": "^3.37.1",
     "langsmith": "^0.3.15",
+    "llamaindex": "^0.9.16",
+    "octokit": "^4.1.2",
+    "p-throttle": "^6.2.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
@@ -71,5 +78,21 @@
     "mastra": "^0.4.4",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "canvas",
+      "esbuild",
+      "onnxruntime-node",
+      "openai-zod-to-json-schema",
+      "protobufjs",
+      "sharp",
+      "tree-sitter"
+    ]
+  },
+  "overrides": {
+  "pathe": "^1.1.2"
   }
+
 }

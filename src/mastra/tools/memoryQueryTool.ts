@@ -99,17 +99,13 @@ const memoryQueryOutputSchema = z.object({
  */
 export const memoryQueryTool = createTool({
   id: "memory-query", // Unique ID for the tool
-  name: "Memory Query Tool",
   description:
     "Queries messages within a specific thread stored in the agent memory system based on criteria like recency, semantic similarity, or specific IDs.",
   inputSchema: memoryQueryInputSchema,
   outputSchema: memoryQueryOutputSchema,
-  async execute(
-    input: z.infer<typeof memoryQueryInputSchema>,
-    context: ToolExecutionContext // Context might contain other execution details if needed
-  ): Promise<z.infer<typeof memoryQueryOutputSchema>> {
-    // Access the validated input directly
-    const { threadId, selectBy } = input;
+  execute: async ({ context }) => {
+    // Access the validated input from context
+    const { threadId, selectBy } = context;
     logger.info(`Executing memory query for threadId: ${threadId}`, {
       selectBy,
     });
