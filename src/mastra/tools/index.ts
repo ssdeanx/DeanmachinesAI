@@ -55,7 +55,7 @@ export * from "./llamaindex";
 export * from "./mcptools";
 export * from "./arxiv";
 export * from "./wikibase";
-
+export * from "./ai-sdk";
 // Configure logger
 const logger = createLogger({ name: "tool-initialization", level: "info" });
 

@@ -370,107 +370,103 @@ This project is licensed under the ISC License - see the LICENSE file for detail
 graph TB
     User((External User))
 
-    subgraph "Mastra AI System"
-        subgraph "Agent Networks Container"
+    subgraph "Deanmachines AI System"
+        subgraph "Agent Network Layer"
             DeanInsights["DeanInsights Network<br>AgentNetwork"]
             DataFlow["DataFlow Network<br>AgentNetwork"]
             ContentCreation["ContentCreation Network<br>AgentNetwork"]
-
-            subgraph "Agent Components"
-                Research["Research Agent<br>LLM Agent"]
-                Analyst["Analyst Agent<br>LLM Agent"]
-                Writer["Writer Agent<br>LLM Agent"]
-                RLTrainer["RL Trainer Agent<br>LLM Agent"]
-                DataManager["Data Manager Agent<br>LLM Agent"]
-            end
         end
 
-        subgraph "Database Container"
-            LibSQL["LibSQL Store<br>SQLite"]
+        subgraph "Core Agents"
+            ResearchAgent["Research Agent<br>TypeScript"]
+            AnalystAgent["Analyst Agent<br>TypeScript"]
+            WriterAgent["Writer Agent<br>TypeScript"]
+            RLTrainerAgent["RL Trainer Agent<br>TypeScript"]
+            DataManagerAgent["Data Manager Agent<br>TypeScript"]
+        end
+
+        subgraph "Database Layer"
             VectorStore["Vector Store<br>Pinecone"]
-
-            subgraph "Memory Components"
-                ThreadManager["Thread Manager<br>TypeScript"]
-                MemoryManager["Memory Manager<br>LibSQL"]
-                VectorIndex["Vector Index<br>Pinecone"]
-            end
+            LibSQLStore["Memory Store<br>LibSQL"]
+            RedisCache["Cache Layer<br>Redis"]
         end
 
-        subgraph "Services Container"
+        subgraph "Services Layer"
             LangChain["LangChain Service<br>TypeScript"]
             LangFuse["LangFuse Service<br>TypeScript"]
             LangSmith["LangSmith Service<br>TypeScript"]
             ExaSearch["ExaSearch Service<br>TypeScript"]
-
-            subgraph "LLM Components"
-                GoogleAI["Google AI<br>Gemini"]
-                Embeddings["Embeddings<br>Google AI"]
-                ModelRouter["Model Router<br>TypeScript"]
-            end
         end
 
-        subgraph "Tools Container"
-            subgraph "Core Tools"
-                DocumentTools["Document Tools<br>TypeScript"]
-                SearchTools["Search Tools<br>TypeScript"]
-                RLTools["RL Tools<br>TypeScript"]
-                FileTools["File Tools<br>TypeScript"]
+        subgraph "Tool Components"
+            subgraph "Search Tools"
+                BraveSearch["Brave Search<br>REST API"]
+                GoogleSearch["Google Search<br>REST API"]
+                TavilySearch["Tavily Search<br>REST API"]
+                ExaSearchTool["Exa Search<br>REST API"]
+            end
+
+            subgraph "Vector Tools"
+                VectorQuery["Vector Query<br>TypeScript"]
+                GoogleVectorQuery["Google Vector Query<br>TypeScript"]
+                FilteredQuery["Filtered Query<br>TypeScript"]
+            end
+
+            subgraph "File Tools"
+                ReadFile["Read File Tool<br>TypeScript"]
+                WriteFile["Write File Tool<br>TypeScript"]
+            end
+
+            subgraph "RL Tools"
+                FeedbackTools["Feedback Tools<br>TypeScript"]
+                RewardTools["Reward Tools<br>TypeScript"]
             end
         end
     end
 
-    %% External Service Connections
-    User -->|"Interacts with"| DeanInsights
-    User -->|"Interacts with"| DataFlow
-    User -->|"Interacts with"| ContentCreation
+    subgraph "External Services"
+        GoogleAI["Google AI<br>External API"]
+        PineconeDB["Pinecone DB<br>Vector Database"]
+    end
 
-    %% Agent Network Relationships
-    DeanInsights -->|"Uses"| Research
-    DeanInsights -->|"Uses"| Analyst
-    DeanInsights -->|"Uses"| Writer
-    DeanInsights -->|"Uses"| RLTrainer
-    DeanInsights -->|"Uses"| DataManager
+    %% Connections
+    User -->|Interacts with| DeanInsights
+    User -->|Interacts with| DataFlow
+    User -->|Interacts with| ContentCreation
 
-    DataFlow -->|"Uses"| DataManager
-    DataFlow -->|"Uses"| Analyst
-    DataFlow -->|"Uses"| RLTrainer
+    %% Agent Network Connections
+    DeanInsights -->|Coordinates| ResearchAgent
+    DeanInsights -->|Coordinates| AnalystAgent
+    DeanInsights -->|Coordinates| WriterAgent
+    DeanInsights -->|Coordinates| RLTrainerAgent
+    DeanInsights -->|Coordinates| DataManagerAgent
 
-    ContentCreation -->|"Uses"| Research
-    ContentCreation -->|"Uses"| Writer
-    ContentCreation -->|"Uses"| RLTrainer
+    DataFlow -->|Uses| DataManagerAgent
+    DataFlow -->|Uses| AnalystAgent
+    DataFlow -->|Uses| RLTrainerAgent
 
-    %% Database Relationships
-    Research -->|"Stores data"| LibSQL
-    Analyst -->|"Stores data"| LibSQL
-    Writer -->|"Stores data"| LibSQL
-    Research -->|"Uses"| VectorStore
-    Analyst -->|"Uses"| VectorStore
+    ContentCreation -->|Uses| ResearchAgent
+    ContentCreation -->|Uses| WriterAgent
+    ContentCreation -->|Uses| RLTrainerAgent
 
-    LibSQL -->|"Managed by"| MemoryManager
-    VectorStore -->|"Indexed by"| VectorIndex
-    MemoryManager -->|"Uses"| ThreadManager
+    %% Agent Tool Connections
+    ResearchAgent -->|Uses| SearchTools
+    ResearchAgent -->|Uses| VectorTools
+    AnalystAgent -->|Uses| VectorTools
+    DataManagerAgent -->|Uses| FileTools
+    RLTrainerAgent -->|Uses| FeedbackTools
+    RLTrainerAgent -->|Uses| RewardTools
 
-    %% Service Relationships
-    Research -->|"Uses"| LangChain
-    Analyst -->|"Uses"| LangChain
-    Writer -->|"Uses"| LangChain
+    %% Database Connections
+    VectorStore -->|Stores Embeddings| PineconeDB
+    LibSQLStore -->|Persists Memory| VectorStore
+    RedisCache -->|Caches Data| LibSQLStore
 
-    LangChain -->|"Routes to"| ModelRouter
-    ModelRouter -->|"Uses"| GoogleAI
-    ModelRouter -->|"Uses"| Embeddings
-
-    Research -->|"Uses"| ExaSearch
-    Writer -->|"Uses"| ExaSearch
-
-    %% Tool Relationships
-    Research -->|"Uses"| DocumentTools
-    Research -->|"Uses"| SearchTools
-    DataManager -->|"Uses"| FileTools
-    RLTrainer -->|"Uses"| RLTools
-
-    %% Monitoring Services
-    LangChain -->|"Monitored by"| LangFuse
-    LangChain -->|"Monitored by"| LangSmith
+    %% Service Connections
+    LangChain -->|Integrates with| GoogleAI
+    LangFuse -->|Monitors| LangChain
+    LangSmith -->|Traces| LangChain
+    ExaSearch -->|Provides Search| ExaSearchTool
 ```
 
 </div>
