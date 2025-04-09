@@ -1,0 +1,5033 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+The content has been processed where content has been formatted for parsing in markdown style, content has been compressed (code blocks are separated by ⋮---- delimiter).
+
+# File Summary
+
+## Purpose
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+
+## File Format
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Multiple file entries, each consisting of:
+  a. A header with the file path (## File: path/to/file)
+  b. The full contents of the file in a code block
+
+## Usage Guidelines
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+
+## Notes
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Content has been formatted for parsing in markdown style
+- Content has been compressed - code blocks are separated by ⋮---- delimiter
+- Files are sorted by Git change count (files with more changes are at the bottom)
+
+## Additional Info
+
+# Directory Structure
+```
+knowledge/archive/
+knowledge/categories/
+knowledge/domain-knowledge/
+knowledge/schemas/
+knowledge/templates/
+src/mastra/tools/config/
+.env.example
+.gitignore
+knowledge/codeviz-diagram-2025-04-08T19-14-00.drawio
+mastra.config.ts
+package.json
+README.md
+src/mastra/agents/agentic.agent.ts
+src/mastra/agents/analyst.agent.ts
+src/mastra/agents/base.agent.ts
+src/mastra/agents/config/agentic.config.ts
+src/mastra/agents/config/analyst.config.ts
+src/mastra/agents/config/base.config.ts
+src/mastra/agents/config/dataManager.config.ts
+src/mastra/agents/config/index.ts
+src/mastra/agents/config/research.config.ts
+src/mastra/agents/config/rlTrainer.config.ts
+src/mastra/agents/config/writer.config.ts
+src/mastra/agents/dataManager.agent.ts
+src/mastra/agents/index.ts
+src/mastra/agents/research.agent.ts
+src/mastra/agents/rlTrainer.agent.ts
+src/mastra/agents/writer.agent.ts
+src/mastra/database/examples.ts
+src/mastra/database/index.ts
+src/mastra/database/vector-store.ts
+src/mastra/hooks/index.ts
+src/mastra/index.ts
+src/mastra/services/exasearch.ts
+src/mastra/services/hyperbrowser.ts
+src/mastra/services/langchain.ts
+src/mastra/services/langfuse.ts
+src/mastra/services/langsmith.ts
+src/mastra/tools/ai-sdk.ts
+src/mastra/tools/arxiv.ts
+src/mastra/tools/brave-search.ts
+src/mastra/tools/calculator.ts
+src/mastra/tools/contentTools.ts
+src/mastra/tools/document-tools.ts
+src/mastra/tools/document.ts
+src/mastra/tools/e2b.ts
+src/mastra/tools/exasearch.ts
+src/mastra/tools/github.ts
+src/mastra/tools/google-search.ts
+src/mastra/tools/graphRag.ts
+src/mastra/tools/hyper-functionCalls.ts
+src/mastra/tools/index.ts
+src/mastra/tools/llamaindex.ts
+src/mastra/tools/mcp.ts
+src/mastra/tools/mcptools.ts
+src/mastra/tools/memoryQueryTool.ts
+src/mastra/tools/paginate.ts
+src/mastra/tools/readwrite.ts
+src/mastra/tools/rlFeedback.ts
+src/mastra/tools/rlReward.ts
+src/mastra/tools/tavily.ts
+src/mastra/tools/types.ts
+src/mastra/tools/utils.ts
+src/mastra/tools/vectorquerytool.ts
+src/mastra/tools/wikibase.ts
+src/mastra/utils/index.ts
+src/mastra/utils/memory-diagnostics.ts
+src/mastra/utils/thread-manager.ts
+src/mastra/voice/elevenlabs.ts
+src/mastra/voice/googlevoice.ts
+src/mastra/voice/index.ts
+src/mastra/workflows/index.ts
+src/mastra/workflows/Networks/agentNetwork.ts
+tsconfig.json
+```
+
+# Files
+
+## File: knowledge/codeviz-diagram-2025-04-08T19-14-00.drawio
+````
+<?xml version="1.0" encoding="UTF-8"?>
+      <mxfile host="codeviz.app" modified="2025-04-08T19:14:00.435Z" agent="CodeViz Exporter" version="14.6.5" type="device">
+        <diagram id="codeviz-diagram" name="System Diagram">
+          <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+            <root>
+              <mxCell id="0"/>
+              <mxCell id="1" parent="0"/>
+              <mxCell id="subGraph0" value="" style="html=1;whiteSpace=wrap;container=1;fillColor=#dae8fc;strokeColor=#6c8ebf;dashed=1;fillOpacity=20;strokeWidth=2;containerType=none;recursiveResize=0;movable=1;resizable=1;autosize=0;dropTarget=0" vertex="1" parent="subGraph1">
+                <mxGeometry x="50" y="275" width="800" height="220" as="geometry"/>
+              </mxCell>
+              <mxCell id="subGraph0_label" value="Agent Components" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;labelBackgroundColor=white;spacing=5" vertex="1" parent="subGraph1">
+                <mxGeometry x="58" y="283" width="724" height="24" as="geometry"/>
+              </mxCell>
+<mxCell id="subGraph5" value="" style="html=1;whiteSpace=wrap;container=1;fillColor=#dae8fc;strokeColor=#6c8ebf;dashed=1;fillOpacity=20;strokeWidth=2;containerType=none;recursiveResize=0;movable=1;resizable=1;autosize=0;dropTarget=0" vertex="1" parent="subGraph6">
+                <mxGeometry x="910" y="245" width="380" height="220" as="geometry"/>
+              </mxCell>
+              <mxCell id="subGraph5_label" value="Workflow Container" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;labelBackgroundColor=white;spacing=5" vertex="1" parent="subGraph6">
+                <mxGeometry x="918" y="253" width="304" height="24" as="geometry"/>
+              </mxCell>
+<mxCell id="subGraph4" value="" style="html=1;whiteSpace=wrap;container=1;fillColor=#dae8fc;strokeColor=#6c8ebf;dashed=1;fillOpacity=20;strokeWidth=2;containerType=none;recursiveResize=0;movable=1;resizable=1;autosize=0;dropTarget=0" vertex="1" parent="subGraph6">
+                <mxGeometry x="740" y="835" width="940" height="220" as="geometry"/>
+              </mxCell>
+              <mxCell id="subGraph4_label" value="Tool Container" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;labelBackgroundColor=white;spacing=5" vertex="1" parent="subGraph6">
+                <mxGeometry x="748" y="843" width="864" height="24" as="geometry"/>
+              </mxCell>
+<mxCell id="subGraph3" value="" style="html=1;whiteSpace=wrap;container=1;fillColor=#dae8fc;strokeColor=#6c8ebf;dashed=1;fillOpacity=20;strokeWidth=2;containerType=none;recursiveResize=0;movable=1;resizable=1;autosize=0;dropTarget=0" vertex="1" parent="subGraph6">
+                <mxGeometry x="1770" y="307" width="660" height="220" as="geometry"/>
+              </mxCell>
+              <mxCell id="subGraph3_label" value="Service Components" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;labelBackgroundColor=white;spacing=5" vertex="1" parent="subGraph6">
+                <mxGeometry x="1778" y="315" width="584" height="24" as="geometry"/>
+              </mxCell>
+<mxCell id="subGraph2" value="" style="html=1;whiteSpace=wrap;container=1;fillColor=#dae8fc;strokeColor=#6c8ebf;dashed=1;fillOpacity=20;strokeWidth=2;containerType=none;recursiveResize=0;movable=1;resizable=1;autosize=0;dropTarget=0" vertex="1" parent="subGraph6">
+                <mxGeometry x="1270" y="322.5" width="520" height="220" as="geometry"/>
+              </mxCell>
+              <mxCell id="subGraph2_label" value="Database Container" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;labelBackgroundColor=white;spacing=5" vertex="1" parent="subGraph6">
+                <mxGeometry x="1278" y="330.5" width="444" height="24" as="geometry"/>
+              </mxCell>
+<mxCell id="subGraph1" value="" style="html=1;whiteSpace=wrap;container=1;fillColor=#dae8fc;strokeColor=#6c8ebf;dashed=1;fillOpacity=20;strokeWidth=2;containerType=none;recursiveResize=0;movable=1;resizable=1;autosize=0;dropTarget=0" vertex="1" parent="subGraph6">
+                <mxGeometry x="60" y="245" width="860" height="515" as="geometry"/>
+              </mxCell>
+              <mxCell id="subGraph1_label" value="Agent Network Container" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;labelBackgroundColor=white;spacing=5" vertex="1" parent="subGraph6">
+                <mxGeometry x="68" y="253" width="784" height="24" as="geometry"/>
+              </mxCell>
+<mxCell id="subGraph6" value="" style="html=1;whiteSpace=wrap;container=1;fillColor=#dae8fc;strokeColor=#6c8ebf;dashed=1;fillOpacity=20;strokeWidth=2;containerType=none;recursiveResize=0;movable=1;resizable=1;autosize=0;dropTarget=0" vertex="1" parent="subGraph7">
+                <mxGeometry x="110" y="95" width="2390" height="1075" as="geometry"/>
+              </mxCell>
+              <mxCell id="subGraph6_label" value="Core Service Layer" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;labelBackgroundColor=white;spacing=5" vertex="1" parent="subGraph7">
+                <mxGeometry x="118" y="103" width="2314" height="24" as="geometry"/>
+              </mxCell>
+<mxCell id="subGraph8" value="" style="html=1;whiteSpace=wrap;container=1;fillColor=#dae8fc;strokeColor=#6c8ebf;dashed=1;fillOpacity=20;strokeWidth=2;containerType=none;recursiveResize=0;movable=1;resizable=1;autosize=0;dropTarget=0" vertex="1" parent="1">
+                <mxGeometry x="1462" y="1477" width="520" height="220" as="geometry"/>
+              </mxCell>
+              <mxCell id="subGraph8_label" value="External Services" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;labelBackgroundColor=white;spacing=5" vertex="1" parent="1">
+                <mxGeometry x="1470" y="1485" width="444" height="24" as="geometry"/>
+              </mxCell>
+<mxCell id="subGraph7" value="" style="html=1;whiteSpace=wrap;container=1;fillColor=#dae8fc;strokeColor=#6c8ebf;dashed=1;fillOpacity=20;strokeWidth=2;containerType=none;recursiveResize=0;movable=1;resizable=1;autosize=0;dropTarget=0" vertex="1" parent="1">
+                <mxGeometry x="128" y="202" width="2426" height="1496" as="geometry"/>
+              </mxCell>
+              <mxCell id="subGraph7_label" value="DeanmachinesAI System" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;labelBackgroundColor=white;spacing=5" vertex="1" parent="1">
+                <mxGeometry x="136" y="210" width="2350" height="24" as="geometry"/>
+              </mxCell>
+              <mxCell id="User" value="External User" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="1">
+                    <mxGeometry x="1487.3846153846155" y="12" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="MastraCore" value="Mastra Core Service&lt;br&gt;(TypeScript/Node.js)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph6">
+                    <mxGeometry x="1435.3846153846155" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="DeanInsights" value="DeanInsights Network&lt;br&gt;(Agent Network)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph1">
+                    <mxGeometry x="344" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="DataFlow" value="DataFlow Network&lt;br&gt;(Agent Network)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph1">
+                    <mxGeometry x="484" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="ContentCreation" value="ContentCreation Network&lt;br&gt;(Agent Network)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph1">
+                    <mxGeometry x="204" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="ResearchAgent" value="Research Agent&lt;br&gt;(LLM-based)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph0">
+                    <mxGeometry x="180" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="AnalystAgent" value="Analyst Agent&lt;br&gt;(LLM-based)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph0">
+                    <mxGeometry x="600" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="WriterAgent" value="Writer Agent&lt;br&gt;(LLM-based)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph0">
+                    <mxGeometry x="40" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="RLTrainerAgent" value="RL Trainer Agent&lt;br&gt;(LLM-based)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph0">
+                    <mxGeometry x="320" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="DataManagerAgent" value="Data Manager Agent&lt;br&gt;(LLM-based)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph0">
+                    <mxGeometry x="460" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="VectorStore" value="Vector Store&lt;br&gt;(Pinecone)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph2">
+                    <mxGeometry x="320" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="SharedMemory" value="Shared Memory&lt;br&gt;(LibSQL)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph2">
+                    <mxGeometry x="180" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="Redis" value="Cache Store&lt;br&gt;(Redis)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph2">
+                    <mxGeometry x="40" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="LangChain" value="LangChain Service&lt;br&gt;(LangChain)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph3">
+                    <mxGeometry x="460" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="LangFuse" value="LangFuse Service&lt;br&gt;(Telemetry)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph3">
+                    <mxGeometry x="320" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="LangSmith" value="LangSmith Service&lt;br&gt;(Monitoring)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph3">
+                    <mxGeometry x="180" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="ExaSearch" value="ExaSearch Service&lt;br&gt;(Search)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph3">
+                    <mxGeometry x="40" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="SearchTools" value="Search Tools&lt;br&gt;(Multiple Providers)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph4">
+                    <mxGeometry x="320" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="VectorTools" value="Vector Tools&lt;br&gt;(Pinecone)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph4">
+                    <mxGeometry x="740" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="FileTools" value="File Tools&lt;br&gt;(Node.js)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph4">
+                    <mxGeometry x="600" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="RLTools" value="RL Tools&lt;br&gt;(Custom)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph4">
+                    <mxGeometry x="460" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="ContentTools" value="Content Tools&lt;br&gt;(Custom)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph4">
+                    <mxGeometry x="40" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="DocumentTools" value="Document Tools&lt;br&gt;(Custom)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph4">
+                    <mxGeometry x="180" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="RAGWorkflow" value="RAG Workflow&lt;br&gt;(Custom)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph5">
+                    <mxGeometry x="40" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="ResearchWorkflow" value="Research Workflow&lt;br&gt;(Custom)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph5">
+                    <mxGeometry x="180" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="GoogleAI" value="Google AI&lt;br&gt;(Gemini)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph8">
+                    <mxGeometry x="320" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="PineconeDB" value="Pinecone DB&lt;br&gt;(Vector Database)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph8">
+                    <mxGeometry x="180" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+<mxCell id="ExternalAPIs" value="External APIs&lt;br&gt;(Multiple)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5" vertex="1" parent="subGraph8">
+                    <mxGeometry x="40" y="120" width="120" height="60" as="geometry"/>
+                  </mxCell>
+              <mxCell id="edge-L_User_MastraCore_0" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="User" target="MastraCore">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_User_MastraCore_0_label" value="Interacts with" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_User_MastraCore_0">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_MastraCore_DeanInsights_1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="MastraCore" target="DeanInsights">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_MastraCore_DeanInsights_1_label" value="Orchestrates" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_MastraCore_DeanInsights_1">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_MastraCore_DataFlow_2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="MastraCore" target="DataFlow">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_MastraCore_DataFlow_2_label" value="Orchestrates" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_MastraCore_DataFlow_2">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_MastraCore_ContentCreation_3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="MastraCore" target="ContentCreation">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_MastraCore_ContentCreation_3_label" value="Orchestrates" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_MastraCore_ContentCreation_3">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_DeanInsights_ResearchAgent_4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="DeanInsights" target="ResearchAgent">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_DeanInsights_ResearchAgent_4_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_DeanInsights_ResearchAgent_4">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_DeanInsights_AnalystAgent_5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="DeanInsights" target="AnalystAgent">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_DeanInsights_AnalystAgent_5_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_DeanInsights_AnalystAgent_5">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_DeanInsights_WriterAgent_6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="DeanInsights" target="WriterAgent">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_DeanInsights_WriterAgent_6_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_DeanInsights_WriterAgent_6">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_DeanInsights_RLTrainerAgent_7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="DeanInsights" target="RLTrainerAgent">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_DeanInsights_RLTrainerAgent_7_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_DeanInsights_RLTrainerAgent_7">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_DeanInsights_DataManagerAgent_8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="DeanInsights" target="DataManagerAgent">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_DeanInsights_DataManagerAgent_8_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_DeanInsights_DataManagerAgent_8">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_DataFlow_DataManagerAgent_9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="DataFlow" target="DataManagerAgent">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_DataFlow_DataManagerAgent_9_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_DataFlow_DataManagerAgent_9">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_DataFlow_AnalystAgent_10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="DataFlow" target="AnalystAgent">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_DataFlow_AnalystAgent_10_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_DataFlow_AnalystAgent_10">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_DataFlow_RLTrainerAgent_11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="DataFlow" target="RLTrainerAgent">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_DataFlow_RLTrainerAgent_11_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_DataFlow_RLTrainerAgent_11">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_ContentCreation_ResearchAgent_12" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="ContentCreation" target="ResearchAgent">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_ContentCreation_ResearchAgent_12_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_ContentCreation_ResearchAgent_12">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_ContentCreation_WriterAgent_13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="ContentCreation" target="WriterAgent">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_ContentCreation_WriterAgent_13_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_ContentCreation_WriterAgent_13">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_ContentCreation_RLTrainerAgent_14" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="ContentCreation" target="RLTrainerAgent">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_ContentCreation_RLTrainerAgent_14_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_ContentCreation_RLTrainerAgent_14">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_MastraCore_LangChain_15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="MastraCore" target="LangChain">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_MastraCore_LangChain_15_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_MastraCore_LangChain_15">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_MastraCore_LangFuse_16" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="MastraCore" target="LangFuse">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_MastraCore_LangFuse_16_label" value="Monitors with" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_MastraCore_LangFuse_16">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_MastraCore_LangSmith_17" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="MastraCore" target="LangSmith">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_MastraCore_LangSmith_17_label" value="Tracks with" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_MastraCore_LangSmith_17">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_MastraCore_ExaSearch_18" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="MastraCore" target="ExaSearch">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_MastraCore_ExaSearch_18_label" value="Searches with" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_MastraCore_ExaSearch_18">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_MastraCore_VectorStore_19" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="MastraCore" target="VectorStore">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_MastraCore_VectorStore_19_label" value="Stores vectors in" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_MastraCore_VectorStore_19">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_MastraCore_SharedMemory_20" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="MastraCore" target="SharedMemory">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_MastraCore_SharedMemory_20_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_MastraCore_SharedMemory_20">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_MastraCore_Redis_21" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="MastraCore" target="Redis">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_MastraCore_Redis_21_label" value="Caches in" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_MastraCore_Redis_21">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_ResearchAgent_SearchTools_22" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="ResearchAgent" target="SearchTools">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_ResearchAgent_SearchTools_22_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_ResearchAgent_SearchTools_22">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_DataManagerAgent_FileTools_23" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="DataManagerAgent" target="FileTools">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_DataManagerAgent_FileTools_23_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_DataManagerAgent_FileTools_23">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_AnalystAgent_VectorTools_24" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="AnalystAgent" target="VectorTools">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_AnalystAgent_VectorTools_24_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_AnalystAgent_VectorTools_24">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_RLTrainerAgent_RLTools_25" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="RLTrainerAgent" target="RLTools">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_RLTrainerAgent_RLTools_25_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_RLTrainerAgent_RLTools_25">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_WriterAgent_ContentTools_26" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="WriterAgent" target="ContentTools">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_WriterAgent_ContentTools_26_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_WriterAgent_ContentTools_26">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_ResearchAgent_DocumentTools_27" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="ResearchAgent" target="DocumentTools">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_ResearchAgent_DocumentTools_27_label" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_ResearchAgent_DocumentTools_27">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_LangChain_GoogleAI_28" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="LangChain" target="GoogleAI">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_LangChain_GoogleAI_28_label" value="Calls" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_LangChain_GoogleAI_28">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_VectorStore_PineconeDB_29" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="VectorStore" target="PineconeDB">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_VectorStore_PineconeDB_29_label" value="Stores in" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_VectorStore_PineconeDB_29">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_SearchTools_ExternalAPIs_30" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="SearchTools" target="ExternalAPIs">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_SearchTools_ExternalAPIs_30_label" value="Queries" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_SearchTools_ExternalAPIs_30">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_MastraCore_RAGWorkflow_31" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="MastraCore" target="RAGWorkflow">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_MastraCore_RAGWorkflow_31_label" value="Executes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_MastraCore_RAGWorkflow_31">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+<mxCell id="edge-L_MastraCore_ResearchWorkflow_32" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#808080;strokeWidth=2;jumpStyle=arc;jumpSize=10;spacing=15;labelBackgroundColor=white;labelBorderColor=none" edge="1" parent="1" source="MastraCore" target="ResearchWorkflow">
+                  <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-L_MastraCore_ResearchWorkflow_32_label" value="Executes" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="edge-L_MastraCore_ResearchWorkflow_32">
+                  <mxGeometry x="-0.2" y="10" relative="1" as="geometry">
+                    <mxPoint as="offset"/>
+                  </mxGeometry>
+                </mxCell>
+            </root>
+          </mxGraphModel>
+        </diagram>
+      </mxfile>
+````
+
+## File: mastra.config.ts
+````typescript
+import { Mastra } from "@mastra/core";
+import { createLogger } from "@mastra/core/logger";
+import {
+  researchAgent,
+  analystAgent,
+  writerAgent,
+  rlTrainerAgent,
+  dataManagerAgent,
+} from "./src/mastra/agents";
+import { ragWorkflow } from "./src/mastra/workflows";
+import { networks } from "./src/mastra/workflows/agentNetwork";
+import { memory } from "./src/mastra/database";
+⋮----
+// Track request timing for RL metrics
+````
+
+## File: src/mastra/agents/agentic.agent.ts
+````typescript
+/**
+ * Agentic-style Agent Implementation
+ *
+ * This module implements an advanced agent using Mastra's core functionality,
+ * combining multiple tools for enhanced capabilities.
+ */
+⋮----
+import { Agent } from "@mastra/core/agent";
+import { createLogger } from "@mastra/core/logger";
+import { sharedMemory } from "../database";
+import { allToolsMap } from "../tools";
+import {
+  agenticAssistantConfig,
+  agenticResponseSchema,
+  getToolsFromIds,
+  type AgenticResponse,
+} from "./config/agentic.config";
+import { createResponseHook } from "../hooks";
+⋮----
+// Initialize logger for this module
+⋮----
+/**
+ * Creates and initializes the agentic assistant agent with all required tools
+ *
+ * @returns An initialized Mastra agent instance
+ * @throws {Error} If agent creation fails or required tools are missing
+ */
+export function createAgenticAssistant(): Agent
+⋮----
+// Get tools for the agent
+⋮----
+// Create response hook if validation is configured
+⋮----
+// Create the agent
+⋮----
+// Create the agent instance
+⋮----
+/**
+ * Generates a structured response using the agentic assistant
+ *
+ * @param query - The user's question or request
+ * @returns A promise resolving to the structured response
+ * @throws {Error} If generation fails or response validation fails
+ */
+export async function getStructuredResponse(
+  query: string
+): Promise<AgenticResponse>
+⋮----
+// Use the agent with structured output schema
+⋮----
+/**
+ * Streams a response from the agentic assistant
+ *
+ * @param query - The user's question or request
+ * @returns A promise resolving to the streaming response
+ * @throws {Error} If streaming setup fails
+ */
+export async function streamResponse(query: string)
+⋮----
+/**
+ * Example usage:
+ *
+ * ```typescript
+ * import { agenticAssistant, getStructuredResponse } from "./agents/agentic.agent";
+ *
+ * // Simple text response
+ * const response = await agenticAssistant.generate("What's the weather like today?");
+ * console.log(response.text);
+ *
+ * // Structured response with schema validation
+ * const structuredResponse = await getStructuredResponse(
+ *   "Analyze the current trends in renewable energy"
+ * );
+ * console.log(structuredResponse.answer);
+ * console.log(structuredResponse.sources);
+ * ```
+ */
+````
+
+## File: src/mastra/agents/analyst.agent.ts
+````typescript
+/**
+ * Analyst Agent Implementation
+ *
+ * This agent is specialized in interpreting data, identifying patterns,
+ * and extracting meaningful insights from information.
+ */
+⋮----
+import { createAgentFromConfig } from "./base.agent";
+import { analystAgentConfig } from "./config/analyst.config";
+⋮----
+/**
+ * Analyst Agent with data analysis capabilities
+ *
+ * @remarks
+ * This agent can analyze information, identify trends and patterns,
+ * and extract meaningful insights from data sources.
+ */
+````
+
+## File: src/mastra/agents/config/agentic.config.ts
+````typescript
+/**
+ * Agentic-style Agent Configuration
+ *
+ * This file configures a Mastra agent with advanced capabilities,
+ * leveraging Mastra's core features and compatible tools.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import { z } from "zod";
+import type { Tool } from "@mastra/core/tools";
+import { BaseAgentConfig, defaultResponseValidation } from "./base.config";
+⋮----
+/**
+ * Configuration for retrieving relevant tools for the agent
+ *
+ * @param toolIds - Array of tool identifiers to include
+ * @param allTools - Map of all available tools
+ * @returns Record of tools mapped by their IDs
+ * @throws {Error} When required tools are missing
+ */
+export function getToolsFromIds(
+  toolIds: string[],
+  allTools: Map<string, Tool>
+): Record<string, Tool>
+⋮----
+/**
+ * Configuration for the agentic assistant
+ */
+⋮----
+/**
+ * Schema for structured agent responses
+ */
+⋮----
+/**
+ * Type for structured responses from the agent
+ */
+export type AgenticResponse = z.infer<typeof agenticResponseSchema>;
+````
+
+## File: src/mastra/agents/config/analyst.config.ts
+````typescript
+/**
+ * Analyst Agent Configuration
+ *
+ * This module defines the specific configuration for the Analyst Agent,
+ * which specializes in interpreting data, identifying patterns,
+ * and extracting meaningful insights.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import {
+  BaseAgentConfig,
+  defaultResponseValidation,
+  DEFAULT_MODEL_ID, // Import the shared constant
+} from "./base.config";
+⋮----
+DEFAULT_MODEL_ID, // Import the shared constant
+⋮----
+/**
+ * Configuration for the Analyst Agent
+ *
+ * @remarks
+ * The Analyst Agent focuses on analyzing information, identifying trends and patterns,
+ * and extracting meaningful insights from various data sources.
+ */
+⋮----
+model: google(DEFAULT_MODEL_ID), // Use the constant here
+````
+
+## File: src/mastra/agents/config/dataManager.config.ts
+````typescript
+/**
+ * Data Manager Agent Configuration
+ *
+ * This module defines the specific configuration for the Data Manager Agent,
+ * which specializes in managing data operations, file organization,
+ * storage, and retrieval of information.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import { BaseAgentConfig, defaultResponseValidation } from "./base.config";
+⋮----
+/**
+ * Configuration for the Data Manager Agent
+ *
+ * @remarks
+ * The Data Manager Agent focuses on organizing, storing, retrieving, and managing
+ * data assets across the system, including file operations and vector database management.
+ */
+````
+
+## File: src/mastra/agents/config/rlTrainer.config.ts
+````typescript
+/**
+ * RL Trainer Agent Configuration
+ *
+ * This module defines the specific configuration for the RL Trainer Agent,
+ * which specializes in reinforcement learning, collecting and analyzing
+ * feedback, and optimizing agent behaviors.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import {
+  BaseAgentConfig,
+  defaultResponseValidation,
+  DEFAULT_MODEL_ID, // Import the shared constant
+} from "./base.config";
+⋮----
+DEFAULT_MODEL_ID, // Import the shared constant
+⋮----
+/**
+ * Configuration for the RL Trainer Agent
+ *
+ * @remarks
+ * The RL Trainer Agent focuses on collecting user feedback, analyzing agent performance,
+ * and implementing reinforcement learning techniques to improve agent behaviors.
+ */
+⋮----
+model: google(DEFAULT_MODEL_ID), // Use the constant here
+````
+
+## File: src/mastra/agents/config/writer.config.ts
+````typescript
+/**
+ * Writer Agent Configuration
+ *
+ * This module defines the specific configuration for the Writer Agent,
+ * which specializes in creating clear, engaging, and well-structured
+ * documentation from complex information.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import {
+  BaseAgentConfig,
+  defaultResponseValidation,
+  DEFAULT_MODEL_ID, // Import the shared constant
+} from "./base.config";
+⋮----
+DEFAULT_MODEL_ID, // Import the shared constant
+⋮----
+/**
+ * Configuration for the Writer Agent
+ *
+ * @remarks
+ * The Writer Agent focuses on transforming complex information into accessible content,
+ * adapting tone and style for different audiences, and maintaining consistency across documents.
+ */
+⋮----
+model: google(DEFAULT_MODEL_ID), // Use the constant here
+````
+
+## File: src/mastra/agents/dataManager.agent.ts
+````typescript
+/**
+ * Data Manager Agent Implementation
+ *
+ * This agent is specialized in managing data operations, file organization,
+ * storage, and retrieval of information across the system.
+ */
+⋮----
+import { createAgentFromConfig } from "./base.agent";
+import { dataManagerAgentConfig } from "./config/dataManager.config";
+⋮----
+/**
+ * Data Manager Agent with file and storage management capabilities
+ *
+ * @remarks
+ * This agent specializes in organizing, storing, retrieving, and managing
+ * data assets across the system, including file operations and vector database management.
+ */
+````
+
+## File: src/mastra/agents/research.agent.ts
+````typescript
+/**
+ * Research Agent Implementation
+ *
+ * This agent is specialized in finding, gathering, and synthesizing information
+ * from various sources including web searches, document repositories, and files.
+ */
+⋮----
+import { createAgentFromConfig } from "./base.agent";
+import { researchAgentConfig } from "./config/research.config";
+⋮----
+/**
+ * Research Agent with web search capabilities
+ *
+ * @remarks
+ * This agent can perform web searches, read and write files, and maintain
+ * research context across interactions using semantic memory.
+ */
+````
+
+## File: src/mastra/agents/rlTrainer.agent.ts
+````typescript
+/**
+ * RL Trainer Agent Implementation
+ *
+ * This agent is specialized in reinforcement learning, collecting and analyzing
+ * feedback, and optimizing agent behaviors based on performance data.
+ */
+⋮----
+import { createAgentFromConfig } from "./base.agent";
+import { rlTrainerAgentConfig } from "./config/rlTrainer.config";
+⋮----
+/**
+ * RL Trainer Agent with reinforcement learning capabilities
+ *
+ * @remarks
+ * This agent specializes in collecting user feedback, analyzing agent performance,
+ * and implementing reinforcement learning techniques to improve agent behaviors.
+ */
+````
+
+## File: src/mastra/agents/writer.agent.ts
+````typescript
+/**
+ * Writer Agent Implementation
+ *
+ * This agent is specialized in creating clear, engaging, and well-structured
+ * documentation from complex information.
+ */
+⋮----
+import { createAgentFromConfig } from "./base.agent";
+import { writerAgentConfig } from "./config/writer.config";
+⋮----
+/**
+ * Writer Agent with content formatting capabilities
+ *
+ * @remarks
+ * This agent can transform complex information into accessible content,
+ * adapt tone and style for different audiences, and maintain consistency
+ * across documents.
+ */
+````
+
+## File: src/mastra/database/examples.ts
+````typescript
+/**
+ * Example usage of memory persistence in agents
+ *
+ * This file demonstrates how to use memory persistence to maintain context
+ * across multiple interactions with the same user or topic.
+ */
+⋮----
+import { randomUUID } from "crypto";
+import { researchAgent, writerAgent } from "../agents";
+import { threadManager } from "../utils";
+⋮----
+/**
+ * Demonstrates how to use memory persistence in a conversation with proper thread management
+ */
+export async function memoryConversationExample()
+⋮----
+// Generate a consistent user ID (in a real app, this would be your actual user ID)
+⋮----
+// Get or create a thread for this user - ensures consistent thread ID
+⋮----
+// Use the consistent thread ID for all interactions
+⋮----
+// Follow-up message using the same thread ID
+⋮----
+// Simulate returning later - retrieve the same thread
+⋮----
+// Get the same thread for the returning user
+⋮----
+// The agent will have access to the previous conversation history
+⋮----
+/**
+ * Demonstrates how memory can be shared between different agent types with consistent thread IDs
+ */
+export async function multiAgentMemoryExample()
+⋮----
+// Create a consistent thread for multi-agent workflow
+⋮----
+// First agent (Research) gathers information
+⋮----
+threadId: threadInfo.id, // Use the same thread ID for all agents
+⋮----
+// Second agent (Writer) uses the same memory context to continue the work
+⋮----
+threadId: threadInfo.id, // Same thread ID ensures memory continuity
+⋮----
+/**
+ * Helper function to test if memory is correctly reading from the database
+ *
+ * @param threadId - Thread ID to debug
+ * @param userId - User ID associated with the thread
+ */
+export async function debugMemoryReading(threadId: string, userId: string)
+⋮----
+// Direct memory verification via agent
+⋮----
+// Use explicit memory options to ensure reading happens
+⋮----
+lastMessages: 50, // Request a larger message history
+⋮----
+topK: 10, // Request more semantic matches
+````
+
+## File: src/mastra/database/vector-store.ts
+````typescript
+/**
+ * Vector store configuration for document embedding and retrieval.
+ *
+ * This module configures Pinecone as the primary vector database for
+ * semantic search and RAG functionality with fallback to Upstash.
+ */
+⋮----
+import { PineconeStore } from "@langchain/pinecone";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { env } from "process";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { EmbeddingModelV1, EmbeddingModelV1Embedding } from "@ai-sdk/provider";
+⋮----
+/**
+ * Adapter class that extends GoogleGenerativeAIEmbeddings to implement the EmbeddingModelV1 interface
+ * required by Mastra's Memory system.
+ */
+export class MastraEmbeddingAdapter
+extends GoogleGenerativeAIEmbeddings
+⋮----
+/**
+   * Version of the embedding specification
+   */
+⋮----
+/**
+   * Provider of the embedding model
+   */
+⋮----
+/**
+   * ID of the embedding model being used
+   */
+⋮----
+/**
+   * Maximum number of embeddings allowed per API call
+   */
+⋮----
+/**
+   * Maximum input token length for the model
+   */
+⋮----
+/**
+   * Dimensionality of the embedding vectors
+   */
+⋮----
+/**
+   * Creates a new Mastra embedding adapter
+   *
+   * @param options - Configuration options for the embeddings model
+   */
+constructor(options: {
+    apiKey?: string;
+    modelName?: string;
+    maxEmbeddingsPerCall?: number;
+    dimensions?: number;
+})
+⋮----
+doEmbed(options: { values: string[]; abortSignal?: AbortSignal; headers?: Record<string, string | undefined>; }): PromiseLike<{ embeddings: Array<EmbeddingModelV1Embedding>; usage? /** Pinecone environment (e.g., 'us-east-1') */: { tokens: number; }; rawResponse?: { headers?: Record<string, string>; }; }> {
+⋮----
+/**
+ * Configuration for Pinecone vector store
+ */
+export interface PineconeConfig {
+  /** Pinecone API key from environment */
+  apiKey: string;
+  /** Pinecone environment (e.g., 'us-east-1') */
+  environment: string;
+  /** Pinecone index name */
+  index: string;
+  /** Optional namespace for organization */
+  namespace?: string;
+  /** Dimension size for embeddings */
+  dimension?: number;
+  /** Distance metric for similarity search */
+  metric?: "cosine" | "euclidean" | "dotproduct";
+}
+⋮----
+/** Pinecone API key from environment */
+⋮----
+/** Pinecone environment (e.g., 'us-east-1') */
+⋮----
+/** Pinecone index name */
+⋮----
+/** Optional namespace for organization */
+⋮----
+/** Dimension size for embeddings */
+⋮----
+/** Distance metric for similarity search */
+⋮----
+/**
+ * Creates and initializes a Pinecone vector store
+ *
+ * @param embeddings - GoogleGenerativeAIEmbeddings instance for embedding generation
+ * @param config - Pinecone configuration options
+ * @returns An initialized PineconeStore instance
+ * @throws If Pinecone client initialization fails
+ */
+export async function createPineconeVectorStore(
+  embeddings: GoogleGenerativeAIEmbeddings | MastraEmbeddingAdapter,
+  config?: Partial<PineconeConfig>
+)
+⋮----
+// Validate environment variables and configuration
+⋮----
+// Initialize Pinecone client
+⋮----
+/**
+ * Creates and initializes embeddings model for vector storage
+ *
+ * @param apiKey - Google API key for generating embeddings
+ * @param modelName - Name of the embedding model to use
+ * @returns MastraEmbeddingAdapter instance that implements all required interface properties
+ */
+export function createEmbeddings(
+  apiKey?: string,
+  modelName?: string
+): MastraEmbeddingAdapter
+⋮----
+/**
+ * Creates a vector store backup using Upstash
+ * Uses Upstash as a fallback if Pinecone is unavailable
+ *
+ * @param embeddings - Embeddings to use with Upstash
+ * @returns Upstash vector store instance or undefined if not configured
+ */
+export function createUpstashBackup(embeddings: MastraEmbeddingAdapter)
+⋮----
+// Note: The Upstash integration would need actual implementation
+// based on the specific Upstash client for Mastra
+⋮----
+return undefined; // Replace with actual implementation when needed
+````
+
+## File: src/mastra/hooks/index.ts
+````typescript
+// Define the AgentResponse type locally based on usage
+interface AgentResponse {
+  text?: string;
+  object?: unknown; // Consider using a more specific type if the object structure is known
+  error?: string;
+  // Include other potential properties if needed based on the agent's actual response structure
+}
+⋮----
+object?: unknown; // Consider using a more specific type if the object structure is known
+⋮----
+// Include other potential properties if needed based on the agent's actual response structure
+⋮----
+/**
+ * Response hook configuration interface
+ */
+interface ResponseHookConfig {
+  minResponseLength?: number;
+  maxAttempts?: number;
+  validateResponse?: (response: AgentResponse) => boolean;
+}
+⋮----
+/**
+ * Creates an onResponse hook for handling agent responses
+ * @param config - Configuration options for the response hook
+ */
+export function createResponseHook(config: ResponseHookConfig =
+⋮----
+// Check if response is valid according to custom validation
+⋮----
+// Handle empty or invalid responses
+⋮----
+// Check response length if text is present
+````
+
+## File: src/mastra/services/hyperbrowser.ts
+````typescript
+import { connect } from "puppeteer-core";
+import { Hyperbrowser } from "@hyperbrowser/sdk";
+import dotenv from "dotenv";
+⋮----
+// Create a new page
+⋮----
+// Navigate to a website
+````
+
+## File: src/mastra/services/langsmith.ts
+````typescript
+/**
+ * LangSmith integration service for Mastra AI.
+ *
+ * Provides tracing and evaluation capabilities for monitoring and
+ * improving LLM interactions within Mastra agents.
+ */
+⋮----
+import { Client as LangSmithClient } from "langsmith";
+import { env } from "process";
+import { v4 as uuidv4 } from "uuid";
+⋮----
+/**
+ * Configuration options for LangSmith tracing
+ */
+export interface LangSmithConfig {
+  /** API key for LangSmith access */
+  apiKey?: string;
+  /** LangSmith API endpoint URL */
+  endpoint?: string;
+  /** Project name for organizing traces */
+  projectName?: string;
+  /** Whether to enable tracing */
+  enabled?: boolean;
+}
+⋮----
+/** API key for LangSmith access */
+⋮----
+/** LangSmith API endpoint URL */
+⋮----
+/** Project name for organizing traces */
+⋮----
+/** Whether to enable tracing */
+⋮----
+/**
+ * Global LangSmith client instance
+ */
+⋮----
+/**
+ * Configures LangSmith tracing for the application
+ *
+ * @param config - Configuration options for LangSmith
+ * @returns The configured LangSmith client
+ * @throws If LangSmith configuration fails due to missing API key
+ */
+export function configureLangSmithTracing(
+  config?: LangSmithConfig
+): LangSmithClient | null
+⋮----
+// Skip if explicitly disabled
+⋮----
+// Use existing client if available
+⋮----
+// Set environment variables that LangSmith SDK relies on
+⋮----
+// Create LangSmith client
+⋮----
+/**
+ * Creates a new LangSmith run for tracking a specific operation
+ *
+ * @param name - Name of the operation to trace
+ * @param tags - Optional tags for categorizing the run
+ * @returns A Promise resolving to the run ID for tracking the operation, or a fallback UUID
+ */
+export async function createLangSmithRun(
+  name: string,
+  tags?: string[]
+): Promise<string>
+⋮----
+// Fallback to generating a UUID if LangSmith is unavailable
+⋮----
+// Generate a UUID locally to use as the run ID
+⋮----
+// Attempt to create the run in LangSmith, potentially passing the generated ID
+// Note: createRun might return void, so we don't rely on its return value for the ID.
+⋮----
+id: runId, // Pass the generated UUID as the run ID if supported
+⋮----
+inputs: {}, // Add required inputs property
+⋮----
+// Return the locally generated UUID
+⋮----
+return uuidv4(); // Fallback UUID on error
+⋮----
+/**
+ * Tracks feedback for a specific operation in LangSmith
+ *
+ * @param runId - The ID of the run to attach feedback to
+ * @param feedback - Feedback information (rating, comment, etc.)
+ * @returns Boolean indicating success or failure
+ */
+export async function trackFeedback(
+  runId: string,
+  feedback: {
+    score?: number;
+    comment?: string;
+    key?: string;
+    value?: any;
+  }
+): Promise<boolean>
+⋮----
+// Initialize LangSmith on module import
+````
+
+## File: src/mastra/tools/ai-sdk.ts
+````typescript
+import {
+  type AIFunctionLike,
+  AIFunctionSet,
+  asAgenticSchema,
+  isZodSchema,
+} from "@agentic/core";
+import { jsonSchema, tool } from "ai";
+⋮----
+/**
+ * Converts a set of Agentic stdlib AI functions to an object compatible with
+ * the Vercel AI SDK's `tools` parameter.
+ */
+export function createAISDKTools(...aiFunctionLikeTools: AIFunctionLike[])
+````
+
+## File: src/mastra/tools/arxiv.ts
+````typescript
+import {
+  aiFunction,
+  AIFunctionsProvider,
+  pruneEmpty,
+  sanitizeSearchParams,
+} from "@agentic/core";
+import { XMLParser } from "fast-xml-parser";
+import defaultKy, { type KyInstance } from "ky";
+import { z } from "zod";
+⋮----
+import { castArray, getProp } from "./utils";
+⋮----
+export type ValueOf<T extends NonNullable<unknown>> = T[keyof T];
+⋮----
+export interface ArXivResponse {
+    totalResults: number;
+    startIndex: number;
+    itemsPerPage: number;
+    entries: {
+      id: string;
+      title: string;
+      summary: string;
+      published: string;
+      updated: string;
+      authors: { name: string; affiliation: string[] }[];
+      doi: string;
+      comment: string;
+      journalReference: string;
+      primaryCategory: string;
+      categories: string[];
+      links: string[];
+    }[];
+  }
+⋮----
+export const extractId = (value: string)
+⋮----
+export type SearchParams = z.infer<typeof SearchParamsSchema>;
+⋮----
+/**
+ * Lightweight wrapper around ArXiv for academic / scholarly research articles.
+ *
+ * @see https://arxiv.org
+ */
+export class ArXivClient extends AIFunctionsProvider {
+⋮----
+constructor({
+    apiBaseUrl = arxiv.API_BASE_URL,
+    ky = defaultKy,
+  }: {
+    apiKey?: string;
+    apiBaseUrl?: string;
+    ky?: KyInstance;
+})
+⋮----
+/**
+   * Searches for research articles published on arXiv.
+   */
+⋮----
+async search(queryOrOpts: string | arxiv.SearchParams)
+````
+
+## File: src/mastra/tools/brave-search.ts
+````typescript
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { BraveSearchClient } from "@agentic/brave-search";
+import { env } from "process";
+⋮----
+/**
+ * Configuration for Brave search
+ */
+interface BraveSearchConfig {
+  apiKey?: string;
+  maxResults?: number;
+  timeout?: number;
+}
+⋮----
+/**
+ * Creates a configured Brave search tool
+ */
+export function createBraveSearchTool(config: BraveSearchConfig =
+⋮----
+// BraveSearchClient.search only accepts query string
+⋮----
+// Filter results after receiving them
+⋮----
+// score is optional and not directly provided by this API result structure
+````
+
+## File: src/mastra/tools/contentTools.ts
+````typescript
+/**
+ * Content Tools Module
+ *
+ * This module defines tools that process content such as analyzing and formatting text.
+ *
+ * @module ContentTools
+ */
+⋮----
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+⋮----
+/**
+ * Analyze Content Tool
+ *
+ * Analyzes the input content and returns analysis results.
+ *
+ * @remarks
+ * Replace the stub analysis logic with a proper NLP or analysis algorithm.
+ *
+ * @param input.content - The text content to analyze.
+ * @returns An object containing the analysis result.
+ * @throws {Error} When analysis execution fails.
+ */
+⋮----
+// Placeholder analysis: count words and characters.
+⋮----
+/**
+ * Format Content Tool
+ *
+ * Formats the input content into a specified structure.
+ *
+ * @remarks
+ * Replace the stub formatting logic with your desired formatting operations.
+ *
+ * @param input.content - The text content to format.
+ * @returns An object containing the formatted content.
+ * @throws {Error} When formatting fails.
+ */
+⋮----
+// Example formatting: trim whitespace and normalize spacing.
+````
+
+## File: src/mastra/tools/document-tools.ts
+````typescript
+// filepath: c:\Users\dm\Documents\DeanmachinesAI\src\mastra\tools\document-tools.ts
+/**
+ * Document Tools Module
+ *
+ * This module defines tools that work with documents such as searching within repositories and embedding documents.
+ *
+ * @module DocumentTools
+ */
+⋮----
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+⋮----
+/**
+ * Search Documents Tool
+ *
+ * Searches document repositories for documents matching the query criteria.
+ *
+ * @remarks
+ * Replace the stub search logic with an actual document search implementation.
+ *
+ * @param input.query - The search query string.
+ * @returns An object containing an array of found documents.
+ * @throws {Error} When the search execution fails.
+ */
+/**
+ * Document interface representing a searchable document.
+ */
+export interface Document {
+  id: string;
+  title: string;
+  content: string;
+}
+⋮----
+/**
+ * Simulated document repository.
+ *
+ * In a real application, replace this in-memory array with calls to a database or external API.
+ */
+⋮----
+/**
+ * Search Documents Tool
+ *
+ * Searches document repositories for documents matching the query criteria.
+ *
+ * @remarks
+ * This implementation performs a case-insensitive search over the document titles and content.
+ *
+ * @param input.query - The search query string.
+ * @returns An object containing an array of found documents.
+ * @throws {Error} When the search execution fails.
+ */
+⋮----
+// Extract the query and sanitize it for case insensitive search.
+⋮----
+// Filter the repository for documents where either the title or content includes the query.
+⋮----
+/**
+ * Embed Document Tool
+ *
+ * Generates an embedding vector representing the document content.
+ *
+ * @remarks
+ * Replace the stub embedding logic with an actual embedding generator (e.g., a neural network model).
+ *
+ * @param input.document - The text content of the document.
+ * @returns An object containing the embedding vector.
+ * @throws {Error} When embedding computation fails.
+ */
+⋮----
+// Example stub: simple transformation using character codes.
+````
+
+## File: src/mastra/tools/document.ts
+````typescript
+/**
+ * Document processing tools for Mastra AI.
+ *
+ * This module provides tools for document chunking, parsing, and embedding
+ * to support various document-based operations within Mastra agents.
+ */
+⋮----
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
+import { Document } from "langchain/document";
+import { Pinecone } from "@pinecone-database/pinecone"; // Import the main Pinecone client
+import { PineconeStore } from "@langchain/pinecone"; // Import the LangChain Pinecone vector store
+import { createEmbeddings } from "../database/vector-store";
+import { createLangSmithRun, trackFeedback } from "../services/langsmith";
+import { env } from "process";
+⋮----
+/**
+ * Options for chunking documents
+ */
+interface ChunkingOptions {
+  /** Maximum size of each chunk in characters */
+  chunkSize?: number;
+  /** Overlap between chunks to maintain context */
+  chunkOverlap?: number;
+  /** Minimum chunk size to include */
+  minChunkSize?: number;
+}
+⋮----
+/** Maximum size of each chunk in characters */
+⋮----
+/** Overlap between chunks to maintain context */
+⋮----
+/** Minimum chunk size to include */
+⋮----
+/**
+ * Chunks text into smaller segments for processing
+ *
+ * @param text - The text content to chunk
+ * @param options - Chunking configuration options
+ * @returns Array of document chunks
+ */
+async function chunkText(
+  text: string,
+  options: ChunkingOptions = {}
+): Promise<Document[]>
+⋮----
+/**
+ * Tool for embedding documents into the vector store
+ */
+⋮----
+// Create embeddings for vector store
+⋮----
+// Create document chunks
+⋮----
+// Enrich chunks with metadata
+⋮----
+// Initialize Pinecone client
+⋮----
+// Store document in vector database
+⋮----
+// Track successful embedding in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Tool for retrieving documents from vector storage
+ */
+⋮----
+// Initialize Pinecone client
+⋮----
+// Perform similarity search with metadata filter if provided
+⋮----
+// Format results
+⋮----
+score: (doc as any).score ?? (doc.metadata as any)?.score, // Attempt to get score if available
+⋮----
+// Track successful retrieval in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+}, // Added comma here
+````
+
+## File: src/mastra/tools/e2b.ts
+````typescript
+import { createAIFunction, getEnv } from "@agentic/core";
+import { Sandbox } from "@e2b/code-interpreter";
+import { z } from "zod";
+⋮----
+/**
+ * E2B Python code interpreter sandbox.
+ *
+ * @see https://e2b.dev
+ */
+````
+
+## File: src/mastra/tools/exasearch.ts
+````typescript
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import {
+  searchWeb,
+  searchWithFilters,
+  searchForRAG,
+  type ExaSearchConfig,
+  type ExaSearchResult,
+} from "../services/exasearch";
+⋮----
+// Export types for consumers
+⋮----
+/**
+ * Exa search tool for web content retrieval
+ */
+⋮----
+// Default export for easier importing
+````
+
+## File: src/mastra/tools/github.ts
+````typescript
+import { aiFunction, AIFunctionsProvider, assert, getEnv } from "@agentic/core";
+import { Octokit } from "octokit";
+import { z } from "zod";
+⋮----
+export interface User {
+    id: number;
+    login: string;
+    name: string;
+    bio: string;
+    node_id: string;
+    gravatar_id: string;
+    type: string;
+    site_admin: boolean;
+    company: string;
+    blog?: string;
+    location?: string;
+    hireable?: boolean;
+    twitter_username?: string;
+    email?: string;
+    public_repos: number;
+    public_gists: number;
+    followers: number;
+    following: number;
+    avatar_url: string;
+    url: string;
+    html_url: string;
+    followers_url: string;
+    following_url: string;
+    gists_url: string;
+    starred_url: string;
+    subscriptions_url: string;
+    organizations_url: string;
+    repos_url: string;
+    events_url: string;
+    received_events_url: string;
+    created_at: string;
+    updated_at: string;
+  }
+⋮----
+/**
+ * Agentic GitHub client.
+ */
+export class GitHubClient extends AIFunctionsProvider {
+⋮----
+constructor({
+    apiKey = getEnv("GITHUB_API_KEY"),
+  }: {
+    apiKey?: string;
+} =
+⋮----
+/**
+   * Get a user by username.
+   */
+⋮----
+async getUserByUsername(
+    usernameOrOpts: string | { username: string }
+): Promise<github.User>
+````
+
+## File: src/mastra/tools/hyper-functionCalls.ts
+````typescript
+import { google } from "@ai-sdk/google";
+import { Hyperbrowser } from "@hyperbrowser/sdk";
+import {
+  WebsiteCrawlTool,
+  WebsiteScrapeTool,
+  WebsiteExtractTool,
+} from "@hyperbrowser/sdk/tools";
+import { env } from "process";
+⋮----
+/**
+ * Initialize Hyperbrowser and Google AI clients
+ */
+⋮----
+interface ToolCall {
+  id: string;
+  function: {
+    name: string;
+    arguments: string;
+  };
+}
+⋮----
+/**
+ * Handles tool calls from the AI and executes corresponding actions
+ */
+async function handleToolCall(tc: ToolCall)
+⋮----
+/**
+ * Runs an interactive chat session with AI using website tools
+ */
+async function chat()
+⋮----
+// Start the chat session
+````
+
+## File: src/mastra/tools/llamaindex.ts
+````typescript
+import {
+  type AIFunctionLike,
+  AIFunctionSet,
+  asZodOrJsonSchema,
+} from "@agentic/core";
+import { FunctionTool } from "llamaindex";
+⋮----
+/**
+ * Converts a set of Agentic stdlib AI functions to an array of LlamaIndex-
+ * compatible tools.
+ */
+export function createLlamaIndexTools(
+  ...aiFunctionLikeTools: AIFunctionLike[]
+)
+⋮----
+// TODO: Investigate types here
+````
+
+## File: src/mastra/tools/mcp.ts
+````typescript
+import { createAISDKTools } from "@agentic/ai-sdk";
+import { createMcpTools } from "@agentic/mcp";
+import { google } from "@ai-sdk/google";
+import { generateText } from "ai";
+⋮----
+async function main()
+⋮----
+// Create an MCP tools provider, which will start a local MCP server process
+// and use the stdio transport to communicate with it.
+⋮----
+// This example uses a built-in example MCP server from Anthropic, which
+// provides a set of tools to access the local filesystem.
+⋮----
+// Allow the MCP server to access the current working directory.
+⋮----
+// Feel free to add additional directories the tool should have access to.
+⋮----
+// Use the MCP tools provider to create a set of tools for the AI model.
+````
+
+## File: src/mastra/tools/mcptools.ts
+````typescript
+import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
+import type {
+  CallToolResult,
+  ListToolsResult,
+} from "@modelcontextprotocol/sdk/types.js";
+import {
+  AIFunctionSet,
+  AIFunctionsProvider,
+  assert,
+  createAIFunction,
+  createJsonSchema,
+} from "@agentic/core";
+import { Client as McpClient } from "@modelcontextprotocol/sdk/client/index.js";
+import { type z } from "zod";
+⋮----
+import type { McpToolsFilter, McpToolsOptions } from "./types";
+import { paginate } from "./paginate";
+⋮----
+/**
+ * Agentic tools provider wrapping an MCP client.
+ *
+ * You likely want to use `createMcpTools` to create an instance of `McpTools`
+ * which enables exposing MCP server tools to the agentic ecosystem.
+ *
+ * @see https://modelcontextprotocol.io
+ */
+export class McpTools extends AIFunctionsProvider {
+⋮----
+protected constructor({
+    name,
+    client,
+    toolsFilter,
+    rawToolResponses = false,
+  }: {
+    client: McpClient;
+} & McpToolsOptions)
+⋮----
+override get functions(): AIFunctionSet
+⋮----
+/**
+   * Initialize the McpTools instance by fetching all available tools from the MCP client.
+   * This method must be called before using this class' tools.
+   * It is called automatically when using `McpTools.from()`.
+   */
+protected async _init()
+⋮----
+// TODO: handle prompts, resources, etc.
+⋮----
+protected async _initTools()
+⋮----
+protected _updateFunctions()
+⋮----
+async callTool(name: string, args: z.infer<z.ZodObject<any>>)
+⋮----
+/**
+   * Creates a new McpTools instance from an existing, fully initialized
+   * MCP client.
+   *
+   * You probably want to use `createMcpTool` instead, which makes initializing
+   * the MCP client and connecting to its transport easier.
+   *
+   * All tools within the `McpTools` instance will be namespaced under the given
+   * `name`.
+   */
+static async fromMcpClient(params:
+⋮----
+/**
+ * Creates a new McpTools instance by connecting to an MCP server. You must
+ * provide either an existing `transport`, an existing `serverUrl`, or a
+ * `serverProcess` to spawn.
+ *
+ * All tools within the `McpTools` instance will be namespaced under the given
+ * `name`.
+ */
+export async function createMcpTools(
+  params: McpToolsOptions
+): Promise<McpTools>
+⋮----
+/**
+ * Creates a new MCP transport from either an existing `transport`, an existing
+ * `serverUrl`, or a `serverProcess` to spawn.
+ */
+export async function createMcpTransport(
+  params: McpToolsOptions
+): Promise<Transport>
+⋮----
+function toText(c: CallToolResult["content"])
+⋮----
+function processToolCallResult(result: CallToolResult)
+````
+
+## File: src/mastra/tools/paginate.ts
+````typescript
+export interface PaginateInput<T, C> {
+  size: number;
+  handler: (data: {
+    cursor?: C;
+    limit: number;
+  }) => Promise<{ data: T[]; nextCursor?: C }>;
+}
+⋮----
+export async function paginate<T, C = number>(
+  input: PaginateInput<T, C>
+): Promise<T[]>
+````
+
+## File: src/mastra/tools/tavily.ts
+````typescript
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { TavilyClient } from "@agentic/tavily";
+import { env } from "process";
+⋮----
+/**
+ * Configuration for Tavily search
+ */
+interface TavilyConfig {
+  apiKey?: string;
+}
+⋮----
+/**
+ * Creates a configured Tavily search tool
+ */
+export function createTavilySearchTool(config: TavilyConfig =
+````
+
+## File: src/mastra/tools/types.ts
+````typescript
+import type { StdioServerParameters } from "@modelcontextprotocol/sdk/client/stdio.js";
+import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
+⋮----
+export type McpToolsFilter = (toolName: string) => boolean;
+⋮----
+export interface McpToolsOptions {
+  /**
+   * Provide a name for this client which will be its namespace for all tools and prompts.
+   */
+  name: string;
+
+  /**
+   * Provide a version number for this client (defaults to 1.0.0).
+   */
+  version?: string;
+
+  /**
+   * If you already have an MCP transport you'd like to use, pass it here to connect to the server.
+   */
+  transport?: Transport;
+
+  /**
+   * Start a local server process using the stdio MCP transport.
+   */
+  serverProcess?: StdioServerParameters;
+
+  /**
+   * Connect to a remote server process using the SSE MCP transport.
+   */
+  serverUrl?: string;
+
+  /**
+   * Return tool responses in raw MCP form instead of processing them for Genkit compatibility.
+   */
+  rawToolResponses?: boolean;
+
+  /**
+   * An optional filter function to determine which tools should be enabled.
+   *
+   * By default, all tools available on the MCP server will be enabled, but you
+   * can use this to filter a subset of those tools.
+   */
+  toolsFilter?: McpToolsFilter;
+}
+⋮----
+/**
+   * Provide a name for this client which will be its namespace for all tools and prompts.
+   */
+⋮----
+/**
+   * Provide a version number for this client (defaults to 1.0.0).
+   */
+⋮----
+/**
+   * If you already have an MCP transport you'd like to use, pass it here to connect to the server.
+   */
+⋮----
+/**
+   * Start a local server process using the stdio MCP transport.
+   */
+⋮----
+/**
+   * Connect to a remote server process using the SSE MCP transport.
+   */
+⋮----
+/**
+   * Return tool responses in raw MCP form instead of processing them for Genkit compatibility.
+   */
+⋮----
+/**
+   * An optional filter function to determine which tools should be enabled.
+   *
+   * By default, all tools available on the MCP server will be enabled, but you
+   * can use this to filter a subset of those tools.
+   */
+⋮----
+// TODO
+// export interface McpServerOptions {
+//   /** The name you want to give your server for MCP inspection. */
+//   name: string
+//
+//   /** The version you want the server to advertise to clients. Defaults to 1.0.0. */
+//   version?: string
+// }
+````
+
+## File: src/mastra/tools/utils.ts
+````typescript
+export function hasProp<T>(
+  target: T | undefined,
+  key: keyof T
+): key is keyof T
+⋮----
+export function getProp(
+  target: unknown,
+  paths: readonly (keyof any)[],
+  defaultValue: any = undefined
+)
+⋮----
+export function castArray<T>(arr: T)
+````
+
+## File: src/mastra/tools/wikibase.ts
+````typescript
+import {
+  aiFunction,
+  AIFunctionsProvider,
+  assert,
+  getEnv,
+  throttleKy,
+} from "@agentic/core";
+import defaultKy, { type KyInstance } from "ky";
+import pThrottle from "p-throttle";
+import { z } from "zod";
+⋮----
+// Allow up to 200 requests per second by default.
+⋮----
+export interface SearchOptions {
+    query: string;
+    limit?: number;
+  }
+⋮----
+export interface PageSearchResponse {
+    pages: Page[];
+  }
+⋮----
+export interface Page {
+    id: number;
+    key: string;
+    title: string;
+    matched_title: null;
+    excerpt: string;
+    description: null | string;
+    thumbnail: Thumbnail | null;
+  }
+⋮----
+export interface Thumbnail {
+    url: string;
+    width: number;
+    height: number;
+    mimetype: string;
+    duration: null;
+  }
+⋮----
+export interface PageSummaryOptions {
+    title: string;
+    redirect?: boolean;
+    acceptLanguage?: string;
+  }
+⋮----
+export interface PageSummaryResponse {
+    ns?: number;
+    index?: number;
+    type: string;
+    title: string;
+    displaytitle: string;
+    namespace: { id: number; text: string };
+    wikibase_item: string;
+    titles: { canonical: string; normalized: string; display: string };
+    pageid: number;
+    thumbnail: {
+      source: string;
+      width: number;
+      height: number;
+    };
+    originalimage: {
+      source: string;
+      width: number;
+      height: number;
+    };
+    lang: string;
+    dir: string;
+    revision: string;
+    tid: string;
+    timestamp: string;
+    description: string;
+    description_source: string;
+    content_urls: {
+      desktop: {
+        page: string;
+        revisions: string;
+        edit: string;
+        talk: string;
+      };
+      mobile: {
+        page: string;
+        revisions: string;
+        edit: string;
+        talk: string;
+      };
+    };
+    extract: string;
+    extract_html: string;
+    normalizedtitle?: string;
+    coordinates?: {
+      lat: number;
+      lon: number;
+    };
+  }
+⋮----
+/**
+ * Basic Wikipedia API client for searching wiki pages and resolving page data.
+ *
+ * @see https://www.mediawiki.org/wiki/API
+ */
+export class WikipediaClient extends AIFunctionsProvider {
+⋮----
+constructor({
+    apiBaseUrl = getEnv("WIKIPEDIA_API_BASE_URL") ??
+      "https://en.wikipedia.org/api/rest_v1",
+    apiUserAgent = getEnv("WIKIPEDIA_API_USER_AGENT") ??
+      "Agentic (https://github.com/transitive-bullshit/agentic)",
+    throttle = true,
+    ky = defaultKy,
+  }: {
+    apiBaseUrl?: string;
+    apiUserAgent?: string;
+    throttle?: boolean;
+    ky?: KyInstance;
+} =
+⋮----
+/**
+   * Searches Wikipedia for pages matching the given query. */
+⋮----
+async search(
+⋮----
+// https://www.mediawiki.org/wiki/API:REST_API
+⋮----
+/**
+   * Gets a summary of the given Wikipedia page.
+   */
+⋮----
+async getPageSummary({
+    title,
+    acceptLanguage = "en-us",
+    redirect = true,
+    ...opts
+}: wikipedia.PageSummaryOptions)
+⋮----
+// https://en.wikipedia.org/api/rest_v1/
+````
+
+## File: src/mastra/utils/index.ts
+````typescript
+/**
+ * Utility exports for DeanmachinesAI
+ *
+ * This module exports various utilities to support the application's functionality.
+ */
+````
+
+## File: src/mastra/utils/memory-diagnostics.ts
+````typescript
+/**
+ * Extremely simplified memory diagnostics utility
+ */
+⋮----
+import { randomUUID } from "crypto";
+import { memory } from "../database";
+⋮----
+/**
+ * Run a simple memory diagnostic test
+ *
+ * @returns Diagnostic result
+ */
+export async function runMemoryDiagnostics()
+⋮----
+// Generate test IDs
+````
+
+## File: src/mastra/utils/thread-manager.ts
+````typescript
+/**
+ * Thread Manager for consistent memory persistence
+ *
+ * This utility helps manage thread IDs consistently across conversations,
+ * ensuring that memory context is properly maintained and retrieved.
+ */
+⋮----
+import { randomUUID } from "crypto";
+⋮----
+/**
+ * Thread information with creation metadata
+ */
+interface ThreadInfo {
+  /** Unique thread identifier */
+  id: string;
+  /** User or entity associated with the thread */
+  resourceId: string;
+  /** When the thread was created */
+  createdAt: Date;
+  /** Optional metadata for thread categorization */
+  metadata?: Record<string, unknown>;
+}
+⋮----
+/** Unique thread identifier */
+⋮----
+/** User or entity associated with the thread */
+⋮----
+/** When the thread was created */
+⋮----
+/** Optional metadata for thread categorization */
+⋮----
+/**
+ * Thread creation options
+ */
+interface CreateThreadOptions {
+  /** Optional predefined thread ID (generates UUID if not provided) */
+  threadId?: string;
+  /** User or entity associated with the thread */
+  resourceId: string;
+  /** Optional metadata for thread categorization */
+  metadata?: Record<string, unknown>;
+}
+⋮----
+/** Optional predefined thread ID (generates UUID if not provided) */
+⋮----
+/** User or entity associated with the thread */
+⋮----
+/** Optional metadata for thread categorization */
+⋮----
+/**
+ * Manages conversation threads to ensure consistent memory access
+ */
+export class ThreadManager {
+⋮----
+/**
+   * Creates a new conversation thread
+   *
+   * @param options - Thread creation options
+   * @returns Thread information including the ID
+   */
+public createThread(options: CreateThreadOptions): ThreadInfo
+⋮----
+// Track threads by resource ID for easier lookup
+⋮----
+/**
+   * Retrieves a thread by its ID
+   *
+   * @param threadId - The ID of the thread to retrieve
+   * @returns Thread information or undefined if not found
+   */
+public getThread(threadId: string): ThreadInfo | undefined
+⋮----
+/**
+   * Gets all threads associated with a resource ID
+   *
+   * @param resourceId - The resource ID to look up threads for
+   * @returns Array of thread information objects
+   */
+public getThreadsByResource(resourceId: string): ThreadInfo[]
+⋮----
+/**
+   * Gets the most recent thread for a resource
+   *
+   * @param resourceId - The resource ID to find the most recent thread for
+   * @returns Most recent thread information or undefined if none exists
+   */
+public getMostRecentThread(resourceId: string): ThreadInfo | undefined
+⋮----
+/**
+   * Creates or retrieves a thread for a resource ID
+   *
+   * @param resourceId - The resource ID to get or create a thread for
+   * @param metadata - Optional metadata for the thread if created
+   * @returns Thread information with a consistent ID
+   */
+public getOrCreateThread(
+    resourceId: string,
+    metadata?: Record<string, unknown>
+): ThreadInfo
+⋮----
+// Export a singleton instance for app-wide use
+````
+
+## File: src/mastra/voice/elevenlabs.ts
+````typescript
+/**
+ * ElevenLabs Voice implementation for Mastra
+ *
+ * This module provides high-quality text-to-speech capabilities
+ * using the ElevenLabs API with the Mastra voice interface.
+ */
+⋮----
+import { MastraVoice } from "@mastra/core/voice";
+import { ElevenLabsVoice } from "@mastra/voice-elevenlabs";
+⋮----
+/**
+ * Interface for ElevenLabs voice configuration options
+ */
+interface ElevenLabsConfig {
+  /** API key for ElevenLabs services */
+  apiKey?: string;
+  /** Default speaker/voice ID */
+  speaker?: string;
+  /** Model name to use for speech synthesis */
+  modelName?: string;
+}
+⋮----
+/** API key for ElevenLabs services */
+⋮----
+/** Default speaker/voice ID */
+⋮----
+/** Model name to use for speech synthesis */
+⋮----
+/**
+ * Create an ElevenLabs voice provider with the specified configuration
+ *
+ * @param config - Configuration options for the ElevenLabs voice provider
+ * @returns Configured ElevenLabs voice provider instance
+ * @throws Error if required environment variables are missing
+ */
+export function createElevenLabsVoice(
+  config: ElevenLabsConfig = {}
+): MastraVoice
+⋮----
+speaker: voiceName, // Use the defined voiceName variable
+````
+
+## File: src/mastra/voice/googlevoice.ts
+````typescript
+/**
+ * Google Voice implementation for Mastra
+ *
+ * This module provides text-to-speech and speech-to-text capabilities
+ * using Google Cloud services with the Mastra voice interface.
+ */
+⋮----
+import { MastraVoice } from "@mastra/core/voice";
+import { GoogleVoice as GoogleVoiceProvider } from "@mastra/voice-google";
+⋮----
+/**
+ * Interface for Google voice configuration options
+ */
+interface GoogleVoiceConfig {
+  /** API key for Google Cloud services */
+  apiKey?: string;
+  /** Default speaker/voice ID */
+  speaker?: string;
+  /** Options for speech-to-text model */
+  listeningOptions?: {
+    /** Language code for speech recognition */
+    languageCode?: string;
+    /** Audio encoding format */
+    encoding?: string;
+  };
+  /** Options for text-to-speech model */
+  speechOptions?: {
+    /** Language code for speech synthesis */
+    languageCode?: string;
+    /** Audio encoding format */
+    audioEncoding?: string;
+  };
+}
+⋮----
+/** API key for Google Cloud services */
+⋮----
+/** Default speaker/voice ID */
+⋮----
+/** Options for speech-to-text model */
+⋮----
+/** Language code for speech recognition */
+⋮----
+/** Audio encoding format */
+⋮----
+/** Options for text-to-speech model */
+⋮----
+/** Language code for speech synthesis */
+⋮----
+/** Audio encoding format */
+⋮----
+/**
+ * Create a Google voice provider with the specified configuration
+ *
+ * @param config - Configuration options for the Google voice provider
+ * @returns Configured Google voice provider instance
+ * @throws Error if required environment variables are missing
+ */
+export function createGoogleVoice(config: GoogleVoiceConfig =
+````
+
+## File: src/mastra/voice/index.ts
+````typescript
+/**
+ * Voice module for Mastra
+ *
+ * This module provides voice capabilities for Mastra agents,
+ * including text-to-speech, speech-to-text, and speech-to-speech
+ * functionalities using different provider implementations.
+ */
+⋮----
+import { MastraVoice } from "@mastra/core/voice";
+import { createGoogleVoice } from "./googlevoice";
+import { createElevenLabsVoice } from "./elevenlabs";
+⋮----
+/**
+ * Available voice provider types
+ */
+export enum VoiceProvider {
+  GOOGLE = "google",
+  ELEVENLABS = "elevenlabs",
+}
+⋮----
+/**
+ * Configuration for voice providers
+ */
+export interface VoiceConfig {
+  /** Provider type to use */
+  provider: VoiceProvider;
+  /** API key for the voice service */
+  apiKey?: string;
+  /** Default speaker ID */
+  speaker?: string;
+  /** Provider-specific options */
+  options?: Record<string, unknown>;
+}
+⋮----
+/** Provider type to use */
+⋮----
+/** API key for the voice service */
+⋮----
+/** Default speaker ID */
+⋮----
+/** Provider-specific options */
+⋮----
+/**
+ * Create a voice provider based on the specified configuration
+ *
+ * @param config - Voice provider configuration
+ * @returns Configured voice provider instance
+ * @throws Error if the specified provider is not supported
+ */
+export function createVoice(config: VoiceConfig): MastraVoice
+⋮----
+/**
+ * Helper to get a Google voice provider with default settings
+ *
+ * @returns Google voice provider instance
+ */
+export function getGoogleVoice(): MastraVoice
+⋮----
+/**
+ * Helper to get an ElevenLabs voice provider with default settings
+ *
+ * @returns ElevenLabs voice provider instance
+ */
+export function getElevenLabsVoice(): MastraVoice
+⋮----
+// Export all voice-related functions and types
+⋮----
+// Re-export the MastraVoice type for external use
+````
+
+## File: src/mastra/workflows/Networks/agentNetwork.ts
+````typescript
+/**
+ * AgentNetwork Implementation for DeanmachinesAI
+ *
+ * This module implements a collaborative network of specialized agents that can
+ * dynamically work together to solve complex tasks. Unlike traditional workflows
+ * with predefined execution paths, the AgentNetwork uses an LLM-based router to
+ * determine which agent to call next based on the requirements of the task.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import { AgentNetwork, type AgentNetworkConfig } from "@mastra/core/network";
+import { createResponseHook } from "../../hooks";
+import {
+  researchAgent,
+  analystAgent,
+  writerAgent,
+  rlTrainerAgent,
+  dataManagerAgent,
+} from "../../agents";
+import { env } from "process";
+⋮----
+// Base configuration for all networks to match agent configuration
+// NOTE: Hooks are removed here as they are not part of AgentNetworkConfig.
+// Consult @mastra/core documentation for the correct way to configure hooks.
+⋮----
+// hooks: { ... } // Removed hooks configuration
+⋮----
+// Define hooks separately for potential later use if the library provides a method
+⋮----
+// Using 'any' temporarily, replace with actual response type
+// Apply base response validation logic if needed (extracted from createResponseHook)
+⋮----
+// Add network-specific metadata
+⋮----
+...(validatedResponse as any).metadata, // Assuming metadata exists
+⋮----
+/**
+ * DeanInsights Network
+ *
+ * A collaborative network focused on researching topics, analyzing data, and producing
+ * well-structured reports with reinforcement learning-based improvements over time.
+ */
+⋮----
+model: baseNetworkConfig.model!, // Ensure model is explicitly provided and non-null
+⋮----
+// hooks: { ... } // Removed hooks from constructor
+⋮----
+// TODO: Apply hooks using the correct method provided by @mastra/core
+// Example (replace with actual API):
+// deanInsightsNetwork.setHooks(deanInsightsHooks);
+// dataFlowNetwork.setHooks(dataFlowHooks);
+// contentCreationNetwork.setHooks(contentCreationHooks);
+⋮----
+/**
+ * DataFlow Network
+ *
+ * A specialized network focused on data processing, file operations, and analysis
+ */
+⋮----
+model: baseNetworkConfig.model!, // Ensure model is explicitly provided and non-null
+⋮----
+// hooks: { ... } // Removed hooks from constructor
+⋮----
+// TODO: Apply hooks using the correct method provided by @mastra/core
+// Example (replace with actual API):
+// contentCreationNetwork.setHooks(contentCreationHooks);
+⋮----
+/**
+ * ContentCreation Network
+ *
+ */
+⋮----
+model: baseNetworkConfig.model!, // Ensure model is explicitly provided and non-null
+⋮----
+// hooks: { ... } // Removed hooks from constructor
+⋮----
+// TODO: Apply hooks using the correct method provided by @mastra/core
+// Example (replace with actual API):
+// contentCreationNetwork.setHooks(contentCreationHooks);
+⋮----
+/**
+ * Helper function to get a specific agent network by name
+ *
+ * @param networkName - Name of the network to retrieve
+ * @returns The requested AgentNetwork or undefined if not found
+ */
+export function getAgentNetwork(networkName: string): AgentNetwork | undefined
+⋮----
+/**
+ * Export all networks in a format compatible with the Mastra instance configuration
+ */
+````
+
+## File: tsconfig.json
+````json
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
+````
+
+## File: src/mastra/agents/base.agent.ts
+````typescript
+/**
+ * Base Agent Implementation
+ *
+ * This module provides utility functions to create agents from configurations,
+ * ensuring consistent agent creation patterns across the application.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import { Agent } from "@mastra/core/agent";
+import { Tool } from "@mastra/core/tools";
+import { createLogger } from "@mastra/core/logger";
+import { sharedMemory } from "../database";
+import {
+  BaseAgentConfig,
+  defaultErrorHandler,
+  DEFAULT_MODEL_ID,
+} from "./config/base.config";
+import { createResponseHook } from "../hooks";
+import { allToolsMap } from "../tools";
+⋮----
+// Configure logger for agent initialization
+⋮----
+/**
+ * Creates an agent instance from a configuration object
+ *
+ * @param config The agent configuration object
+ * @returns A configured Agent instance
+ * @throws Error if required tools are not available
+ */
+export function createAgentFromConfig(config: BaseAgentConfig): Agent
+⋮----
+// Validate configuration
+⋮----
+// Resolve tools from toolIds
+⋮----
+// Log and throw error for missing tools
+⋮----
+// Create response hook if validation options are provided
+⋮----
+// Create and return the agent instance
+````
+
+## File: src/mastra/agents/config/base.config.ts
+````typescript
+/**
+ * Base Agent Configuration
+ *
+ * This module defines the core configuration types and shared settings
+ * for all agents in the system. It serves as a foundation for more
+ * specialized agent configurations.
+ */
+import { google } from "@ai-sdk/google";
+⋮----
+/** Default Google AI Model ID */
+⋮----
+/** Default Maximum Tokens for Model Output */
+⋮----
+/** Default Maximum Context Tokens for Model Input */
+⋮----
+/**
+ * Response hook options interface
+ */
+export interface ResponseHookOptions {
+  minResponseLength?: number;
+  maxAttempts?: number;
+  validateResponse?: (response: any) => boolean;
+}
+⋮----
+/**
+ * Base configuration interface for all agent configs
+ *
+ * @interface BaseAgentConfig
+ */
+export interface BaseAgentConfig {
+  /** Unique identifier for the agent */
+  id: string;
+
+  /** Display name of the agent */
+  name: string;
+
+  /** Brief description of the agent's purpose and capabilities */
+  description: string;
+
+  /** Model instance from @ai-sdk/google */
+  model: ReturnType<typeof google>;
+
+  /** Main instructions that define the agent's behavior */
+  instructions: string;
+
+  /** Tool IDs that this agent has access to */
+  toolIds: string[];
+
+  /** Optional response validation settings */
+  responseValidation?: ResponseHookOptions;
+}
+⋮----
+/** Unique identifier for the agent */
+⋮----
+/** Display name of the agent */
+⋮----
+/** Brief description of the agent's purpose and capabilities */
+⋮----
+/** Model instance from @ai-sdk/google */
+⋮----
+/** Main instructions that define the agent's behavior */
+⋮----
+/** Tool IDs that this agent has access to */
+⋮----
+/** Optional response validation settings */
+⋮----
+/**
+ * Standard response validation options
+ */
+⋮----
+/**
+ * Standard error handler function for agents
+ */
+export const defaultErrorHandler = async (error: Error) =>
+````
+
+## File: src/mastra/agents/config/index.ts
+````typescript
+/**
+ * Agent Configuration Module
+ *
+ * This module exports all agent configurations and configuration types.
+ * Each agent has its own configuration file, and this module serves as
+ * the central export point.
+ */
+⋮----
+// All agent configurations are now exported here
+````
+
+## File: src/mastra/agents/config/research.config.ts
+````typescript
+/**
+ * Research Agent Configuration
+ *
+ * This module defines the configuration for the Research Agent, which specializes in
+ * gathering, synthesizing, and analyzing information from various sources.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import {
+  BaseAgentConfig,
+  defaultResponseValidation,
+  DEFAULT_MODEL_ID,
+} from "./base.config";
+⋮----
+/**
+ * Configuration for the Research Agent.
+ *
+ * @remarks
+ * The Research Agent focuses on information gathering and synthesis
+ * using web searches, document analysis, and file operations.
+ *
+ * @property {string[]} toolIds - The list of tool IDs required by the agent.
+ */
+````
+
+## File: src/mastra/services/exasearch.ts
+````typescript
+/**
+ * Exa Search service for Mastra AI.
+ *
+ * Provides utility functions to integrate Exa search capabilities
+ * with Mastra agents and workflows.
+ */
+⋮----
+import Exa from "exa-js";
+import { env } from "process";
+⋮----
+/**
+ * Configuration options for Exa search
+ */
+export interface ExaSearchConfig {
+  /** API key for Exa (defaults to environment variable) */
+  apiKey?: string;
+  /** Number of search results to return */
+  numResults?: number;
+  /** Whether to use highlights in search results */
+  useHighlights?: boolean;
+  /** Whether to include query in search results */
+  includeQuery?: boolean;
+  /** Whether to include raw content in search results */
+  includeRawContent?: boolean;
+}
+⋮----
+/** API key for Exa (defaults to environment variable) */
+⋮----
+/** Number of search results to return */
+⋮----
+/** Whether to use highlights in search results */
+⋮----
+/** Whether to include query in search results */
+⋮----
+/** Whether to include raw content in search results */
+⋮----
+/**
+ * Search result from Exa
+ */
+export interface ExaSearchResult {
+  /** Title of the search result */
+  title: string;
+  /** URL of the search result */
+  url: string;
+  /** Text content of the search result */
+  text: string;
+  /** Highlighted text snippets (if enabled) */
+  highlights?: string[];
+  /** Score/relevance of the result */
+  score?: number;
+  /** Published date of the content (if available) */
+  published?: string;
+}
+⋮----
+/** Title of the search result */
+⋮----
+/** URL of the search result */
+⋮----
+/** Text content of the search result */
+⋮----
+/** Highlighted text snippets (if enabled) */
+⋮----
+/** Score/relevance of the result */
+⋮----
+/** Published date of the content (if available) */
+⋮----
+/**
+ * Creates an Exa client with the provided configuration
+ *
+ * @param config - Configuration options for Exa
+ * @returns An initialized Exa client
+ */
+export function createExaClient(config: ExaSearchConfig =
+⋮----
+/**
+ * Performs a web search using Exa
+ *
+ * @param query - The search query
+ * @param config - Configuration options for the search
+ * @returns Array of search results
+ */
+export async function searchWeb(
+  query: string,
+  config: ExaSearchConfig = {}
+): Promise<ExaSearchResult[]>
+⋮----
+// Use the correct method signature for search based on exa-js documentation
+⋮----
+// The useHighlights property is not supported in RegularSearchOptions
+⋮----
+// Get content for each result
+⋮----
+// Use getContents with the correct parameter (ID from the result)
+⋮----
+highlights: [], // Exa SearchResult type doesn't include highlights
+⋮----
+highlights: [], // Exa SearchResult type doesn't include highlights
+⋮----
+/**
+ * Performs a search with specific filters using Exa
+ *
+ * @param query - The search query
+ * @param filters - Filters to apply to the search (e.g., site, date)
+ * @param config - Configuration options for the search
+ * @returns Array of search results
+ */
+export async function searchWithFilters(
+  query: string,
+  filters: {
+    site?: string;
+    startDate?: string;
+    endDate?: string;
+    recentOnly?: boolean;
+  },
+  config: ExaSearchConfig = {}
+): Promise<ExaSearchResult[]>
+⋮----
+// Set up search parameters
+⋮----
+// The useHighlights property is not supported in RegularSearchOptions
+⋮----
+// Add filters if provided
+⋮----
+// If recentOnly is true, set startPublishedDate to 30 days ago if not already set
+⋮----
+// Use the correct method signature for search
+⋮----
+// Get content for each result
+⋮----
+// Use getContents with the correct parameter (ID from the result)
+⋮----
+highlights: [], // Exa SearchResult type doesn't include highlights
+⋮----
+/**
+ * Performs a search and returns results formatted for RAG (Retrieval Augmented Generation)
+ *
+ * @param query - The search query
+ * @param config - Configuration options for the search
+ * @returns Formatted text for RAG
+ */
+export async function searchForRAG(
+  query: string,
+  config: ExaSearchConfig = {}
+): Promise<string>
+⋮----
+// Format results for RAG
+⋮----
+// If no highlights but we have text, use a snippet
+⋮----
+/**
+ * Example function showing how to use the Exa search service
+ *
+ * @param query - The search query
+ * @returns Formatted search results
+ */
+export async function exampleSearch(query: string): Promise<string>
+⋮----
+// Basic search
+⋮----
+// Filtered search (last 30 days)
+⋮----
+// RAG-formatted results
+````
+
+## File: src/mastra/services/langchain.ts
+````typescript
+/**
+ * LangChain integration service for Mastra AI.
+ *
+ * Provides utility functions to integrate LangChain functionalities
+ * with Mastra agents and workflows.
+ */
+⋮----
+import { BaseCallbackHandler } from "@langchain/core/callbacks/base";
+import { ChatOpenAI } from "@langchain/openai";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ConversationChain } from "langchain/chains";
+import { SystemMessage } from "@langchain/core/messages";
+import { PromptTemplate, ChatPromptTemplate } from "@langchain/core/prompts";
+import { env } from "process";
+import { configureLangSmithTracing } from "./langsmith";
+⋮----
+/**
+ * Model provider options for LangChain
+ */
+export type ModelProvider = "openai" | "google" | "anthropic";
+⋮----
+/**
+ * Configuration options for LangChain models
+ */
+export interface LangChainConfig {
+  /** The model provider to use */
+  provider?: ModelProvider;
+  /** Specific model name to use */
+  modelName?: string;
+  /** Whether to enable tracing with LangSmith */
+  enableTracing?: boolean;
+  /** Temperature setting for model responses (0-1) */
+  temperature?: number;
+  /** Maximum number of tokens in response */
+  maxTokens?: number;
+  /** Custom callback handlers for LangChain */
+  callbacks?: BaseCallbackHandler[];
+}
+⋮----
+/** The model provider to use */
+⋮----
+/** Specific model name to use */
+⋮----
+/** Whether to enable tracing with LangSmith */
+⋮----
+/** Temperature setting for model responses (0-1) */
+⋮----
+/** Maximum number of tokens in response */
+⋮----
+/** Custom callback handlers for LangChain */
+⋮----
+/**
+ * Creates a configured LangChain chat model based on provider
+ *
+ * @param config - Configuration options for the LangChain model
+ * @returns A configured chat model ready for use with LangChain
+ */
+export function createLangChainModel(config: LangChainConfig =
+⋮----
+// Set up LangSmith tracing if enabled
+⋮----
+// Create model based on provider
+⋮----
+/**
+ * Creates a conversation chain with system instructions
+ *
+ * @param systemPrompt - System instructions for the conversation
+ * @param config - LangChain model configuration
+ * @returns A configured conversation chain
+ */
+export function createConversationChain(
+  systemPrompt: string,
+  config?: LangChainConfig
+)
+⋮----
+/**
+ * Creates a chain using LangChain Expression Language (LCEL) with a custom prompt template
+ *
+ * @param promptTemplate - The prompt template string with {variables}
+ * @param config - LangChain model configuration
+ * @returns A configured LCEL chain
+ */
+export function createLLMChain(
+  promptTemplate: string,
+  config?: LangChainConfig
+)
+⋮----
+// Using LCEL pipe pattern instead of deprecated LLMChain
+````
+
+## File: src/mastra/services/langfuse.ts
+````typescript
+import { z } from "zod";
+import { Langfuse } from "langfuse";
+import { createLogger } from "@mastra/core/logger";
+import { env } from "process";
+⋮----
+/**
+ * Langfuse Integration Service
+ *
+ * This module provides integration with Langfuse for observability and analytics
+ * in Mastra agents. It enables tracing, scoring, and monitoring of LLM operations
+ * to improve reliability and performance tracking.
+ */
+⋮----
+// Configure logger for Langfuse service
+⋮----
+/**
+ * Environment validation schema for Langfuse
+ */
+⋮----
+/**
+ * Validate environment configuration for Langfuse
+ *
+ * @returns Validated environment configuration
+ * @throws {Error} If validation fails (missing API keys)
+ */
+function validateEnv()
+⋮----
+// Validate environment at module load time
+⋮----
+/**
+ * Create a Langfuse client instance
+ *
+ * @throws {Error} If creation fails due to invalid configuration
+ */
+function createLangfuseClient()
+⋮----
+// Initialize Langfuse client once
+⋮----
+/**
+ * Langfuse service for observability and analytics
+ */
+export class LangfuseService {
+⋮----
+constructor()
+⋮----
+/**
+   * Create a new trace to track a user session or request
+   *
+   * @param name - Name of the trace
+   * @param options - Additional options for the trace
+   * @returns Trace object
+   */
+createTrace(name: string, options?: {
+    userId?: string;
+    metadata?: Record<string, unknown>;
+    tags?: string[];
+})
+⋮----
+/**
+   * Log a span within a trace to measure a specific operation
+   *
+   * @param name - Name of the span
+   * @param options - Configuration options for the span
+   * @returns Span object
+   */
+createSpan(name: string, options: {
+    traceId: string;
+    parentSpanId?: string;
+    input?: unknown;
+    metadata?: Record<string, unknown>;
+    tags?: string[];
+})
+⋮----
+/**
+   * Log a generation event (e.g., LLM call)
+   *
+   * @param name - Name of the generation
+   * @param options - Configuration options for the generation
+   * @returns Generation object
+   */
+logGeneration(name: string, options: {
+    traceId: string;
+    input: unknown;
+    output?: unknown;
+    promptTokens?: number;
+    completionTokens?: number;
+    model?: string;
+    metadata?: Record<string, unknown>;
+    tags?: string[];
+})
+⋮----
+/**
+   * Score a trace, span, or generation for quality evaluation
+   *
+   * @param options - Configuration options for the score
+   * @returns Score object
+   * @throws {Error} If no target ID (traceId, spanId, or generationId) is provided
+   */
+createScore(options: {
+    name: string;
+    value: number;
+    traceId?: string;
+    spanId?: string;
+    generationId?: string;
+    comment?: string;
+})
+⋮----
+// Ensure at least one of traceId, spanId, or generationId is provided
+⋮----
+// TypeScript type assertion to satisfy the compiler
+⋮----
+/**
+   * Flush all pending Langfuse events
+   *
+   * @returns Promise that resolves when all events have been flushed
+   */
+async flush(): Promise<void>
+⋮----
+// Export a singleton instance for use throughout the application
+````
+
+## File: src/mastra/tools/calculator.ts
+````typescript
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { calculator } from "@agentic/calculator";
+⋮----
+/**
+ * Configuration for the calculator tool.
+ *
+ * @interface CalculatorConfig
+ */
+export interface CalculatorConfig {
+  maxRetries?: number;
+  timeout?: number;
+}
+⋮----
+/**
+ * Creates a configured calculator client.
+ *
+ * @param _config Calculator configuration options.
+ * @returns A tool instance that performs mathematical calculations.
+ * @throws {Error} If the calculation fails.
+ */
+export function createCalculatorTool(_config: CalculatorConfig =
+⋮----
+// Use the validated input from context
+⋮----
+steps: [], // Calculator doesn't return steps
+````
+
+## File: src/mastra/tools/google-search.ts
+````typescript
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { GoogleCustomSearchClient } from "@agentic/google-custom-search"; // Fixed: correct client name
+import { env } from "process";
+⋮----
+/**
+ * Configuration for Google Custom Search
+ */
+interface GoogleSearchConfig {
+  apiKey?: string;
+  searchEngineId?: string;
+  maxResults?: number;
+  timeout?: number;
+}
+⋮----
+/**
+ * Creates a configured Google Custom Search tool
+ */
+export function createGoogleSearchTool(config: GoogleSearchConfig =
+⋮----
+cseId: config.searchEngineId ?? env.GOOGLE_CSE_ID, // Fixed: property name is cseId
+⋮----
+// Updated to match correct search parameters - search method expects only query
+// Options like num and safe might need to be handled post-retrieval or
+// might not be directly supported by this client's search method signature.
+⋮----
+// Manually limit results if maxResults is provided
+⋮----
+// Note: Safe search filtering needs to be configured in the CSE control panel
+// or handled by filtering results if the API/client doesn't support it directly.
+````
+
+## File: src/mastra/tools/rlFeedback.ts
+````typescript
+/**
+ * Reinforcement Learning Feedback Tools for Mastra AI.
+ *
+ * This module provides tools for collecting, analyzing, and applying
+ * feedback for reinforcement learning to improve agent performance over time.
+ */
+⋮----
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { LibSQLStore } from "@mastra/core/storage/libsql";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createLangSmithRun, trackFeedback } from "../services/langsmith";
+import { Memory } from "@mastra/memory";
+⋮----
+// Helper function to get environment variable with fallback
+const getEnvVar = (name: string, fallback: string = ''): string =>
+⋮----
+// Create a storage instance
+const getStorage = (): LibSQLStore =>
+⋮----
+// For development, use in-memory database if env variables aren't set
+⋮----
+// Fallback to in-memory database
+⋮----
+// Initialize a Memory instance for storing RL feedback data
+⋮----
+/**
+ * Types of feedback that can be collected for RL
+ */
+export enum FeedbackType {
+  /** User explicitly rates agent response */
+  EXPLICIT = "explicit",
+  /** System infers quality from user behavior */
+  IMPLICIT = "implicit",
+  /** Model evaluates its own performance */
+  SELF_CRITIQUE = "self_critique",
+}
+⋮----
+/** User explicitly rates agent response */
+⋮----
+/** System infers quality from user behavior */
+⋮----
+/** Model evaluates its own performance */
+⋮----
+/**
+ * Feedback metrics that can be tracked
+ */
+export interface FeedbackMetrics {
+  /** Overall quality score (1-10) */
+  quality: number;
+  /** Accuracy of information (1-10) */
+  accuracy?: number;
+  /** Relevance to user request (1-10) */
+  relevance?: number;
+  /** Helpfulness of the response (1-10) */
+  helpfulness?: number;
+  /** Time taken to respond (ms) */
+  latencyMs?: number;
+  /** Free-form comment about the response */
+  comment?: string;
+}
+⋮----
+/** Overall quality score (1-10) */
+⋮----
+/** Accuracy of information (1-10) */
+⋮----
+/** Relevance to user request (1-10) */
+⋮----
+/** Helpfulness of the response (1-10) */
+⋮----
+/** Time taken to respond (ms) */
+⋮----
+/** Free-form comment about the response */
+⋮----
+/**
+ * Tool for collecting feedback on agent responses
+ */
+⋮----
+// Generate a unique ID for this feedback
+⋮----
+// Instead of using the LibSQLStore directly, use Memory API to store feedback
+// First, create or get an existing thread for the agent's RL feedback
+⋮----
+// Thread doesn't exist yet, create it
+⋮----
+// Format the feedback data as a system message
+⋮----
+// Add a message to the thread with the feedback content
+// Include metadata in the content as the addMessage method doesn't support metadata directly
+⋮----
+role: "assistant", // Changed from "system" to "assistant" as Mastra only supports "user" or "assistant"
+⋮----
+// Track in LangSmith as well if available
+⋮----
+score: context.feedback.metrics.quality / 10, // Normalize to 0-1
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Tool for analyzing collected feedback to derive insights
+ */
+⋮----
+// Get memory adapter for retrieving feedback
+⋮----
+// Query parameters for feedback retrieval
+⋮----
+// Retrieve feedback for analysis
+// Note: In a real implementation, you would query by date range and agent ID
+// This is a simplified version that would need to be adapted to your specific
+// LibSQLStore implementation details
+⋮----
+// For demonstration, we'll generate sample feedback data
+⋮----
+// Use LLM to generate insights from feedback data
+⋮----
+// Aggregate metrics
+⋮----
+// Generate insights using LLM
+⋮----
+// Extract JSON from the response
+⋮----
+// Track success in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Tool for applying RL insights to improve agent performance
+ */
+⋮----
+// Use LLM to generate improved instructions based on insights
+⋮----
+// Generate summary of changes
+⋮----
+// Extract JSON from the response
+⋮----
+// Track success in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Helper function to generate sample feedback data for testing
+ *
+ * @param agentId - ID of the agent
+ * @param startDate - Start date for generated data
+ * @param endDate - End date for generated data
+ * @param count - Number of feedback entries to generate
+ * @returns Array of simulated feedback entries
+ */
+function generateSampleFeedback(
+  agentId: string,
+  startDate: Date,
+  endDate: Date,
+  count: number
+): Array<
+⋮----
+// Sort by timestamp
+⋮----
+/**
+ * Aggregate metrics from feedback entries
+ *
+ * @param feedback - Array of feedback entries
+ * @returns Aggregated metrics
+ */
+function aggregateMetrics(
+  feedback: Array<{
+    metrics: FeedbackMetrics;
+    timestamp: string;
+  }>
+): Array<
+⋮----
+// Initialize result structure with known metrics
+⋮----
+// Aggregate data
+⋮----
+// Skip non-numeric metrics
+⋮----
+// Initialize metric if not exists
+⋮----
+// Calculate averages and format result
+⋮----
+/**
+ * Determine trend from a series of values
+ *
+ * @param values - Array of values with timestamps
+ * @returns Trend description ("improving", "declining", "stable")
+ */
+function determineTrend(
+  values: Array<{
+    value: number;
+    timestamp: string;
+  }>
+): string
+⋮----
+// Need at least 2 values to determine trend
+⋮----
+// Sort by timestamp
+⋮----
+// Split into two halves to compare
+⋮----
+// Calculate averages
+⋮----
+// Determine trend
+````
+
+## File: src/mastra/tools/rlReward.ts
+````typescript
+/**
+ * Reinforcement Learning Reward Function Tools for Mastra AI.
+ *
+ * This module provides tools for defining, managing, and optimizing RL reward functions
+ * to guide agent learning through numerical feedback on actions taken in different states.
+ */
+⋮----
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { LibSQLStore } from "@mastra/core/storage/libsql";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createLangSmithRun, trackFeedback } from "../services/langsmith";
+import { Memory } from "@mastra/memory";
+import { env } from "process";
+⋮----
+// Helper function to get environment variable with fallback
+const getEnvVar = (name: string, fallback: string = ''): string =>
+⋮----
+// Create a storage instance
+const getStorage = (): LibSQLStore =>
+⋮----
+// For development, use in-memory database if env variables aren't set
+⋮----
+// Fallback to in-memory database
+⋮----
+// Initialize a Memory instance for storing RL reward data
+⋮----
+/**
+ * Represents a state-action pair in reinforcement learning
+ */
+export interface StateAction {
+  /** Current state representation (can be any serializable data) */
+  state: Record<string, unknown>;
+  /** Action taken by the agent */
+  action: string;
+  /** Additional context about the action (optional) */
+  context?: Record<string, unknown>;
+}
+⋮----
+/** Current state representation (can be any serializable data) */
+⋮----
+/** Action taken by the agent */
+⋮----
+/** Additional context about the action (optional) */
+⋮----
+/**
+ * Types of reward signals that can be used
+ */
+export enum RewardType {
+  /** Simple scalar reward (number) */
+  SCALAR = "scalar",
+  /** Vector reward (multiple dimensions) */
+  VECTOR = "vector",
+  /** Binary reward (success/failure) */
+  BINARY = "binary",
+  /** Human feedback reward */
+  HUMAN = "human",
+}
+⋮----
+/** Simple scalar reward (number) */
+⋮----
+/** Vector reward (multiple dimensions) */
+⋮----
+/** Binary reward (success/failure) */
+⋮----
+/** Human feedback reward */
+⋮----
+/**
+ * Configuration for a reward function
+ */
+export interface RewardFunctionConfig {
+  /** Unique identifier for this reward function */
+  id: string;
+  /** Human-readable name */
+  name: string;
+  /** Functional description */
+  description: string;
+  /** Type of rewards provided */
+  rewardType: RewardType;
+  /** Whether to normalize rewards to [-1,1] range */
+  normalize?: boolean;
+  /** Discount factor for future rewards (gamma) */
+  discountFactor?: number;
+  /** Weight for this reward if combined with others */
+  weight?: number;
+}
+⋮----
+/** Unique identifier for this reward function */
+⋮----
+/** Human-readable name */
+⋮----
+/** Functional description */
+⋮----
+/** Type of rewards provided */
+⋮----
+/** Whether to normalize rewards to [-1,1] range */
+⋮----
+/** Discount factor for future rewards (gamma) */
+⋮----
+/** Weight for this reward if combined with others */
+⋮----
+/**
+ * Reward tracking data structure
+ */
+export interface RewardRecord {
+  /** Timestamp when the reward was recorded */
+  timestamp: string;
+  /** Agent that received the reward */
+  agentId: string;
+  /** Episode or interaction identifier */
+  episodeId: string;
+  /** State-action pair that led to this reward */
+  stateAction: StateAction;
+  /** Numerical reward value */
+  reward: number;
+  /** Cumulative reward for the episode so far */
+  cumulativeReward: number;
+  /** Step number within the episode */
+  stepNumber: number;
+  /** Whether this is a terminal reward (end of episode) */
+  isTerminal: boolean;
+  /** Additional metadata */
+  metadata?: Record<string, unknown>;
+}
+⋮----
+/** Timestamp when the reward was recorded */
+⋮----
+/** Agent that received the reward */
+⋮----
+/** Episode or interaction identifier */
+⋮----
+/** State-action pair that led to this reward */
+⋮----
+/** Numerical reward value */
+⋮----
+/** Cumulative reward for the episode so far */
+⋮----
+/** Step number within the episode */
+⋮----
+/** Whether this is a terminal reward (end of episode) */
+⋮----
+/** Additional metadata */
+⋮----
+/**
+ * Tool for calculating rewards based on state-action pairs
+ */
+⋮----
+// Create the state-action pair
+⋮----
+// Calculate the reward based on the state-action pair
+⋮----
+// Generate a unique ID for this reward record
+⋮----
+// Get previous cumulative reward by querying the episode thread
+⋮----
+// Try to get existing thread for this episode
+⋮----
+// If thread exists, get previous messages and calculate cumulative reward
+⋮----
+selectBy: { last: 1 } // Get most recent message
+⋮----
+// Parse the content which should contain the RewardRecord
+⋮----
+// Continue with just the current reward
+⋮----
+// Create the reward record
+⋮----
+// Create or get thread for this episode
+⋮----
+// Thread doesn't exist yet, create it
+⋮----
+// Store the reward record as a message in the thread
+// Include metadata in the content as the addMessage method doesn't support metadata directly
+⋮----
+// Track in LangSmith for observability
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Tool for defining custom reinforcement learning reward functions
+ */
+⋮----
+// Create the reward function configuration
+⋮----
+// Generate a unique thread ID for storing reward functions
+⋮----
+// Create or get thread for reward functions
+⋮----
+// Thread doesn't exist yet, create it
+⋮----
+// Store the reward function definition as a message
+⋮----
+// Include metadata in the content as the addMessage method doesn't support metadata directly
+⋮----
+// Track in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Tool for analyzing reinforcement learning rewards and optimizing policies
+ */
+⋮----
+// Get memory adapter for retrieving reward data
+⋮----
+// Query parameters
+⋮----
+// Retrieve reward records for the specified agent and time period
+// Note: This is a simplified implementation - in practice, you would need to
+// implement a query mechanism for LibSQLStore that supports filtering by agent, date, etc.
+⋮----
+// Use LLM to analyze rewards and suggest policy improvements
+⋮----
+// Prepare reward data summary for analysis
+⋮----
+// Generate policy improvements
+⋮----
+// Extract JSON from the response
+⋮----
+// Track success in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * Calculates reward for a given state-action pair
+ *
+ * @param stateAction - The state-action pair to evaluate
+ * @param rewardFunctionId - Optional specific reward function to use
+ * @returns Reward value and breakdown
+ */
+async function calculateStateActionReward(
+  stateAction: StateAction,
+  rewardFunctionId?: string
+): Promise<
+⋮----
+// This is a simplified implementation - in a real system you would:
+// 1. Retrieve the specific reward function from the database
+// 2. Apply the function's formula to the state-action pair
+// 3. Return the calculated reward
+⋮----
+// For demonstration, we'll implement a simple reward calculation
+⋮----
+// Example reward calculation - adapt this to your specific use case
+⋮----
+// Example component: task completion reward
+⋮----
+// Example component: efficiency reward (negative for high latency)
+⋮----
+const efficiencyReward = Math.max(-5, -latency / 1000); // Cap at -5
+⋮----
+// Example component: accuracy reward
+⋮----
+const accuracyReward = accuracy * 5; // Scale 0-1 accuracy to 0-5 reward
+⋮----
+// Default small reward for taking any action (encourages exploration)
+⋮----
+return { reward: 0 }; // Default to zero reward on error
+⋮----
+/**
+ * Normalizes a reward value to the range [-1, 1]
+ *
+ * @param reward - Raw reward value
+ * @returns Normalized reward in range [-1, 1]
+ */
+function normalizeReward(reward: number): number
+⋮----
+// Simple normalization using tanh
+⋮----
+/**
+ * Retrieves previous rewards for a specific agent and episode
+ *
+ * @param storage - Storage adapter for reward data
+ * @param agentId - ID of the agent
+ * @param episodeId - ID of the episode
+ * @returns Array of reward records, or undefined if none found
+ */
+async function retrievePreviousRewards(
+  storage: LibSQLStore,
+  agentId: string,
+  episodeId: string
+): Promise<RewardRecord[] | undefined>
+⋮----
+// This is a simplified placeholder - in a real implementation you would:
+// 1. Query the database for rewards matching the agent and episode IDs
+// 2. Sort and return the results
+⋮----
+// For demonstration purposes, we return an empty array
+// Replace this with actual database query logic
+⋮----
+/**
+ * Retrieves reward records for an agent within a time period
+ *
+ * @param storage - Storage adapter for reward data
+ * @param agentId - ID of the agent
+ * @param episodeIds - Optional specific episodes to include
+ * @param startDate - Start of the time period
+ * @param endDate - End of the time period
+ * @returns Array of reward records
+ */
+async function retrieveAgentRewards(
+  storage: LibSQLStore,
+  agentId: string,
+  episodeIds?: string[],
+  startDate?: Date,
+  endDate?: Date
+): Promise<RewardRecord[]>
+⋮----
+// This is a simplified placeholder - in a real implementation you would:
+// 1. Query the database for rewards matching the criteria
+// 2. Filter by dates and episodes if provided
+// 3. Sort and return the results
+⋮----
+// For demonstration purposes, we generate sample data
+⋮----
+/**
+ * Generates sample reward records for testing and demonstration
+ *
+ * @param agentId - ID of the agent
+ * @param episodeCount - Number of episodes to generate
+ * @param actionsPerEpisode - Number of actions per episode
+ * @returns Array of sample reward records
+ */
+function generateSampleRewardRecords(
+  agentId: string,
+  episodeCount: number,
+  actionsPerEpisode: number
+): RewardRecord[]
+⋮----
+const reward = Math.random() * 2 - 0.5; // Random between -0.5 and 1.5
+⋮----
+action: `action_${a % 3}`, // One of 3 possible actions
+⋮----
+// Sort by timestamp
+⋮----
+/**
+ * Summarizes reward records for analysis
+ *
+ * @param records - Array of reward records
+ * @returns Summary statistics for the rewards
+ */
+function summarizeRewards(records: RewardRecord[]):
+⋮----
+// Extract episodes
+⋮----
+// Calculate average reward
+⋮----
+// Calculate average episode return (sum of rewards in each episode)
+⋮----
+// Analyze state-actions
+⋮----
+// Create a simple hash of the state-action for grouping
+⋮----
+// Calculate average rewards per state-action
+⋮----
+// Sort by average reward
+⋮----
+// Get top and worst performers
+````
+
+## File: .env.example
+````
+# Sample Google Generative AI API key, replace with your own
+GOOGLE_GENERATIVE_AI_API_KEY="google_api_key_here"
+MODEL="models/gemini-2.0-flash"
+EMBEDDING_MODEL="models/gemini-embedding-exp-03-07"
+
+# Sample Google Custom Search Engine ID, rconstructor using the cseId
+GOOGLE_CSE_ID="cse-id_here"
+# Key constructor using the apiKey
+GOOGLE_API_KEY="google_api_key_here"
+
+# Sample Langchain API key, replace with your own
+LANGCHAIN_API_KEY="langchain_api_key"
+
+# Sample Turso database URL and key, replace with your own
+TURSO_DATABASE_URL="libsql://<id>.aws-us-east-1.turso.io"
+TURSO_DATABASE_KEY="the_turso_database_key_here"
+
+# Sample Langsmith API key and service key, replace with your own
+LANGSMITH_TRACING_V2="true"
+LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
+LANGSMITH_API_KEY="langsmith_api_key"
+LANGSMITH_SERVICE_KEY="langsmith_service_key"
+
+# Sample Pinecone API key, replace with your own
+PINECONE_API_KEY="pinecone_api_key"
+PINECONE_ENV="us-east-1"
+PINECONE_HOST="https://<id here>.pinecone.io"
+PINECONE_MODEL="llama-text-embed-v2"
+PINECONE_INDEX="Default"
+PINECONE_DIMENSION="2048"
+PINECONE_METRIC="cosine"
+PINECONE_NAMESPACE="Default"
+
+# Sample Upstash Vector REST URL, replace with your own
+UPSTASH_VECTOR_REST_URL="https://<id here>.us1-vector.upstash.io"
+UPSTASH_VECTOR_REST_TOKEN="vector-rest-token"
+UPSTASH_INDEX="name_of_your_index"
+UPSTASH_REDIS_URL="url"
+UPSTASH_REDIS_TOKEN="upstash_redis_token"
+
+# Sample ElevenLabs API key, replace with your own
+ELEVENLABS_API="elevenslabs_voice_api_key"
+
+EXA_API_KEY="exa-search-api-key"
+
+# Langfuse API keys
+LANGFUSE_PUBLIC_KEY="your_actual_langfuse_public_key"
+LANGFUSE_SECRET_KEY="your_actual_langfuse_secret_key"
+LANGFUSE_HOST="https://us.cloud.langfuse.com"
+
+# Sample E2B API key, replace with your own
+E2B_API_KEY="your_e2b_api_key"
+````
+
+## File: src/mastra/tools/graphRag.ts
+````typescript
+/**
+ * Graph-based Retrieval Augmented Generation (GraphRAG) tools for Mastra AI.
+ *
+ * This module provides advanced document retrieval that leverages graph relationships
+ * between documents to improve context and relevance of retrieved information.
+ */
+⋮----
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { PineconeStore } from "@langchain/pinecone";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { Document } from "langchain/document";
+import { createEmbeddings } from "../database/vector-store";
+import { createLangSmithRun, trackFeedback } from "../services/langsmith";
+import { createLangChainModel } from "../services/langchain";
+import { env } from "process";
+// Import Langfuse service for observability.
+import { langfuse } from "../services/langfuse";
+⋮----
+/**
+ * Graph node representing a document or chunk with its connections.
+ */
+export interface GraphNode {
+  /** Unique identifier for the node */
+  id: string;
+  /** Document content */
+  content: string;
+  /** Metadata about the document */
+  metadata: Record<string, unknown>;
+  /** IDs of connected nodes */
+  connections: string[];
+  /** Connection weights/strengths (0-1) */
+  connectionWeights: Record<string, number>;
+}
+⋮----
+/** Unique identifier for the node */
+⋮----
+/** Document content */
+⋮----
+/** Metadata about the document */
+⋮----
+/** IDs of connected nodes */
+⋮----
+/** Connection weights/strengths (0-1) */
+⋮----
+/**
+ * GraphDocument augments a LangChain Document with GraphNode metadata.
+ */
+export type GraphDocument = Document & { metadata: GraphNode };
+⋮----
+/**
+ * Creates graph relationships between documents based on semantic similarity.
+ *
+ * @param documents - List of documents to create relationships between.
+ * @param embeddings - Embeddings model for calculating similarity.
+ * @param threshold - Similarity threshold for creating connections (default 0.7).
+ * @returns Documents enriched with graph relationship metadata.
+ * @throws {Error} If vector dimensions mismatch.
+ */
+async function createGraphRelationships(
+  documents: Document[],
+  embeddings: GoogleGenerativeAIEmbeddings,
+  threshold: number = 0.7
+): Promise<GraphDocument[]>
+⋮----
+// Map input documents to GraphDocuments ensuring metadata conforms to GraphNode.
+⋮----
+// Create embeddings for all documents.
+⋮----
+// Calculate similarity between all pairs of documents.
+⋮----
+// Create a connection if similarity exceeds threshold.
+⋮----
+/**
+ * Calculates cosine similarity between two vectors.
+ *
+ * @param vec1 - First vector.
+ * @param vec2 - Second vector.
+ * @returns Similarity score between 0 and 1.
+ * @throws {Error} If vector lengths differ.
+ */
+function calculateCosineSimilarity(vec1: number[], vec2: number[]): number
+⋮----
+/**
+ * Tool for creating a graph-based document store with relationships.
+ */
+⋮----
+// Create embeddings model.
+⋮----
+// Convert input to GraphDocuments.
+⋮----
+// Create graph relationships.
+⋮----
+// Count total connections (edges).
+⋮----
+// Store graph in vector database.
+⋮----
+// Track success in LangSmith.
+⋮----
+/**
+ * Tool for graph-based document retrieval with relationship exploration.
+ *
+ * Now uses createLangChainModel to ensure the LangChain model is instantiated and functional,
+ * and logs a generation event via Langfuse.
+ */
+⋮----
+// Instantiate LangChain model to ensure createLangChainModel is read and functional.
+⋮----
+// Log model instantiation via Langfuse.
+⋮----
+// Initialize Pinecone client.
+⋮----
+// Connect to vector store.
+⋮----
+// Initial document retrieval.
+⋮----
+// Process and normalize results.
+⋮----
+// Explore graph up to maxHopCount.
+⋮----
+// Format and sort results.
+⋮----
+// Log generation event using Langfuse.
+````
+
+## File: src/mastra/tools/memoryQueryTool.ts
+````typescript
+import { createTool } from "@mastra/core/tools";
+import { createLogger } from "@mastra/core/logger";
+import { z } from "zod";
+// Assuming sharedMemory is an instance of the Memory class from @mastra/memory
+import { sharedMemory } from "../database";
+// Import specific types if available and known, otherwise use general types
+import type { CoreMessage, ToolExecutionContext } from "@mastra/core"; // Assuming CoreMessage type exists
+⋮----
+/**
+ * Schema for selecting messages by specific IDs with context.
+ */
+⋮----
+/**
+ * Schema for selecting messages based on various criteria.
+ * Aligns with the `selectBy` parameter of `memory.query()`.
+ */
+⋮----
+/**
+ * Input schema for the Memory Query Tool, aligned with `memory.query()`.
+ */
+⋮----
+// resourceId: z.string().optional().describe("Optional ID of the resource owning the thread for validation."),
+// threadConfig: z.any().optional().describe("Optional memory configuration overrides for this query."), // Type depends on MemoryConfig definition
+⋮----
+/**
+ * Output schema for the Memory Query Tool.
+ * Returns an array of matching messages found in memory.
+ */
+⋮----
+// Using z.unknown() for messages as CoreMessage structure might be complex or not fully defined here
+⋮----
+// uiMessages: z.array(z.unknown()).optional().describe("Optional array of messages formatted for UI display."), // Include if needed
+⋮----
+/**
+ * Creates a tool for querying messages stored in the Mastra Memory system for a specific thread.
+ *
+ * @remarks
+ * This tool allows agents to retrieve messages based on criteria like recency,
+ * semantic similarity, or specific IDs. It interacts directly with the
+ * configured memory provider (LibSQL) via the `memory.query()` method.
+ * Retrieving specific structured data (like feedback or rewards) depends on that
+ * data being present within the message content/metadata or discoverable via semantic search.
+ * This tool does *not* query arbitrary structured data types directly.
+ *
+ * @param {ToolExecuteParams<typeof memoryQueryInputSchema>} params - The parameters object, conforming to the input schema.
+ * @param {string} params.threadId - The ID of the thread to query.
+ * @param {object} params.selectBy - The criteria for selecting messages.
+ * @returns {Promise<{messages: Array<any>}>} A promise resolving to the query results.
+ * @throws {Error} If the memory system is unavailable or the query fails.
+ */
+⋮----
+id: "memory-query", // Unique ID for the tool
+⋮----
+// Access the validated input from context
+⋮----
+// Use the documented memory.query() method
+const { messages /*, uiMessages */ } = await sharedMemory.query({
+⋮----
+// resourceId, // Pass if needed/available
+// threadConfig, // Pass if needed/available
+⋮----
+// Ensure messages is always an array
+⋮----
+// Return structure matching the output schema
+⋮----
+// --- Integration into tools/index.ts (Reminder) ---
+// 1. Import `memoryQueryTool` in `src/mastra/tools/index.ts`.
+// 2. Add it to `allToolsArray` and `allToolsMap`.
+// 3. Consider adding it to `utilityTools` or a new `memoryTools` group.
+// 4. Add its ID ('memory-query') to the `toolIds` array in the configuration
+//    of any agent that needs to use it (e.g., rlTrainerAgent, analystAgent).
+````
+
+## File: src/mastra/tools/readwrite.ts
+````typescript
+/**
+ * File Reading and Writing Tools for Mastra AI.
+ *
+ * This module provides tools for reading from and writing to files in the filesystem
+ * with support for different file formats, encodings, and write modes.
+ */
+⋮----
+import { createTool } from "@mastra/core/tools";
+import { z } from "zod";
+import { promises as fs } from "fs";
+import { resolve, dirname, extname, join } from "path";
+import { createLangSmithRun, trackFeedback } from "../services/langsmith";
+⋮----
+/**
+ * Supported file encoding types
+ */
+export enum FileEncoding {
+  /** UTF-8 text encoding */
+  UTF8 = "utf8",
+  /** ASCII text encoding */
+  ASCII = "ascii",
+  /** UTF-16 Little Endian encoding */
+  UTF16LE = "utf16le",
+  /** Latin1 encoding */
+  LATIN1 = "latin1",
+  /** Base64 encoding */
+  BASE64 = "base64",
+  /** Hex encoding */
+  HEX = "hex",
+}
+⋮----
+/** UTF-8 text encoding */
+⋮----
+/** ASCII text encoding */
+⋮----
+/** UTF-16 Little Endian encoding */
+⋮----
+/** Latin1 encoding */
+⋮----
+/** Base64 encoding */
+⋮----
+/** Hex encoding */
+⋮----
+/**
+ * File write modes
+ */
+export enum FileWriteMode {
+  /** Overwrite the file if it exists */
+  OVERWRITE = "overwrite",
+  /** Append to the file if it exists */
+  APPEND = "append",
+  /** Create a new file, fail if the file exists */
+  CREATE_NEW = "create-new",
+}
+⋮----
+/** Overwrite the file if it exists */
+⋮----
+/** Append to the file if it exists */
+⋮----
+/** Create a new file, fail if the file exists */
+⋮----
+/**
+ * Base path for knowledge folder
+ */
+⋮----
+/**
+ * Validates if a path is within the knowledge folder
+ */
+function isKnowledgePath(path: string): boolean
+⋮----
+/**
+ * Resolves a knowledge folder path
+ */
+function resolveKnowledgePath(path: string): string
+⋮----
+/**
+ * Tool for reading files from the filesystem
+ */
+⋮----
+// Resolve the absolute path
+⋮----
+// Check if the file exists
+⋮----
+// Get file stats
+⋮----
+// Check file size
+⋮----
+// Read the file
+⋮----
+// Handle line-based reading if requested
+⋮----
+// Extract the requested lines
+⋮----
+// Track success in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+/**
+ * TOOL NAME UPDATE: Changed export id from "write-to-file" to "write-file"
+ * to match the research-agent's requirement.
+ */
+⋮----
+/**
+ * Tool for writing content to files in the filesystem
+ */
+⋮----
+// Resolve the absolute path
+⋮----
+// Check content size
+⋮----
+// Create parent directories if requested
+⋮----
+// Check if the file exists
+⋮----
+// File doesn't exist
+⋮----
+// Handle write mode
+⋮----
+// Write or append to the file based on the mode
+⋮----
+// Track success in LangSmith
+⋮----
+// Track failure in LangSmith
+⋮----
+// Ensure the execute method exists before calling it
+⋮----
+// Modify context to use knowledge path and provide default startLine
+⋮----
+// Track failure in LangSmith
+⋮----
+// Ensure the execute method exists before calling it
+⋮----
+// Modify context to use knowledge path and include default maxSizeBytes
+⋮----
+// Provide the default value from writeToFileTool's schema
+⋮----
+// Track failure in LangSmith
+⋮----
+// Original tools are already exported when defined
+````
+
+## File: src/mastra/tools/vectorquerytool.ts
+````typescript
+/**
+ * Vector Query Tool for semantic search over vector databases.
+ *
+ * This module creates and exports tools for semantic search over vector stores,
+ * with support for reranking to improve search result relevance.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import { z } from "zod";
+import { encodingForModel } from "js-tiktoken";
+import { createVectorQueryTool } from "@mastra/rag";
+import { env } from "process";
+import { createLogger } from "@mastra/core/logger";
+import {
+  MastraEmbeddingAdapter,
+  createEmbeddings,
+} from "../database/vector-store";
+import { AsyncCaller } from "@langchain/core/utils/async_caller";
+⋮----
+// Configure logger
+⋮----
+// Environment validation
+⋮----
+// Validate environment
+⋮----
+/**
+ * Configuration for Vector Query Tool
+ */
+export interface VectorQueryConfig {
+  vectorStoreName?: string;
+  indexName?: string;
+  enableFilters?: boolean;
+  id?: string;
+  description?: string;
+  embeddingProvider?: "google" | "tiktoken";
+  topK?: number;
+  tokenEncoding?: string;
+  dimensions?: number;
+  apiKey?: string;
+}
+⋮----
+/**
+ * Creates a Vector Query Tool with specified configuration
+ */
+export function createMastraVectorQueryTool(config: VectorQueryConfig =
+⋮----
+// Get configuration values with defaults
+⋮----
+// Create embedding model
+⋮----
+// Create a tiktoken adapter - using type assertion to avoid issues with private properties
+⋮----
+// client property is removed as it's private
+⋮----
+// Get tokenizer
+⋮----
+// Convert text to tokens
+⋮----
+// Create embedding from tokens
+⋮----
+// Pad embedding if needed
+⋮----
+// Use the adapter with createEmbeddings with type assertion
+⋮----
+// Use Google embeddings
+⋮----
+// Create reranker
+⋮----
+// Tool ID and description
+⋮----
+// Create and return the tool
+⋮----
+// Default vector query tool instance with tiktoken
+⋮----
+// Google embeddings variant
+⋮----
+// Tool with filters enabled
+````
+
+## File: .gitignore
+````
+output.txt
+node_modules
+dist
+.mastra
+.env.development
+.env
+*.db
+.repomix/bundles.json
+.repomix
+gcp-vertexai-credentials.json
+.github
+.github/
+/.github
+/.github/
+/.github/*
+/.github/work
+````
+
+## File: src/mastra/database/index.ts
+````typescript
+/**
+ * Database configuration for memory persistence using LibSQL.
+ *
+ * This module sets up the LibSQL adapter for Mastra memory persistence,
+ * allowing agent conversations and context to be stored reliably.
+ */
+⋮----
+import { LibSQLStore } from "@mastra/core/storage/libsql";
+import { LibSQLVector } from "@mastra/core/vector/libsql";
+import { Memory } from "@mastra/memory";
+import type { MastraStorage, MastraVector } from "@mastra/core";
+⋮----
+// Define the memory configuration type
+export interface MemoryConfig {
+  lastMessages: number;
+  semanticRecall: {
+    topK: number;
+    messageRange: {
+      before: number;
+      after: number;
+    };
+  };
+  workingMemory: {
+    enabled: boolean;
+    type: "text-stream";
+  };
+  threads: {
+    generateTitle: boolean;
+  };
+}
+⋮----
+// Default memory configuration that works well for most agents
+⋮----
+/**
+ * Creates a new Memory instance with LibSQL storage and vector capabilities.
+ * @param options Memory configuration options
+ * @returns Configured Memory instance
+ */
+export function createMemory(
+  options: Partial<MemoryConfig> = defaultMemoryConfig
+): Memory
+⋮----
+// Initialize LibSQL storage
+⋮----
+// Initialize LibSQL vector store for semantic search
+⋮----
+// Export shared memory instance
+⋮----
+// Re-export Memory type for convenience
+````
+
+## File: src/mastra/index.ts
+````typescript
+import { Mastra } from "@mastra/core";
+import { createLogger } from "@mastra/core/logger";
+import {
+  researchAgent,
+  analystAgent,
+  writerAgent,
+  rlTrainerAgent,
+  dataManagerAgent,
+} from "./agents";
+import { ragWorkflow } from "./workflows";
+import {
+  deanInsightsNetwork,
+  dataFlowNetwork,
+  contentCreationNetwork,
+  networks,
+} from "./workflows/Networks/agentNetwork";
+import { sharedMemory as memory } from "./database";
+import {
+  collectFeedbackTool,
+  analyzeFeedbackTool,
+  applyRLInsightsTool,
+} from "./tools/rlFeedback";
+import {
+  calculateRewardTool,
+  defineRewardFunctionTool,
+  optimizePolicyTool,
+} from "./tools/rlReward";
+⋮----
+// Re-export the RL tools for easier access
+⋮----
+// Re-export agent networks for easier access
+⋮----
+// Create and export the Mastra instance
+⋮----
+// Use the properly configured memory from the database module
+⋮----
+// Track request timing for RL metrics
+````
+
+## File: src/mastra/workflows/index.ts
+````typescript
+import { Agent } from "@mastra/core/agent";
+import { Step, Workflow } from "@mastra/core/workflows";
+import { z } from "zod";
+import { researchAgent, analystAgent, writerAgent } from "../agents";
+import { sharedMemory as memory } from "../database";
+import { PineconeStore } from "@langchain/pinecone";
+import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+⋮----
+// Create a research step that gathers relevant information
+⋮----
+// Use the research agent to gather information
+⋮----
+// Return the research findings
+⋮----
+// Create an analysis step that processes the research findings
+⋮----
+// Use the analyst agent to analyze the findings
+⋮----
+// Return the analysis
+⋮----
+// Create a documentation step that creates a final report
+⋮----
+// Use the writer agent to create documentation
+⋮----
+// Store the final document in Pinecone for future retrieval
+⋮----
+// Initialize the Pinecone client
+⋮----
+// Get the index from the client
+⋮----
+// Return the final document
+⋮----
+// RL Feedback Collection Step (for reinforcement learning)
+⋮----
+// For simulation purposes, we'll use a simple model to evaluate the document
+⋮----
+// Extract JSON from the response
+⋮----
+// Default feedback if parsing fails
+⋮----
+// Store feedback in memory for reinforcement learning
+⋮----
+// Create a unique thread for storing this feedback entry
+⋮----
+// Store feedback as metadata on a new thread
+⋮----
+// Create the complete RAG workflow
+⋮----
+// Commit the workflow
+⋮----
+/**
+ * Workflows Index
+ *
+ * This file exports all workflows and agent networks available in the DeanmachinesAI system.
+ * Workflows provide predefined execution paths, while AgentNetworks use LLM-based routing
+ * for dynamic agent collaboration.
+ */
+⋮----
+// Export all available workflows
+⋮----
+// Export agent networks
+⋮----
+// TODO: Add and export additional workflow definitions here as they are developed
+// export * from "./researchWorkflow";
+````
+
+## File: src/mastra/tools/index.ts
+````typescript
+/**
+ * Tool Registry and Management
+ *
+ * This module serves as the central registry for all available tools,
+ * handling their initialization, configuration, and export. It assembles
+ * core, optional, additional, and extra tools into a lookup map so that agents
+ * can easily find and use them.
+ *
+ * @module Tools
+ */
+⋮----
+// === Standard library imports ===
+import { env } from "process";
+⋮----
+// === Third-party imports ===
+import { z } from "zod";
+import { Tool } from "@mastra/core/tools";
+import { createLogger } from "@mastra/core/logger";
+⋮----
+// === Internal tool imports ===
+import {
+  vectorQueryTool,
+  googleVectorQueryTool,
+  filteredQueryTool,
+} from "./vectorquerytool";
+import { createBraveSearchTool } from "./brave-search";
+import { createGoogleSearchTool } from "./google-search";
+import { createTavilySearchTool } from "./tavily";
+import { exaSearchTool } from "./exasearch";
+import { readFileTool, writeToFileTool } from "./readwrite";
+import {
+  collectFeedbackTool,
+  analyzeFeedbackTool,
+  applyRLInsightsTool,
+} from "./rlFeedback";
+import {
+  calculateRewardTool,
+  defineRewardFunctionTool,
+  optimizePolicyTool,
+} from "./rlReward";
+import { memoryQueryTool } from "./memoryQueryTool";
+⋮----
+// --- Import additional tools from new modules ---
+import { analyzeContentTool, formatContentTool } from "./contentTools";
+import { searchDocumentsTool, embedDocumentTool } from "./document-tools";
+⋮----
+// --- Import extra modules that return or represent tool instances ---
+import { GitHubClient } from "./github";
+import { GraphNode } from "./graphRag";
+import { createCalculatorTool } from "./calculator";
+import { createLlamaIndexTools } from "./llamaindex";
+import { McpTools } from "./mcptools";
+import { arxiv } from "./arxiv";
+import { WikipediaClient } from "./wikibase";
+import { createAISDKTools } from "./ai-sdk";
+import { e2b } from "./e2b";
+// Import GraphRag tools so that they are read and fully functional.
+import { createGraphRagTool, graphRagQueryTool } from "./graphRag";
+⋮----
+// === Export all tool modules ===
+⋮----
+// === Configure Logger ===
+⋮----
+// === Environment Configuration ===
+⋮----
+/**
+ * Schema for environment variables used to initialize tools.
+ */
+⋮----
+// API keys for extra tools
+⋮----
+/**
+ * Type alias for the validated environment configuration.
+ */
+export type EnvConfig = z.infer<typeof envSchema>;
+⋮----
+/**
+ * Validates the environment configuration.
+ *
+ * @returns {EnvConfig} The validated environment configuration.
+ * @throws {Error} When validation fails.
+ */
+function validateConfig(): EnvConfig
+⋮----
+// === Initialize Environment Configuration ===
+⋮----
+// === Search Tools Initialization ===
+⋮----
+/**
+ * Record type for search tools.
+ */
+interface SearchToolRecord {
+  [key: string]: Tool<z.ZodTypeAny, z.ZodTypeAny> | undefined;
+}
+⋮----
+/**
+ * Initializes search tools based on available API keys.
+ */
+⋮----
+// === Core Tools Initialization ===
+⋮----
+/**
+ * Core tools that are always available.
+ */
+⋮----
+// === Additional Tools from contentTools and document-tools ===
+⋮----
+// === Extra Tools Initialization ===
+/**
+ * Extra tools aggregated from modules that expose tool instances.
+ * NOTE: Some imports (like GraphNode, CalculatorConfig, WikipediaClient) are types or configurations,
+ * so only tool instances are added to the tools map.
+ */
+⋮----
+// Instantiate GitHub client using the provided API key.
+⋮----
+// Instantiate (or use) the E2B tool if it is already an instance.
+⋮----
+// Create and add LlamaIndex tools.
+⋮----
+// Add McpTools if provided as an array.
+⋮----
+// Include 'arxiv' tool if it is a valid tool instance.
+⋮----
+// Create and add AISDK tools.
+⋮----
+// Instantiate Wikipedia client.
+⋮----
+// Instantiate Calculator tool.
+⋮----
+// Add GraphRag tools to the extra tools array.
+⋮----
+// Create an alias tool for "graph-rag" required by data-manager-agent.
+// This alias uses the properties of createGraphRagTool but overrides the id.
+⋮----
+// === Filter Optional Search Tools ===
+⋮----
+// === Aggregate All Tools ===
+⋮----
+/**
+ * Complete collection of all available tools (core + optional + additional + extra).
+ */
+⋮----
+/**
+ * Map for efficient lookup of tools by their ID.
+ */
+⋮----
+/**
+ * Grouped tools by category for easier access.
+ */
+⋮----
+// === Log Initialization Results ===
+⋮----
+// For backward compatibility.
+````
+
+## File: package.json
+````json
+{
+  "name": "deanmachinesai",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "mastra dev"
+  },
+  "keywords": [
+    "mastra",
+    "agentic",
+    "deanmachines",
+    "ai",
+    "sdk",
+    "openai",
+    "google",
+    "langchain",
+    "mastra-sdk",
+    "mastra-ai",
+    "ai-sdk",
+    "agentic-ai",
+    "agentic-sdk",
+    "ai-agents",
+    "deanmachines-ai",
+    "agents",
+    "agent"
+  ],
+  "author": "Deanmachines",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "overrides": {
+    "pathe": "^1.1.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "src",
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@agentic/ai-sdk": "^7.6.3",
+    "@agentic/arxiv": "^7.6.3",
+    "@agentic/brave-search": "^7.6.3",
+    "@agentic/calculator": "^7.6.3",
+    "@agentic/core": "^7.6.3",
+    "@agentic/e2b": "^7.6.3",
+    "@agentic/exa": "^7.6.3",
+    "@agentic/firecrawl": "^7.6.3",
+    "@agentic/genkit": "^7.6.3",
+    "@agentic/google-custom-search": "^7.6.3",
+    "@agentic/langchain": "^7.6.3",
+    "@agentic/llamaindex": "^7.6.3",
+    "@agentic/mastra": "^7.6.3",
+    "@agentic/mcp": "^7.6.3",
+    "@agentic/midjourney": "^7.6.3",
+    "@agentic/notion": "^7.6.3",
+    "@agentic/serper": "^7.6.3",
+    "@agentic/tavily": "^7.6.3",
+    "@agentic/wikipedia": "^7.6.3",
+    "@ai-sdk/google": "^1.2.10",
+    "@e2b/code-interpreter": "^1.1.0",
+    "@google/genai": "^0.7.0",
+    "@google/generative-ai": "^0.1.3",
+    "@hyperbrowser/sdk": "^0.43.0",
+    "@langchain/community": "^0.3.39",
+    "@langchain/core": "^0.3.43",
+    "@langchain/google-genai": "^0.2.2",
+    "@langchain/openai": "^0.5.4",
+    "@langchain/pinecone": "^0.2.0",
+    "@mastra/client-js": "^0.1.13",
+    "@mastra/core": "^0.7.0",
+    "@mastra/deployer": "^0.2.5",
+    "@mastra/evals": "^0.1.14",
+    "@mastra/github": "^1.1.14",
+    "@mastra/loggers": "^0.1.14",
+    "@mastra/mcp": "^0.3.6",
+    "@mastra/memory": "^0.2.6",
+    "@mastra/pinecone": "^0.2.4",
+    "@mastra/rag": "^0.1.14",
+    "@mastra/upstash": "^0.2.1",
+    "@mastra/vector-libsql": "^0.1.0-alpha.24",
+    "@mastra/vector-pinecone": "^0.1.5",
+    "@mastra/vector-upstash": "^0.1.5",
+    "@mastra/voice-elevenlabs": "^0.1.9",
+    "@mastra/voice-google": "^0.1.9",
+    "@modelcontextprotocol/sdk": "^1.9.0",
+    "@opentelemetry/instrumentation": "^0.200.0",
+    "@opentelemetry/semantic-conventions": "^1.30.0",
+    "@pinecone-database/pinecone": "^5.1.1",
+    "@upstash/vector": "^1.2.1",
+    "ai": "^4.3.4",
+    "commander": "^13.1.0",
+    "dotenv": "^16.4.7",
+    "exa-js": "^1.5.13",
+    "fast-xml-parser": "^5.2.0",
+    "fs-extra": "^11.3.0",
+    "genkit": "^1.5.0",
+    "husky": "^9.1.7",
+    "inversify": "^7.5.0",
+    "json": "^11.0.0",
+    "ky": "^1.8.0",
+    "langchain": "^0.3.20",
+    "langfuse": "^3.37.1",
+    "langsmith": "^0.3.15",
+    "llamaindex": "^0.9.16",
+    "lodash": "^4.17.21",
+    "octokit": "^4.1.2",
+    "p-throttle": "^6.2.0",
+    "puppeteer-core": "^24.6.0",
+    "ramda": "^0.30.1",
+    "ts-node": "^10.9.2",
+    "uuid": "^11.1.0",
+    "winston": "^3.17.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "js-tiktoken": "^1.0.19",
+    "mastra": "^0.4.4",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "canvas",
+      "esbuild",
+      "onnxruntime-node",
+      "openai-zod-to-json-schema",
+      "protobufjs",
+      "sharp",
+      "tree-sitter"
+    ]
+  }
+}
+````
+
+## File: src/mastra/agents/index.ts
+````typescript
+/**
+ * Agents Module
+ *
+ * This module exports all agent implementations from their individual files.
+ * Each agent is specialized for a particular role in the system and is configured
+ * with specific tools, memory settings, and instructions.
+ */
+⋮----
+// Import agent instances from their modular files
+import { researchAgent } from "./research.agent";
+import { analystAgent } from "./analyst.agent";
+import { writerAgent } from "./writer.agent";
+import { rlTrainerAgent } from "./rlTrainer.agent";
+import { dataManagerAgent } from "./dataManager.agent";
+import { agenticAssistant } from "./agentic.agent";
+// Export individual agents
+⋮----
+// Define the agents object
+⋮----
+// Export agents object for Mastra configuration
+⋮----
+// Export type for OpenAPI/Swagger documentation
+export type AgentIds = keyof typeof agents;
+````
+
+## File: README.md
+````markdown
+# DeanmachinesAI
+
+DeanmachinesAI is a state-of-the-art, Mastra AI‑powered platform that transforms research, analysis, and document processing through intelligent agent orchestration, dynamic networks, and robust, automated workflows. By combining advanced reinforcement learning, high-performance vector search capabilities, and complete observability, this platform is engineered for scalability, resilience, and continuous improvement.
+
+---
+
+## Key Technologies & Badges
+
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org)
+[![Node.js](https://img.shields.io/badge/Node.js-%3E=18.0.0-green?logo=node.js)](https://nodejs.org)
+[![Mastra](https://img.shields.io/badge/Mastra-AI-ff69b4?logo=ant-design)](https://github.com/mastra-ai)
+[![LangChain](https://img.shields.io/badge/LangChain-TS-blueviolet)](https://github.com/langchain-ai/langchainjs)
+[![Pinecone](https://img.shields.io/badge/Pinecone-VectorDB-blue?logo=pinecone)](https://www.pinecone.io)
+[![Redis](https://img.shields.io/badge/Redis-Cache-red?logo=redis)](https://redis.io)
+[![GoogleAI](https://img.shields.io/badge/Google_AI-External%20API-blue?logo=google)](https://ai.google)
+[![LibSQL](https://img.shields.io/badge/LibSQL-Turso-darkgreen)](https://turso.tech)
+[![Next.js](https://img.shields.io/badge/Next.js-Frontend-black?logo=next.js)](https://nextjs.org)
+
+---
+
+## 📋 Project Overview
+
+**DeanmachinesAI** integrates modern TypeScript practices with the Mastra framework to deliver an advanced platform with the following key features:
+
+- **Intelligent Agent Orchestration:**
+  Dynamic routing and coordination among an ecosystem of specialized agents:
+  - **Research Agent:** Gathers and synthesizes data from diverse sources.
+  - **Analyst Agent:** Interprets data to extract actionable insights.
+  - **Writer Agent:** Generates high-quality documentation and reports.
+  - **RL Trainer Agent:** Continuously improves system policies through reinforcement learning.
+  - **Data Manager Agent:** Handles file operations and memory management.
+  - **Builder Agent:** *(Upcoming)* Automatically builds and configures new agents to dynamically expand the system.
+
+- **Robust Workflow Automation:**
+  Seamless integration of reinforcement learning feedback, document processing pipelines, and high-performance vector search across distributed microservices enhances automation and minimizes human intervention.
+
+- **Scalable, Resilient Architecture:**
+  Utilizing dedicated services for:
+  - Fast vector storage (via Pinecone)
+  - Persistent memory storage (via Turso/LibSQL)
+  - High-speed caching (via Redis)
+
+- **Complete Observability:**
+  End-to-end trace logging and real-time performance monitoring through LangSmith and LangFuse provide transparency, facilitate proactive error detection, and ensure security.
+
+- **Future Frontend Integration:**
+  Upcoming integration with a fully built Next.js frontend will provide dynamic dashboards, detailed metric visualizations, and interactive control over agent activities.
+
+---
+
+## 🏗️ Detailed System Architecture
+
+### System Context
+
+```mermaid
+C4Context
+    title DeanmachinesAI - System Context
+    Person(user, "User", "An external user interfacing with the system via a Next.js based web dashboard")
+    System(deanam, "DeanmachinesAI", "A Mastra AI–powered platform for research, analysis, and document processing")
+    Rel(user, deanam, "Interacts via web interface", "HTTPS")
+```
+
+### Container Diagram
+
+```mermaid
+C4Container
+    title DeanmachinesAI - Container Diagram
+
+    Container(deanam, "DeanmachinesAI Backend", "Node.js / TypeScript", "Handles agent orchestration, tool integration, and API management")
+    Container(nextjs, "Next.js Frontend", "Next.js", "Provides an interactive dashboard and real-time monitoring")
+    ContainerDb(pinecone, "Pinecone DB", "Vector Database", "Stores vector embeddings and semantic indexes")
+    ContainerDb(turso, "Turso (LibSQL)", "SQL Database", "Persistent memory storage for agent state and metadata")
+    Container(redis, "Redis Cache", "Cache", "High-speed caching for performance")
+
+    Rel(deanam, pinecone, "Stores embeddings", "HTTPS/REST")
+    Rel(deanam, turso, "Persists agent memory", "SQL")
+    Rel(deanam, redis, "Caches data", "Redis protocol")
+    Rel(nextjs, deanam, "API calls for live data", "HTTPS")
+```
+
+---
+
+## ⏱️ Planned Enhancements & Real Roadmap
+
+### Current Achievements
+
+- **Complete Tool Integration:**
+  All core, search, document processing, reinforcement learning, and extra tool modules are fully integrated.
+- **High-Performance Vector Search:**
+  Multiple embedding strategies using Pinecone and js‑tiktoken have been successfully implemented.
+- **Full Observability Setup:**
+  End-to-end trace logging and performance monitoring are operational via LangSmith and LangFuse.
+- **Robust Memory Infrastructure:**
+  Turso and Redis are integrated for persistent memory and caching.
+- **Initial Next.js API Integration:**
+  Early groundwork for the Next.js frontend is complete, providing a foundation for interactive dashboards and real-time monitoring.
+
+### Near-Term Roadmap (May–August 2025)
+
+- **May 2025:**
+  - **Next.js Dashboard Integration:**
+    Finalize API endpoint expansion and integrate the Next.js dashboard for real-time metrics.
+    *Milestone: Live updating dashboards showcasing agent statuses and trace metrics.*
+- **June 2025:**
+  - **Toolset Expansion & Agent Evolution:**
+    Develop additional specialized tools and implement auto-configuration for new agents via the Builder Agent.
+    *Milestone: New tools deployed and experimental agent-building feature available for internal testing.*
+- **July 2025:**
+  - **Reinforcement Learning Enhancements:**
+    Introduce multi-objective RL frameworks and cross-agent transfer learning to boost decision making and responsiveness.
+    *Milestone: RL modules report improved learning curves and reduced action optimization latency.*
+- **August 2025:**
+  - **System Optimization & Final Frontend Integration:**
+    Optimize clustering, load balancing, and caching; finalize full Next.js frontend integration for production monitoring.
+    *Milestone: Complete, production-ready frontend with full interactivity and real-time analytics.*
+
+### Gantt Chart
+
+```mermaid
+gantt
+    title DeanmachinesAI Development Roadmap
+    dateFormat  YYYY-MM-DD
+    excludes    weekends
+
+    section Next.js Dashboard Integration
+    Finalize API Endpoints       :done,    api,    2025-05-01, 2025-05-05
+    Integrate Next.js Dashboard  :active,  nxjs,   2025-05-06, 2025-05-31
+
+    section Toolset Expansion & Agent Evolution
+    Develop Additional Tools     :active,  tools,  2025-06-01, 2025-06-15
+    Implement Builder Agent      :pending, ab,     2025-06-16, 2025-06-30
+
+    section Reinforcement Learning Enhancements
+    Multi-Objective RL Framework :pending,  rlmo,   2025-07-01, 2025-07-15
+    Cross-Agent Transfer Learning:pending,  catl,   2025-07-16, 2025-07-31
+
+    section System Optimization & Final Frontend Integration
+    Optimize Clustering & Load Balancing :pending, opt, 2025-08-01, 2025-08-15
+    Finalize Next.js Frontend Integration   :pending, fin, 2025-08-16, 2025-08-31
+```
+
+---
+
+## 📖 Developer Guide & Onboarding
+
+### Prerequisites
+
+- **Node.js (>=18.0.0)**
+- **pnpm** (or your preferred package manager configured for ES modules)
+- **Next.js** (for upcoming frontend development)
+
+### Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/Deanmachines/deanmachinesai.git
+cd deanmachinesai
+pnpm install
+```
+
+### Running in Development Mode
+
+Start the development server:
+
+```bash
+pnpm run dev
+```
+
+### Testing
+
+Run the complete test suite:
+
+```bash
+pnpm test
+```
+
+### Deployment
+
+Bundle and deploy the application with:
+
+```bash
+mastra build
+```
+
+Ensure that all required environment variables (see `.env.sample`) are properly configured and deploy using your chosen Node.js hosting provider.
+
+### Documentation
+
+For detailed developer guides, architecture documents, and integration tutorials, refer to the `/docs` directory.
+
+---
+
+## 📚 Additional Resources
+
+- **[Open API Documentation](http://localhost:4111/openapi.json)**
+- **[Swagger UI](http://localhost:4111/swagger-ui)**
+- **[Project Playground](http://localhost:4111/)**
+
+For more technical details on agent orchestration, tool integrations, and system design, please consult our comprehensive documentation within the `/docs` folder.
+
+---
+
+## 📝 License
+
+DeanmachinesAI is licensed under the ISC License. See the [LICENSE](LICENSE) file for further details.
+
+---
+
+## 📊 Change Log & Release Notes
+
+### Version 1.0.0 (Current)
+
+- Complete integration of all tool modules (core, search, RL, document processing, extra integrations).
+- High-performance vector search via Pinecone & js‑tiktoken.
+- Full observability with LangSmith and preliminary Next.js integration.
+
+### Upcoming Releases
+
+- **v1.1.0 (May 2025):**
+  - Next.js dashboard integration with live performance monitoring.
+  - Introduction of experimental agent-building features.
+  - Expansion of specialized tools and API endpoint enhancements.
+- **v1.2.0 (June–August 2025):**
+  - Finalization of Next.js frontend with full production readiness.
+  - Enhanced reinforcement learning capabilities and system optimizations.
+  - Advanced external data integrations and comprehensive logging improvements.
+
+---
+
+*This README is continually maintained as part of our project’s continuous improvement initiative. For any questions, contributions, or feedback, please open an issue or submit a pull request on GitHub.*
+
+```mermaid
+graph TB
+    User((External User))
+
+    subgraph "DeanmachinesAI System"
+        subgraph "Core Service Layer"
+            MastraCore["Mastra Core Service<br>(TypeScript/Node.js)"]
+
+            subgraph "Agent Network Container"
+                DeanInsights["DeanInsights Network<br>(Agent Network)"]
+                DataFlow["DataFlow Network<br>(Agent Network)"]
+                ContentCreation["ContentCreation Network<br>(Agent Network)"]
+
+                subgraph "Agent Components"
+                    ResearchAgent["Research Agent<br>(LLM-based)"]
+                    AnalystAgent["Analyst Agent<br>(LLM-based)"]
+                    WriterAgent["Writer Agent<br>(LLM-based)"]
+                    RLTrainerAgent["RL Trainer Agent<br>(LLM-based)"]
+                    DataManagerAgent["Data Manager Agent<br>(LLM-based)"]
+                end
+            end
+
+            subgraph "Database Container"
+                VectorStore["Vector Store<br>(Pinecone)"]
+                SharedMemory["Shared Memory<br>(LibSQL)"]
+                Redis["Cache Store<br>(Redis)"]
+            end
+
+            subgraph "Service Components"
+                LangChain["LangChain Service<br>(LangChain)"]
+                LangFuse["LangFuse Service<br>(Telemetry)"]
+                LangSmith["LangSmith Service<br>(Monitoring)"]
+                ExaSearch["ExaSearch Service<br>(Search)"]
+            end
+
+            subgraph "Tool Container"
+                SearchTools["Search Tools<br>(Multiple Providers)"]
+                VectorTools["Vector Tools<br>(Pinecone)"]
+                FileTools["File Tools<br>(Node.js)"]
+                RLTools["RL Tools<br>(Custom)"]
+                ContentTools["Content Tools<br>(Custom)"]
+                DocumentTools["Document Tools<br>(Custom)"]
+            end
+
+            subgraph "Workflow Container"
+                RAGWorkflow["RAG Workflow<br>(Custom)"]
+                ResearchWorkflow["Research Workflow<br>(Custom)"]
+            end
+        end
+    end
+
+    subgraph "External Services"
+        GoogleAI["Google AI<br>(Gemini)"]
+        PineconeDB["Pinecone DB<br>(Vector Database)"]
+        ExternalAPIs["External APIs<br>(Multiple)"]
+    end
+
+    %% Relationships
+    User -->|"Interacts with"| MastraCore
+    MastraCore -->|"Orchestrates"| DeanInsights
+    MastraCore -->|"Orchestrates"| DataFlow
+    MastraCore -->|"Orchestrates"| ContentCreation
+
+    %% Agent Network Relationships
+    DeanInsights -->|"Uses"| ResearchAgent
+    DeanInsights -->|"Uses"| AnalystAgent
+    DeanInsights -->|"Uses"| WriterAgent
+    DeanInsights -->|"Uses"| RLTrainerAgent
+    DeanInsights -->|"Uses"| DataManagerAgent
+
+    DataFlow -->|"Uses"| DataManagerAgent
+    DataFlow -->|"Uses"| AnalystAgent
+    DataFlow -->|"Uses"| RLTrainerAgent
+
+    ContentCreation -->|"Uses"| ResearchAgent
+    ContentCreation -->|"Uses"| WriterAgent
+    ContentCreation -->|"Uses"| RLTrainerAgent
+
+    %% Service Relationships
+    MastraCore -->|"Uses"| LangChain
+    MastraCore -->|"Monitors with"| LangFuse
+    MastraCore -->|"Tracks with"| LangSmith
+    MastraCore -->|"Searches with"| ExaSearch
+
+    %% Database Relationships
+    MastraCore -->|"Stores vectors in"| VectorStore
+    MastraCore -->|"Uses"| SharedMemory
+    MastraCore -->|"Caches in"| Redis
+
+    %% Tool Relationships
+    ResearchAgent -->|"Uses"| SearchTools
+    DataManagerAgent -->|"Uses"| FileTools
+    AnalystAgent -->|"Uses"| VectorTools
+    RLTrainerAgent -->|"Uses"| RLTools
+    WriterAgent -->|"Uses"| ContentTools
+    ResearchAgent -->|"Uses"| DocumentTools
+
+    %% External Service Relationships
+    LangChain -->|"Calls"| GoogleAI
+    VectorStore -->|"Stores in"| PineconeDB
+    SearchTools -->|"Queries"| ExternalAPIs
+
+    %% Workflow Relationships
+    MastraCore -->|"Executes"| RAGWorkflow
+    MastraCore -->|"Executes"| ResearchWorkflow
+```
+````

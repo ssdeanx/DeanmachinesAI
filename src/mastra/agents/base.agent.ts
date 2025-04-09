@@ -14,6 +14,10 @@ import {
   BaseAgentConfig,
   defaultErrorHandler,
   DEFAULT_MODEL_ID,
+  DEFAULT_MAX_TOKENS,
+  DEFAULT_MAX_CONTEXT_TOKENS,
+  defaultResponseValidation,
+  type ResponseHookOptions,
 } from "./config/base.config";
 import { createResponseHook } from "../hooks";
 import { allToolsMap } from "../tools";
@@ -22,13 +26,24 @@ import { allToolsMap } from "../tools";
 const logger = createLogger({ name: "agent-initialization", level: "info" });
 
 /**
- * Creates an agent instance from a configuration object
+ * Creates an agent instance from a configuration object and options
  *
- * @param config The agent configuration object
+ * @param params - Object containing configuration and agent options
+ * @param params.config - The agent configuration object
+ * @param params.memory - The memory instance to be injected into the agent (following RULE-MemoryInjection)
+ * @param params.onError - Optional error handler callback function
  * @returns A configured Agent instance
  * @throws Error if required tools are not available
  */
-export function createAgentFromConfig(config: BaseAgentConfig): Agent {
+export function createAgentFromConfig({
+  config,
+  memory,
+  onError,
+}: {
+  config: BaseAgentConfig;
+  memory: typeof sharedMemory;
+  onError?: (error: Error) => Promise<{ text: string }>;
+}): Agent {
   // Validate configuration
   if (!config.id || !config.name || !config.instructions) {
     throw new Error(
@@ -63,7 +78,6 @@ export function createAgentFromConfig(config: BaseAgentConfig): Agent {
   const responseHook = config.responseValidation
     ? createResponseHook(config.responseValidation)
     : undefined;
-
   // Create and return the agent instance
   logger.info(
     `Creating agent: ${config.id} with ${Object.keys(tools).length} tools`
@@ -72,11 +86,12 @@ export function createAgentFromConfig(config: BaseAgentConfig): Agent {
   try {
     return new Agent({
       model: config.model,
-      memory: sharedMemory,
+      memory, // Using injected memory instead of global reference
       name: config.name,
       instructions: config.instructions,
       tools,
       ...(responseHook ? { onResponse: responseHook } : {}),
+      ...(onError ? { onError } : {}), // Add error handler if provided
     });
   } catch (error) {
     logger.error(

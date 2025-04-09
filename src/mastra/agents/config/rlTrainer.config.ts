@@ -67,3 +67,6 @@ export const rlTrainerAgentConfig: BaseAgentConfig = {
     "write-file",
   ],
 };
+
+export const rlTrainerAgent: typeof rlTrainerAgentConfig = rlTrainerAgentConfig;
+export default rlTrainerAgent;

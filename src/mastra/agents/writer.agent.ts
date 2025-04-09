@@ -6,7 +6,11 @@
  */
 
 import { createAgentFromConfig } from "./base.agent";
-import { writerAgentConfig } from "./config/writer.config";
+import writerConfig from "./config/writer.config";
+import { sharedMemory } from "../database";
+import { createLogger } from "@mastra/core/logger";
+
+const logger = createLogger({ name: "writer-agent", level: "info" });
 
 /**
  * Writer Agent with content formatting capabilities
@@ -16,4 +20,13 @@ import { writerAgentConfig } from "./config/writer.config";
  * adapt tone and style for different audiences, and maintain consistency
  * across documents.
  */
-export const writerAgent = createAgentFromConfig(writerAgentConfig);
+export const writerAgent = createAgentFromConfig({
+  config: writerConfig,
+  memory: sharedMemory, // Following RULE-MemoryInjection
+  onError: async (error: Error) => {
+    logger.error("Writer agent error:", error);
+    return {
+      text: "I encountered an error while generating content. Please provide more specific guidelines or context.",
+    };
+  },
+});

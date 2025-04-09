@@ -68,6 +68,9 @@ importers:
       '@ai-sdk/google':
         specifier: ^1.2.10
         version: 1.2.10(zod@3.24.2)
+      '@ai-sdk/google-vertex':
+        specifier: ^2.2.14
+        version: 2.2.14(encoding@0.1.13)(zod@3.24.2)
       '@e2b/code-interpreter':
         specifier: ^1.1.0
         version: 1.1.0
@@ -344,6 +347,18 @@ packages:
     resolution: {integrity: sha512-ffHTJPweV5RN5i3rcJP3vfnctXa5E8lHyqK0Vb3BTfUrfv+kim7zKu804Baegl/fKIMMhVEdBFz84JzXDlL2ng==}
     peerDependencies:
       zod: ^3.24.2
+
+  '@ai-sdk/anthropic@1.2.9':
+    resolution: {integrity: sha512-IsPKFt45rEhrAIeJisNr5hS1N6NPiVD/sBcS6wqJc2eKp32Q74SqDn6hmEgk4MlqxuWzpUCQ2kjsa75gAV3Hew==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
+
+  '@ai-sdk/google-vertex@2.2.14':
+    resolution: {integrity: sha512-aQUPrcyB/DJ3qnrMqTyLIRRJ+uJ930NgSC2Fw2kOF2BrIyrKkMZX98U766GZyBqaCEV3OcckL2AjAeazRocUgw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
 
   '@ai-sdk/google@1.2.10':
     resolution: {integrity: sha512-YmZ9DIO6Un0+RU9PtjM9TfoExmUQg2fk8vTlwT+NOaARyhv8eskRCUTne0zf5uUOazPIJuBEv2I6YE9XnS+tUg==}
@@ -7775,6 +7790,24 @@ snapshots:
       zod: 3.24.2
     transitivePeerDependencies:
       - babel-plugin-macros
+
+  '@ai-sdk/anthropic@1.2.9(zod@3.24.2)':
+    dependencies:
+      '@ai-sdk/provider': 1.1.2
+      '@ai-sdk/provider-utils': 2.2.6(zod@3.24.2)
+      zod: 3.24.2
+
+  '@ai-sdk/google-vertex@2.2.14(encoding@0.1.13)(zod@3.24.2)':
+    dependencies:
+      '@ai-sdk/anthropic': 1.2.9(zod@3.24.2)
+      '@ai-sdk/google': 1.2.10(zod@3.24.2)
+      '@ai-sdk/provider': 1.1.2
+      '@ai-sdk/provider-utils': 2.2.6(zod@3.24.2)
+      google-auth-library: 9.15.1(encoding@0.1.13)
+      zod: 3.24.2
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
 
   '@ai-sdk/google@1.2.10(zod@3.24.2)':
     dependencies:

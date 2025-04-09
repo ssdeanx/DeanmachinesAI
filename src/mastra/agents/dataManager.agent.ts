@@ -7,6 +7,10 @@
 
 import { createAgentFromConfig } from "./base.agent";
 import { dataManagerAgentConfig } from "./config/dataManager.config";
+import { sharedMemory } from "../database";
+import { createLogger } from "@mastra/core/logger";
+
+const logger = createLogger({ name: "data-manager-agent", level: "info" });
 
 /**
  * Data Manager Agent with file and storage management capabilities
@@ -15,4 +19,13 @@ import { dataManagerAgentConfig } from "./config/dataManager.config";
  * This agent specializes in organizing, storing, retrieving, and managing
  * data assets across the system, including file operations and vector database management.
  */
-export const dataManagerAgent = createAgentFromConfig(dataManagerAgentConfig);
+export const dataManagerAgent = createAgentFromConfig({
+  config: dataManagerAgentConfig,
+  memory: sharedMemory, // Following RULE-MemoryInjection
+  onError: async (error: Error) => {
+    logger.error("Data Manager agent error:", error);
+    return {
+      text: "I encountered an error while managing data operations. Please provide additional details.",
+    };
+  },
+});

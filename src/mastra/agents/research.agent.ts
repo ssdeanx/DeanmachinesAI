@@ -6,7 +6,11 @@
  */
 
 import { createAgentFromConfig } from "./base.agent";
-import { researchAgentConfig } from "./config/research.config";
+import researchConfig from "./config/research.config";
+import { sharedMemory } from "../database";
+import { createLogger } from "@mastra/core/logger";
+
+const logger = createLogger({ name: "research-agent", level: "info" });
 
 /**
  * Research Agent with web search capabilities
@@ -15,4 +19,13 @@ import { researchAgentConfig } from "./config/research.config";
  * This agent can perform web searches, read and write files, and maintain
  * research context across interactions using semantic memory.
  */
-export const researchAgent = createAgentFromConfig(researchAgentConfig);
+export const researchAgent = createAgentFromConfig({
+  config: researchConfig,
+  memory: sharedMemory, // Following RULE-MemoryInjection
+  onError: async (error: Error) => {
+    logger.error("Research agent error:", error);
+    return {
+      text: "I encountered an error during research. Please refine your query or check the available sources.",
+    };
+  },
+});

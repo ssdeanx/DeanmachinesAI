@@ -13,4 +13,15 @@ export * from "./writer.config";
 export * from "./rlTrainer.config";
 export * from "./dataManager.config";
 export * from "./agentic.config";
+export * from "./coder.config";
+export * from "./copywriter.config";
+export * from "./architect.config";
+export * from "./debugger.config";
+export * from "./uiUxCoder.config";
+export * from "./codeDocumenter.config";
+export * from "./marketResearch.config";
+export * from "./socialMedia.config";
+export * from "./seoAgent.config";
+export * from "./config.types";
+export * from "./model.utils";
 // All agent configurations are now exported here

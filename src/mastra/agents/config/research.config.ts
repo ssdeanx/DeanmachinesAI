@@ -72,3 +72,6 @@ export const researchAgentConfig: BaseAgentConfig = {
     "calculator",
   ],
 };
+
+export default researchAgentConfig;
+export type ResearchAgentConfig = typeof researchAgentConfig;

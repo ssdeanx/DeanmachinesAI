@@ -63,3 +63,6 @@ export const dataManagerAgentConfig: BaseAgentConfig = {
     "graph-rag",
   ],
 };
+
+export default dataManagerAgentConfig;
+export type DataManagerAgentConfig = typeof dataManagerAgentConfig;

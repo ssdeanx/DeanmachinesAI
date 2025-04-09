@@ -61,3 +61,6 @@ export const analystAgentConfig: BaseAgentConfig = {
     "exa-search",
   ],
 };
+
+export default analystAgentConfig;
+export type AnalystAgentConfig = typeof analystAgentConfig;

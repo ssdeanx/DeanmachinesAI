@@ -7,7 +7,7 @@
 
 import { Agent } from "@mastra/core/agent";
 import { createLogger } from "@mastra/core/logger";
-import { sharedMemory } from "../database";
+import { Memory, sharedMemory } from "../database";
 import { allToolsMap } from "../tools";
 import {
   agenticAssistantConfig,
@@ -16,6 +16,7 @@ import {
   type AgenticResponse,
 } from "./config/agentic.config";
 import { createResponseHook } from "../hooks";
+import { BaseAgentConfig } from "./config";
 
 // Initialize logger for this module
 const logger = createLogger({ name: "agentic-agent", level: "info" });
@@ -30,25 +31,21 @@ export function createAgenticAssistant(): Agent {
   try {
     logger.info(`Creating agent: ${agenticAssistantConfig.id}`);
 
-    // Get tools for the agent
-    const tools = getToolsFromIds(agenticAssistantConfig.toolIds, allToolsMap);
-
-    // Create response hook if validation is configured
-    const responseHook = agenticAssistantConfig.responseValidation
-      ? createResponseHook(agenticAssistantConfig.responseValidation)
-      : undefined;
-
-    // Create the agent
-    return new Agent({
-      name: agenticAssistantConfig.name,
-      model: agenticAssistantConfig.model,
-      instructions: agenticAssistantConfig.instructions,
-      memory: sharedMemory,
-      tools,
-      ...(responseHook ? { onResponse: responseHook } : {}),
+    // Create the agent using the standardized createAgentFromConfig function
+    return createAgentFromConfig({
+      config: agenticAssistantConfig,
+      memory: sharedMemory, // Following RULE-MemoryInjection
+      onError: async (error: Error) => {
+        logger.error("Agentic assistant error:", error);
+        return {
+          text: "I encountered an error. Please try again or provide more information.",
+        };
+      },
     });
   } catch (error) {
-    logger.error(`Failed to create agent ${agenticAssistantConfig.id}:`, { error });
+    logger.error(`Failed to create agent ${agenticAssistantConfig.id}:`, {
+      error,
+    });
     throw new Error(
       `Agent creation failed: ${
         error instanceof Error ? error.message : String(error)
@@ -111,6 +108,13 @@ export async function streamResponse(query: string) {
   }
 }
 
+
+function createAgentFromConfig(arg0: {
+  config: BaseAgentConfig; memory: Memory; // Following RULE-MemoryInjection
+  onError: (error: Error) => Promise<{ text: string; }>;
+}): Agent<import("@mastra/core/agent").ToolsInput, Record<string, import("@mastra/core").Metric>> {
+  throw new Error("Function not implemented.");
+}
 /**
  * Example usage:
  *

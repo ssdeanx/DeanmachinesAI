@@ -77,3 +77,6 @@ export const defaultErrorHandler = async (error: Error) => {
     error: error.message,
   };
 };
+
+export type BaseAgentConfigType = BaseAgentConfig;
+export default BaseAgentConfig;

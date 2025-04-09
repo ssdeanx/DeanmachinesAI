@@ -20,9 +20,9 @@ import { BaseAgentConfig, defaultResponseValidation } from "./base.config";
  */
 export function getToolsFromIds(
   toolIds: string[],
-  allTools: Map<string, Tool>
-): Record<string, Tool> {
-  const tools: Record<string, Tool> = {};
+  allTools: ReadonlyMap<string, Tool<any, any>>
+): Record<string, Tool<any, any>> {
+  const tools: Record<string, Tool<any, any>> = {};
   const missingTools: string[] = [];
 
   for (const id of toolIds) {

@@ -6,7 +6,11 @@
  */
 
 import { createAgentFromConfig } from "./base.agent";
-import { rlTrainerAgentConfig } from "./config/rlTrainer.config";
+import rlTrainerConfig from "./config/rlTrainer.config";
+import { sharedMemory } from "../database";
+import { createLogger } from "@mastra/core/logger";
+
+const logger = createLogger({ name: "rl-trainer-agent", level: "info" });
 
 /**
  * RL Trainer Agent with reinforcement learning capabilities
@@ -15,4 +19,13 @@ import { rlTrainerAgentConfig } from "./config/rlTrainer.config";
  * This agent specializes in collecting user feedback, analyzing agent performance,
  * and implementing reinforcement learning techniques to improve agent behaviors.
  */
-export const rlTrainerAgent = createAgentFromConfig(rlTrainerAgentConfig);
+export const rlTrainerAgent = createAgentFromConfig({
+  config: rlTrainerConfig,
+  memory: sharedMemory, // Following RULE-MemoryInjection
+  onError: async (error: Error) => {
+    logger.error("RL Trainer agent error:", error);
+    return {
+      text: "I encountered an error while processing reinforcement learning data. Please check the logs for details.",
+    };
+  },
+});

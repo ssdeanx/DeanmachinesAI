@@ -64,3 +64,6 @@ export const writerAgentConfig: BaseAgentConfig = {
     "exa-search",
   ],
 };
+
+export default writerAgentConfig;
+export type WriterAgentConfig = typeof writerAgentConfig;
