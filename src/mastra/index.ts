@@ -13,7 +13,7 @@ import {
   dataFlowNetwork,
   contentCreationNetwork,
   networks,
-} from "./workflows/agentNetwork";
+} from "./workflows/Networks/agentNetwork";
 import { sharedMemory as memory } from "./database";
 import {
   collectFeedbackTool,
@@ -59,7 +59,9 @@ export const mastra = new Mastra({
     {
       handler: (c, next) => {
         console.log(
-          `[${new Date().toISOString()}] Processing request: ${c.req.method} ${c.req.url}`
+          `[${new Date().toISOString()}] Processing request: ${c.req.method} ${
+            c.req.url
+          }`
         );
         // Track request timing for RL metrics
         const startTime = Date.now();

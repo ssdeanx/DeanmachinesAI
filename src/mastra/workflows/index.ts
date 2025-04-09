@@ -255,8 +255,13 @@ const feedbackStep = new Step({
       // Store feedback in memory for reinforcement learning
       try {
         // Create a unique thread for storing this feedback entry
-        const feedbackThreadId = `feedback_${documentData.timestamp.replace(/[^a-zA-Z0-9]/g, "")}`;
-        const feedbackResourceId = `feedback_resource_${documentData.query.replace(/\s+/g, "_").toLowerCase()}`;
+        const feedbackThreadId = `feedback_${documentData.timestamp.replace(
+          /[^a-zA-Z0-9]/g,
+          ""
+        )}`;
+        const feedbackResourceId = `feedback_resource_${documentData.query
+          .replace(/\s+/g, "_")
+          .toLowerCase()}`;
 
         // Store feedback as metadata on a new thread
         await memory.createThread({
@@ -324,7 +329,7 @@ ragWorkflow.commit();
 export { ragWorkflow };
 
 // Export agent networks
-export * from "./agentNetwork";
+export * from "./Networks/agentNetwork";
 
 // TODO: Add and export additional workflow definitions here as they are developed
 // export * from "./researchWorkflow";

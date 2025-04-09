@@ -9,14 +9,14 @@
 
 import { google } from "@ai-sdk/google";
 import { AgentNetwork, type AgentNetworkConfig } from "@mastra/core/network";
-import { createResponseHook } from "../hooks";
+import { createResponseHook } from "../../hooks";
 import {
   researchAgent,
   analystAgent,
   writerAgent,
   rlTrainerAgent,
   dataManagerAgent,
-} from "../agents";
+} from "../../agents";
 import { env } from "process";
 
 // Base configuration for all networks to match agent configuration
