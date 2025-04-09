@@ -5,12 +5,50 @@
  * creating compelling marketing copy and content for various channels.
  */
 
-import { google } from "@ai-sdk/google";
+import { z, type ZodTypeAny } from "zod";
+import type { Tool } from "@mastra/core/tools";
 import {
   BaseAgentConfig,
+  DEFAULT_MODELS,
   defaultResponseValidation,
-  DEFAULT_MODEL_ID,
-} from "./base.config";
+} from "./config.types";
+
+/**
+ * Configuration for retrieving relevant tools for the agent
+ *
+ * @param toolIds - Array of tool identifiers to include
+ * @param allTools - Map of all available tools
+ * @returns Record of tools mapped by their IDs
+ * @throws {Error} When required tools are missing
+ */
+export function getToolsFromIds(
+  toolIds: string[],
+  allTools: ReadonlyMap<
+    string,
+    Tool<ZodTypeAny | undefined, ZodTypeAny | undefined>
+  >
+): Record<string, Tool<ZodTypeAny | undefined, ZodTypeAny | undefined>> {
+  const tools: Record<
+    string,
+    Tool<ZodTypeAny | undefined, ZodTypeAny | undefined>
+  > = {};
+  const missingTools: string[] = [];
+
+  for (const id of toolIds) {
+    const tool = allTools.get(id);
+    if (tool) {
+      tools[id] = tool;
+    } else {
+      missingTools.push(id);
+    }
+  }
+
+  if (missingTools.length > 0) {
+    throw new Error(`Missing required tools: ${missingTools.join(", ")}`);
+  }
+
+  return tools;
+}
 
 /**
  * Configuration for the Copywriter Agent.
@@ -26,7 +64,7 @@ export const copywriterAgentConfig: BaseAgentConfig = {
   name: "Copywriter Agent",
   description:
     "Specialized in creating compelling marketing copy and content for various channels.",
-  model: google(DEFAULT_MODEL_ID),
+  modelConfig: DEFAULT_MODELS.GOOGLE_STANDARD,
   responseValidation: defaultResponseValidation,
   instructions: `
     You are a specialized copywriting agent designed to create compelling marketing content.
@@ -61,6 +99,54 @@ export const copywriterAgentConfig: BaseAgentConfig = {
     "sentimentAnalysisTool",
   ],
 };
+
+/**
+ * Schema for structured copywriter agent responses
+ */
+export const copywriterResponseSchema = z.object({
+  content: z.string().describe("The generated marketing copy or content"),
+  targetAudience: z.string().describe("The intended audience for this content"),
+  channelType: z
+    .string()
+    .describe("The marketing channel this content is optimized for"),
+  toneAndVoice: z.string().describe("Description of the tone and voice used"),
+  keyMessages: z
+    .array(z.string())
+    .describe("Primary messages conveyed in the content"),
+  callToAction: z
+    .string()
+    .optional()
+    .describe("The specific call to action, if applicable"),
+  brandGuidelines: z
+    .object({
+      followed: z
+        .array(z.string())
+        .describe("Brand guidelines that were followed"),
+      exceptions: z
+        .array(z.string())
+        .optional()
+        .describe("Any exceptions made to brand guidelines"),
+    })
+    .optional()
+    .describe("How the content aligns with brand guidelines"),
+  sentimentAnalysis: z
+    .object({
+      overall: z.string().describe("Overall sentiment of the content"),
+      score: z
+        .number()
+        .min(-1)
+        .max(1)
+        .optional()
+        .describe("Sentiment score (-1 to 1)"),
+    })
+    .optional()
+    .describe("Analysis of content sentiment"),
+});
+
+/**
+ * Type for structured responses from the Copywriter agent
+ */
+export type CopywriterResponse = z.infer<typeof copywriterResponseSchema>;
 
 export default copywriterAgentConfig;
 export type CopywriterAgentConfig = typeof copywriterAgentConfig;

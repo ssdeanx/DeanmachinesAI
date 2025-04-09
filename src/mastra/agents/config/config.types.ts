@@ -9,70 +9,230 @@
 
 import { z } from "zod";
 import { google } from "@ai-sdk/google";
-import { vertex, createVertex } from "@ai-sdk/google-vertex";
+import { vertex } from "@ai-sdk/google-vertex";
 import { Tool } from "@mastra/core/tools";
-
-// ========== MODEL PROVIDER CONFIGURATION ==========
 
 /**
  * Supported AI model providers
  */
 export type ModelProvider = "google" | "vertex" | "openai";
 
+/** Default Maximum Tokens for Model Output */
+export const DEFAULT_MAX_TOKENS = 8192;
+
+/** Default Maximum Context Tokens for Model Input */
+export const DEFAULT_MAX_CONTEXT_TOKENS = 1000000;
+
 /**
- * Options specific to Google Vertex AI
+ * Model capabilities and features supported
+ * These represent the different capabilities models may have
  */
-export interface GoogleVertexOptions {
-  /** Project ID for Vertex AI */
-  projectId?: string;
-
-  /** Location for Vertex AI */
-  location?: string;
-
-  /** Path to credentials file */
-  credentialsPath?: string;
-
-  /** Model-specific options */
-  [key: string]: unknown;
+export interface ModelCapabilities {
+  /** Maximum context window size in tokens */
+  maxContextTokens: number;
+  /** Whether the model supports multimodal inputs (images, audio, video) */
+  multimodalInput: boolean;
+  /** Whether the model supports image generation output */
+  imageGeneration: boolean;
+  /** Whether the model supports audio output */
+  audioOutput: boolean;
+  /** Whether the model supports function/tool calling */
+  functionCalling: boolean;
+  /** Whether the model supports structured output (JSON, etc) */
+  structuredOutput: boolean;
+  /** Whether the model has enhanced reasoning/thinking capabilities */
+  enhancedThinking: boolean;
+  /** Whether the model supports grounding to reduce hallucinations */
+  grounding: boolean;
+  /** Whether the model supports response caching for efficiency */
+  responseCaching: boolean;
 }
 
 /**
- * Options specific to Google AI
+ * Default model configurations for different use cases
+ * Based on https://ai.google.dev/gemini-api/docs/models
  */
-export interface GoogleOptions {
-  /** API Key for Google AI */
-  apiKey?: string;
+export const DEFAULT_MODELS = {
+  // GOOGLE PROVIDER MODELS
 
-  /** Model-specific options */
-  [key: string]: unknown;
-}
+  // Standard Google model - fast, versatile
+  GOOGLE_STANDARD: {
+    provider: "google" as const,
+    modelId: "gemini-2.0-flash-exp",
+    temperature: 0.7,
+    topP: 0.9,
+    maxTokens: DEFAULT_MAX_TOKENS,
+    capabilities: {
+      maxContextTokens: 1000000,
+      multimodalInput: true,
+      imageGeneration: true,
+      audioOutput: false, // Coming soon according to docs
+      functionCalling: true,
+      structuredOutput: true,
+      enhancedThinking: true,
+      grounding: true,
+      responseCaching: true,
+    },
+  },
+
+  // Premium Google model - enhanced reasoning and capability
+  GOOGLE_PREMIUM: {
+    provider: "google" as const,
+    modelId: "gemini-2.5-pro-preview",
+    temperature: 0.5,
+    topP: 0.95,
+    maxTokens: 65535,
+    capabilities: {
+      maxContextTokens: 2000000,
+      multimodalInput: true,
+      imageGeneration: false,
+      audioOutput: false,
+      functionCalling: true,
+      structuredOutput: true,
+      enhancedThinking: true,
+      grounding: true,
+      responseCaching: true,
+    },
+  },
+
+  // Cost-efficient Google model - better for bulk processing
+  GOOGLE_EFFICIENT: {
+    provider: "google" as const,
+    modelId: "gemini-2.0-flash-lite",
+    temperature: 0.7,
+    topP: 0.9,
+    maxTokens: DEFAULT_MAX_TOKENS,
+    capabilities: {
+      maxContextTokens: 1000000,
+      multimodalInput: true,
+      imageGeneration: false,
+      audioOutput: false,
+      functionCalling: true,
+      structuredOutput: true,
+      enhancedThinking: false,
+      grounding: true,
+      responseCaching: true,
+    },
+  },
+
+  // Enhanced thinking experimental model - special capabilities
+  GOOGLE_THINKING: {
+    provider: "google" as const,
+    modelId: "gemini-2.0-flash-thinking-exp-01-21",
+    temperature: 0.5,
+    topP: 0.95,
+    maxTokens: 65535,
+    capabilities: {
+      maxContextTokens: 1000000,
+      multimodalInput: true,
+      imageGeneration: true,
+      audioOutput: false,
+      functionCalling: true,
+      structuredOutput: true,
+      enhancedThinking: true,
+      grounding: true,
+      responseCaching: true,
+    },
+  },
+
+  // VERTEX AI PROVIDER MODELS
+
+  // Vertex AI model - for enterprise features and security
+  VERTEX_STANDARD: {
+    provider: "vertex" as const,
+    modelId: "models/gemini-2.0-flash-exp",
+    temperature: 0.6,
+    topP: 0.95,
+    maxTokens: DEFAULT_MAX_TOKENS,
+    capabilities: {
+      maxContextTokens: 1000000,
+      multimodalInput: true,
+      imageGeneration: false,
+      audioOutput: false,
+      functionCalling: true,
+      structuredOutput: true,
+      enhancedThinking: false,
+      grounding: true,
+      responseCaching: true,
+    },
+    functionCalling: {
+      mode: "AUTO" as const,
+      allowedFunctionNames: [],
+    },
+  },
+
+  // Advanced Vertex model - for enterprise use cases
+  VERTEX_PRO: {
+    provider: "vertex" as const,
+    modelId: "models/gemini-2.0-pro-exp-03-25",
+    temperature: 0.6,
+    topP: 0.95,
+    maxTokens: 65535,
+    capabilities: {
+      maxContextTokens: 1000000,
+      multimodalInput: true,
+      imageGeneration: false,
+      audioOutput: false,
+      functionCalling: true,
+      structuredOutput: true,
+      enhancedThinking: true,
+      grounding: true,
+      responseCaching: true,
+    },
+    functionCalling: {
+      mode: "AUTO" as const,
+      allowedFunctionNames: [],
+    },
+  },
+
+  // Premium Vertex model - highest capability enterprise model
+  VERTEX_PREMIUM: {
+    provider: "vertex" as const,
+    modelId: "models/gemini-2.5-pro-preview-03-25",
+    temperature: 0.4,
+    topP: 0.95,
+    maxTokens: 65535,
+    capabilities: {
+      maxContextTokens: 2000000,
+      multimodalInput: true,
+      imageGeneration: false,
+      audioOutput: false,
+      functionCalling: true,
+      structuredOutput: true,
+      enhancedThinking: true,
+      grounding: true,
+      responseCaching: true,
+    },
+  },
+};
 
 /**
- * Options specific to OpenAI
+ * Type for accessing default model configurations
  */
-export interface OpenAIOptions {
-  /** API Key for OpenAI */
-  apiKey?: string;
+export type DefaultModelKey = keyof typeof DEFAULT_MODELS;
 
-  /** Organization ID for OpenAI */
-  organizationId?: string;
-
-  /** Model-specific options */
-  [key: string]: unknown;
-}
+/** Default Google AI Model ID */
+export const DEFAULT_MODEL_ID = DEFAULT_MODELS.GOOGLE_STANDARD.modelId;
 
 /**
- * Provider-specific options
+ * Function calling configuration for Vertex AI models
+ * Based on https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/function-calling
  */
-export interface ProviderOptions {
-  /** Google AI specific options */
-  google?: GoogleOptions;
+export interface FunctionCallingConfig {
+  /**
+   * Function calling mode
+   * - AUTO: Default model behavior, can respond with function call or natural language
+   * - NONE: Model doesn't make predictions as function calls
+   * - ANY: Model is constrained to always predict a function call
+   */
+  mode: "AUTO" | "NONE" | "ANY";
 
-  /** Google Vertex AI specific options */
-  googleVertex?: GoogleVertexOptions;
-
-  /** OpenAI specific options */
-  openai?: OpenAIOptions;
+  /**
+   * List of function names that the model is allowed to call
+   * Only set when mode is ANY
+   * Empty array means the model can choose from all available functions
+   */
+  allowedFunctionNames: string[];
 }
 
 /**
@@ -94,23 +254,23 @@ export interface ModelConfig {
   /** Top-p for sampling */
   topP?: number;
 
+  /**
+   * Function calling configuration
+   * - For Google models: true/false to enable/disable function calling
+   * - For Vertex AI models: FunctionCallingConfig object with mode and allowed function names
+   */
+  functionCalling?: boolean | FunctionCallingConfig;
+
   /** Provider-specific options */
-  providerOptions?: ProviderOptions;
+  providerOptions?: Record<string, unknown>;
 }
 
-// ========== RESPONSE VALIDATION CONFIGURATION ==========
-
 /**
- * Response hook options interface for agent response validation
+ * Response hook options interface
  */
 export interface ResponseHookOptions {
-  /** Minimum length of valid responses (in characters) */
   minResponseLength?: number;
-
-  /** Maximum number of attempts to generate a valid response */
   maxAttempts?: number;
-
-  /** Custom validation function for response content */
   validateResponse?: (response: unknown) => boolean;
 }
 
@@ -130,10 +290,10 @@ export interface BaseAgentConfig {
   description: string;
 
   /**
-   * Model instance from @ai-sdk
-   * Can be from google() or googleVertex()
+   * Model configuration for creating the model dynamically
+   * This is used to initialize the appropriate model (Google or Vertex AI)
    */
-  model: ReturnType<typeof google> | ReturnType<typeof googleVertex>;
+  modelConfig: ModelConfig;
 
   /** Main instructions that define the agent's behavior */
   instructions: string;
@@ -144,69 +304,92 @@ export interface BaseAgentConfig {
   /** Optional response validation settings */
   responseValidation?: ResponseHookOptions;
 
-  /** Optional model configuration for creating the model dynamically */
-  modelConfig?: ModelConfig;
+  /** Optional tools configuration */
+  tools?: Tool[];
 }
 
 /**
- * Agent configuration type that can be used with z.infer<>
- * This is a Zod schema version of BaseAgentConfig for validation
+ * Helper function to get a model configuration by key with optional overrides
+ *
+ * @param modelKey - The key of the default model to use
+ * @param overrides - Optional properties to override in the default configuration
+ * @returns A model configuration
  */
-export const AgentConfigSchema = z.object({
-  id: z.string().min(1, "Agent ID is required"),
-  name: z.string().min(1, "Agent name is required"),
-  description: z.string(),
-  model: z.any(), // Can't strictly type the Google model return type with Zod
-  instructions: z.string().min(10, "Instructions must be meaningful"),
-  toolIds: z.array(z.string()).min(1, "At least one tool ID is required"),
-  responseValidation: z
-    .object({
-      minResponseLength: z.number().int().positive().optional(),
-      maxAttempts: z.number().int().positive().optional(),
-      validateResponse: z.function().optional(),
-    })
-    .optional(),
-});
+export function getModelConfig(
+  modelKey: DefaultModelKey,
+  overrides?: Partial<Omit<ModelConfig, "provider">>
+): ModelConfig {
+  // Create a new object to avoid modifying the default
+  const config = { ...DEFAULT_MODELS[modelKey] };
 
-/**
- * Type for agent configuration objects using Zod schema
- */
-export type ValidatedAgentConfig = z.infer<typeof AgentConfigSchema>;
+  // Apply any overrides
+  if (overrides) {
+    return { ...config, ...overrides };
+  }
 
-/**
- * Interface representing an initialized agent tool record
- */
-export interface AgentToolRecord {
-  [toolId: string]: Tool<any, any>;
+  return config;
 }
 
 /**
- * Represents a record of agent capabilities by capability name
+ * Helper function to configure function calling for Vertex AI models
+ *
+ * @param mode - Function calling mode (AUTO, NONE, or ANY)
+ * @param allowedFunctionNames - Optional list of allowed function names
+ * @returns FunctionCallingConfig object
  */
-export interface AgentCapabilities {
-  [capability: string]: boolean;
+export function createFunctionCallingConfig(
+  mode: "AUTO" | "NONE" | "ANY" = "AUTO",
+  allowedFunctionNames: string[] = []
+): FunctionCallingConfig {
+  return {
+    mode,
+    allowedFunctionNames: mode === "ANY" ? allowedFunctionNames : [],
+  };
 }
 
 /**
- * Agent initialization options for creating agent instances
+ * Standard response validation options
  */
-export interface AgentInitOptions {
-  /** The agent configuration object */
-  config: BaseAgentConfig;
-
-  /** Optional set of override tools */
-  tools?: AgentToolRecord;
-
-  /** Whether to validate the configuration */
-  validate?: boolean;
-}
+export const defaultResponseValidation: ResponseHookOptions = {
+  minResponseLength: 20,
+  maxAttempts: 2,
+  validateResponse: (response: unknown) => {
+    if (
+      typeof response === "object" &&
+      response !== null &&
+      "object" in response
+    ) {
+      return (
+        Object.keys((response as Record<string, unknown>).object || {}).length >
+        0
+      );
+    }
+    if (
+      typeof response === "object" &&
+      response !== null &&
+      "text" in response
+    ) {
+      return (
+        typeof (response as Record<string, unknown>).text === "string" &&
+        (response as Record<string, string>).text.length >= 20
+      );
+    }
+    return false;
+  },
+};
 
 /**
- * Agent error handler function signature
+ * Standard error handler function for agents
  */
-export type AgentErrorHandler = (error: Error) => Promise<{ text: string }>;
+export const defaultErrorHandler = async (
+  error: Error
+): Promise<Record<string, unknown>> => {
+  console.error("Agent error:", error);
+  return {
+    text: "I encountered an error. Please try again or contact support.",
+    error: error.message,
+  };
+};
 
-/**
- * Export type definitions to be used elsewhere in the system
- */
-export type { BaseAgentConfig };
+export type BaseAgentConfigType = BaseAgentConfig;
+export default BaseAgentConfig;

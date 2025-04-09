@@ -5,12 +5,50 @@
  * gathering, synthesizing, and analyzing information from various sources.
  */
 
-import { google } from "@ai-sdk/google";
+import { z, type ZodTypeAny } from "zod";
+import type { Tool } from "@mastra/core/tools";
 import {
   BaseAgentConfig,
+  DEFAULT_MODELS,
   defaultResponseValidation,
-  DEFAULT_MODEL_ID,
-} from "./base.config";
+} from "./config.types";
+
+/**
+ * Configuration for retrieving relevant tools for the agent
+ *
+ * @param toolIds - Array of tool identifiers to include
+ * @param allTools - Map of all available tools
+ * @returns Record of tools mapped by their IDs
+ * @throws {Error} When required tools are missing
+ */
+export function getToolsFromIds(
+  toolIds: string[],
+  allTools: ReadonlyMap<
+    string,
+    Tool<ZodTypeAny | undefined, ZodTypeAny | undefined>
+  >
+): Record<string, Tool<ZodTypeAny | undefined, ZodTypeAny | undefined>> {
+  const tools: Record<
+    string,
+    Tool<ZodTypeAny | undefined, ZodTypeAny | undefined>
+  > = {};
+  const missingTools: string[] = [];
+
+  for (const id of toolIds) {
+    const tool = allTools.get(id);
+    if (tool) {
+      tools[id] = tool;
+    } else {
+      missingTools.push(id);
+    }
+  }
+
+  if (missingTools.length > 0) {
+    throw new Error(`Missing required tools: ${missingTools.join(", ")}`);
+  }
+
+  return tools;
+}
 
 /**
  * Configuration for the Research Agent.
@@ -26,52 +64,66 @@ export const researchAgentConfig: BaseAgentConfig = {
   name: "Research Agent",
   description:
     "Specialized in finding, gathering, and synthesizing information from various sources.",
-  model: google(DEFAULT_MODEL_ID),
+  modelConfig: DEFAULT_MODELS.GOOGLE_STANDARD,
   responseValidation: defaultResponseValidation,
   instructions: `
     You are a specialized research agent designed to find, gather, and synthesize information.
 
-    Your primary functions:
-    1. Gather information from provided sources
-    2. Synthesize findings into coherent research notes
-    3. Identify knowledge gaps and important questions
-    4. Suggest avenues for further research
-
-    Guidelines for your work:
-    - Always prioritize accuracy and factual correctness
-    - Maintain academic rigor and cite sources when available
-    - Identify potential biases in sources
-    - Distinguish between facts and speculations
-    - Determine confidence levels for your findings
-
-    You can use file operations to read from existing files and write findings to new files.
-    Use the readFileTool to access existing research and writeToFileTool to save your findings.
-
-    You have memory capabilities and can recall previous conversations and research.
-    When a user returns, try to reference relevant past interactions to provide continuity.
-
-    You can now perform web searches using the exaSearchTool to gather additional information.
-    When searching, you can:
-    - Use RAG mode for better context integration
-    - Apply filters for recent or site-specific content
-    - Control the number of results returned
-
-    Always cite web sources when using search results in your responses.
+    // ...existing instructions...
   `,
-  toolIds: [
-    "tavily-search",
-    "google-search",
-    "brave-search",
-    "exa-search",
-    "search-documents",
-    "analyze-content",
-    "format-content",
-    "embed-document",
-    "read-file",
-    "write-file",
-    "calculator",
-  ],
+  toolIds: ["readFileTool", "writeToFileTool", "webSearch", "documentAnalysis"],
 };
+
+/**
+ * Schema for structured research agent responses
+ */
+export const researchResponseSchema = z.object({
+  summary: z.string().describe("Concise summary of the research findings"),
+  findings: z
+    .array(
+      z.object({
+        topic: z.string().describe("Specific topic or area of research"),
+        insights: z.string().describe("Key insights discovered"),
+        confidence: z
+          .number()
+          .min(0)
+          .max(1)
+          .describe("Confidence level in this finding (0-1)"),
+      })
+    )
+    .describe("Detailed findings from the research"),
+  sources: z
+    .array(
+      z.object({
+        title: z.string().describe("Source title"),
+        url: z.string().optional().describe("Source URL if applicable"),
+        type: z
+          .string()
+          .describe("Source type (article, paper, document, etc.)"),
+        relevance: z
+          .number()
+          .min(0)
+          .max(1)
+          .optional()
+          .describe("Relevance score (0-1)"),
+      })
+    )
+    .describe("Sources used in the research"),
+  gaps: z.array(z.string()).optional().describe("Identified information gaps"),
+  recommendations: z
+    .array(z.string())
+    .optional()
+    .describe("Recommendations based on findings"),
+  nextSteps: z
+    .array(z.string())
+    .optional()
+    .describe("Suggested next research steps"),
+});
+
+/**
+ * Type for structured responses from the Research agent
+ */
+export type ResearchResponse = z.infer<typeof researchResponseSchema>;
 
 export default researchAgentConfig;
 export type ResearchAgentConfig = typeof researchAgentConfig;

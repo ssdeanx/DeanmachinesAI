@@ -7,16 +7,12 @@
 
 import { Agent } from "@mastra/core/agent";
 import { createLogger } from "@mastra/core/logger";
-import { Memory, sharedMemory } from "../database";
-import { allToolsMap } from "../tools";
+import { sharedMemory } from "../database";
+import { createAgentFromConfig } from "./base.agent";
 import {
   agenticAssistantConfig,
   agenticResponseSchema,
-  getToolsFromIds,
-  type AgenticResponse,
-} from "./config/agentic.config";
-import { createResponseHook } from "../hooks";
-import { BaseAgentConfig } from "./config";
+} from "./config";
 
 // Initialize logger for this module
 const logger = createLogger({ name: "agentic-agent", level: "info" });
@@ -64,29 +60,6 @@ export const agenticAssistant = createAgenticAssistant();
  * @returns A promise resolving to the structured response
  * @throws {Error} If generation fails or response validation fails
  */
-export async function getStructuredResponse(
-  query: string
-): Promise<AgenticResponse> {
-  try {
-    // Use the agent with structured output schema
-    const result = await agenticAssistant.generate(query, {
-      output: agenticResponseSchema,
-    });
-
-    if (!result.object) {
-      throw new Error("Failed to generate structured response");
-    }
-
-    return result.object as AgenticResponse;
-  } catch (error) {
-    logger.error("Error generating structured response:", { error });
-    throw new Error(
-      `Failed to generate response: ${
-        error instanceof Error ? error.message : String(error)
-      }`
-    );
-  }
-}
 
 /**
  * Streams a response from the agentic assistant
@@ -108,13 +81,6 @@ export async function streamResponse(query: string) {
   }
 }
 
-
-function createAgentFromConfig(arg0: {
-  config: BaseAgentConfig; memory: Memory; // Following RULE-MemoryInjection
-  onError: (error: Error) => Promise<{ text: string; }>;
-}): Agent<import("@mastra/core/agent").ToolsInput, Record<string, import("@mastra/core").Metric>> {
-  throw new Error("Function not implemented.");
-}
 /**
  * Example usage:
  *

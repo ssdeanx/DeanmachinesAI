@@ -4,14 +4,48 @@
  * This module defines the specific configuration for the RL Trainer Agent,
  * which specializes in reinforcement learning, collecting and analyzing
  * feedback, and optimizing agent behaviors.
+ *
+ * @module rlTrainer.config
  */
 
-import { google } from "@ai-sdk/google";
+import { z } from "zod";
+import { Tool } from "@mastra/core/tools";
 import {
   BaseAgentConfig,
+  DEFAULT_MODELS,
   defaultResponseValidation,
-  DEFAULT_MODEL_ID, // Import the shared constant
-} from "./base.config";
+} from "./config.types";
+
+/**
+ * Configuration for retrieving relevant tools for the agent
+ *
+ * @param toolIds - Array of tool identifiers to include
+ * @param allTools - Map of all available tools
+ * @returns Record of tools mapped by their IDs
+ * @throws {Error} When required tools are missing
+ */
+export function getToolsFromIds(
+  toolIds: string[],
+  allTools: ReadonlyMap<string, Tool<z.ZodTypeAny | undefined, z.ZodTypeAny | undefined>>
+): Record<string, Tool<z.ZodTypeAny | undefined, z.ZodTypeAny | undefined>> {
+  const tools: Record<string, Tool<z.ZodTypeAny | undefined, z.ZodTypeAny | undefined>> = {};
+  const missingTools: string[] = [];
+
+  for (const id of toolIds) {
+    const tool = allTools.get(id);
+    if (tool) {
+      tools[id] = tool;
+    } else {
+      missingTools.push(id);
+    }
+  }
+
+  if (missingTools.length > 0) {
+    throw new Error(`Missing required tools: ${missingTools.join(", ")}`);
+  }
+
+  return tools;
+}
 
 /**
  * Configuration for the RL Trainer Agent
@@ -25,9 +59,9 @@ export const rlTrainerAgentConfig: BaseAgentConfig = {
   name: "RL Trainer Agent",
   description:
     "Specialized in reinforcement learning, collecting and analyzing feedback, and optimizing agent behaviors.",
-  model: google(DEFAULT_MODEL_ID), // Use the constant here
+  modelConfig: DEFAULT_MODELS.GOOGLE_STANDARD,
   responseValidation: defaultResponseValidation,
-  instructions: ` // Changed from systemPrompt to instructions
+  instructions: `
     You are a specialized reinforcement learning (RL) trainer agent designed to improve the performance of other agents.
 
     Your primary functions:
@@ -68,5 +102,25 @@ export const rlTrainerAgentConfig: BaseAgentConfig = {
   ],
 };
 
-export const rlTrainerAgent: typeof rlTrainerAgentConfig = rlTrainerAgentConfig;
-export default rlTrainerAgent;
+/**
+ * Schema for structured RL Trainer agent responses
+ */
+export const rlTrainerResponseSchema = z.object({
+  analysis: z.string().describe("Analysis of agent performance data"),
+  recommendations: z.array(z.object({
+    targetArea: z.string().describe("The specific aspect of agent behavior to improve"),
+    change: z.string().describe("Proposed modification to the agent configuration"),
+    expectedImprovement: z.string().describe("Expected outcome from this change"),
+    confidenceLevel: z.number().min(0).max(1).describe("Confidence in this recommendation (0-1)"),
+    measurementMethod: z.string().describe("How to measure the effectiveness of this change")
+  })).describe("Recommended optimization changes"),
+  metrics: z.record(z.string(), z.number()).optional().describe("Quantified performance metrics")
+});
+
+/**
+ * Type for structured responses from the RL Trainer agent
+ */
+export type RLTrainerResponse = z.infer<typeof rlTrainerResponseSchema>;
+
+export default rlTrainerAgentConfig;
+export type RLTrainerAgentConfig = typeof rlTrainerAgentConfig;

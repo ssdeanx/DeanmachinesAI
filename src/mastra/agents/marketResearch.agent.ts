@@ -6,7 +6,7 @@
 
 import { sharedMemory } from "../database";
 import { createAgentFromConfig } from "./base.agent";
-import marketResearchConfig from "./config/marketResearch.config";
+import {marketResearchAgentConfig} from "./config";
 import { createLogger } from "@mastra/core/logger";
 
 const logger = createLogger({ name: "market-research-agent", level: "info" });
@@ -21,7 +21,7 @@ const logger = createLogger({ name: "market-research-agent", level: "info" });
  * conducting competitive analysis, and providing actionable insights.
  */
 export const marketResearchAgent = createAgentFromConfig({
-  config: marketResearchConfig,
+  config: marketResearchAgentConfig,
   memory: sharedMemory, // Following RULE-MemoryInjection
   onError: async (error: Error) => {
     logger.error("Market Research agent error:", error);
@@ -32,3 +32,8 @@ export const marketResearchAgent = createAgentFromConfig({
 });
 
 export default marketResearchAgent;
+export type MarketResearchAgent = typeof marketResearchAgent;
+export type MarketResearchAgentConfig = typeof marketResearchAgentConfig;
+export type MarketResearchAgentConfigType = typeof marketResearchAgentConfig;
+export type MarketResearchAgentMemory = typeof sharedMemory;
+export type MarketResearchAgentMemoryType = typeof sharedMemory;

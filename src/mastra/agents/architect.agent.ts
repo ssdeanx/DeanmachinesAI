@@ -6,7 +6,7 @@
 
 import { sharedMemory } from "../database";
 import { createAgentFromConfig } from "./base.agent";
-import architectConfig from "./config/architect.config";
+import {architectConfig} from "./config";
 import { createLogger } from "@mastra/core/logger";
 
 const logger = createLogger({ name: "architect-agent", level: "info" });
@@ -32,3 +32,8 @@ export const architectAgent = createAgentFromConfig({
 });
 
 export default architectAgent;
+export type ArchitectAgent = typeof architectAgent;
+export type ArchitectAgentConfig = typeof architectConfig;
+export type ArchitectAgentConfigType = typeof architectConfig;
+export type ArchitectAgentMemory = typeof sharedMemory;
+export type ArchitectAgentMemoryType = typeof sharedMemory;

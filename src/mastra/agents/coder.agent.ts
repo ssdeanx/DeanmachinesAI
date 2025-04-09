@@ -7,7 +7,7 @@
 
 import { Agent } from "@mastra/core/agent";
 import { createAgentFromConfig } from "./base.agent";
-import { coderAgentConfig } from "./config/coder.config";
+import { coderAgentConfig } from "./config";
 import { createLogger } from "@mastra/core/logger";
 import { sharedMemory } from "../database";
 
@@ -46,3 +46,10 @@ export function initializeCoderAgent(): Agent {
  * Singleton instance of the coder agent
  */
 export const coderAgent = initializeCoderAgent();
+export default coderAgent;
+export type CoderAgent = typeof coderAgent;
+export type CoderAgentConfig = typeof coderAgentConfig;
+export type CoderAgentConfigType = typeof coderAgentConfig;
+export type CoderAgentMemory = typeof sharedMemory;
+export type CoderAgentMemoryType = typeof sharedMemory;
+

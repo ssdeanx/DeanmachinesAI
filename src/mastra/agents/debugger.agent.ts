@@ -6,7 +6,7 @@
 
 import { sharedMemory } from "../database";
 import { createAgentFromConfig } from "./base.agent";
-import debuggerConfig from "./config/debugger.config";
+import {debuggerConfig} from "./config";
 import { createLogger } from "@mastra/core/logger";
 
 const logger = createLogger({ name: "debugger-agent", level: "info" });
@@ -32,3 +32,8 @@ export const debuggerAgent = createAgentFromConfig({
 });
 
 export default debuggerAgent;
+export type DebuggerAgent = typeof debuggerAgent;
+export type DebuggerAgentConfig = typeof debuggerConfig;
+export type DebuggerAgentConfigType = typeof debuggerConfig;
+export type DebuggerAgentMemory = typeof sharedMemory;
+export type DebuggerAgentMemoryType = typeof sharedMemory;

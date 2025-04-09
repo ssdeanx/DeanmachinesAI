@@ -6,7 +6,7 @@
  */
 
 import { createAgentFromConfig } from "./base.agent";
-import { dataManagerAgentConfig } from "./config/dataManager.config";
+import { dataManagerAgentConfig } from "./config";
 import { sharedMemory } from "../database";
 import { createLogger } from "@mastra/core/logger";
 
@@ -29,3 +29,10 @@ export const dataManagerAgent = createAgentFromConfig({
     };
   },
 });
+
+export default dataManagerAgent;
+export type DataManagerAgent = typeof dataManagerAgent;
+export type DataManagerAgentConfig = typeof dataManagerAgentConfig;
+export type DataManagerAgentConfigType = typeof dataManagerAgentConfig;
+export type DataManagerAgentMemory = typeof sharedMemory;
+export type DataManagerAgentMemoryType = typeof sharedMemory;

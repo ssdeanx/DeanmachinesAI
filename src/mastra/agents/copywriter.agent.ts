@@ -7,7 +7,7 @@
 
 import { Agent } from "@mastra/core/agent";
 import { createAgentFromConfig } from "./base.agent";
-import copywriterConfig from "./config/copywriter.config";
+import {copywriterAgentConfig }from "./config";
 import { createLogger } from "@mastra/core/logger";
 import { sharedMemory } from "../database";
 
@@ -23,7 +23,7 @@ export function initializeCopywriterAgent(): Agent {
   logger.info("Initializing copywriter agent");
   try {
     return createAgentFromConfig({
-      config: copywriterConfig,
+      config: copywriterAgentConfig,
       memory: sharedMemory, // Following RULE-MemoryInjection
       onError: async (error: Error) => {
         logger.error("Copywriter agent error:", error);
@@ -46,3 +46,4 @@ export function initializeCopywriterAgent(): Agent {
  * Singleton instance of the copywriter agent
  */
 export const copywriterAgent = initializeCopywriterAgent();
+

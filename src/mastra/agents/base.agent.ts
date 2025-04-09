@@ -5,7 +5,6 @@
  * ensuring consistent agent creation patterns across the application.
  */
 
-import { google } from "@ai-sdk/google";
 import { Agent } from "@mastra/core/agent";
 import { Tool } from "@mastra/core/tools";
 import { createLogger } from "@mastra/core/logger";
@@ -18,7 +17,8 @@ import {
   DEFAULT_MAX_CONTEXT_TOKENS,
   defaultResponseValidation,
   type ResponseHookOptions,
-} from "./config/base.config";
+  createModelInstance
+} from "./config";
 import { createResponseHook } from "../hooks";
 import { allToolsMap } from "../tools";
 
@@ -82,10 +82,12 @@ export function createAgentFromConfig({
   logger.info(
     `Creating agent: ${config.id} with ${Object.keys(tools).length} tools`
   );
-
   try {
+    // Create model instance using the new modelConfig property
+    const model = createModelInstance(config.modelConfig);
+
     return new Agent({
-      model: config.model,
+      model,
       memory, // Using injected memory instead of global reference
       name: config.name,
       instructions: config.instructions,

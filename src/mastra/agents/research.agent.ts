@@ -6,7 +6,7 @@
  */
 
 import { createAgentFromConfig } from "./base.agent";
-import researchConfig from "./config/research.config";
+import { researchAgentConfig } from "./config";
 import { sharedMemory } from "../database";
 import { createLogger } from "@mastra/core/logger";
 
@@ -20,7 +20,7 @@ const logger = createLogger({ name: "research-agent", level: "info" });
  * research context across interactions using semantic memory.
  */
 export const researchAgent = createAgentFromConfig({
-  config: researchConfig,
+  config: researchAgentConfig,
   memory: sharedMemory, // Following RULE-MemoryInjection
   onError: async (error: Error) => {
     logger.error("Research agent error:", error);
@@ -29,3 +29,10 @@ export const researchAgent = createAgentFromConfig({
     };
   },
 });
+
+export type ResearchAgent = typeof researchAgent;
+export default researchAgent;
+export type ResearchAgentConfig = typeof researchAgentConfig;
+export type ResearchAgentConfigType = typeof researchAgentConfig;
+export type ResearchAgentMemory = typeof sharedMemory;
+export type ResearchAgentMemoryType = typeof sharedMemory;

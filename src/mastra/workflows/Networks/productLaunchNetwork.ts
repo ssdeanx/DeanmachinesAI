@@ -63,10 +63,7 @@ const productLaunchHooks = {
  * and marketing teams.
  */
 export const productLaunchNetwork = new AgentNetwork({
-  id: "product-launch-network",
   name: "Product Launch Network",
-  description:
-    "Coordinates development and marketing activities for product launches",
   model: google("models/gemini-2.0-flash"),
   agents: [coderAgent, copywriterAgent],
   instructions: `
@@ -90,30 +87,6 @@ export const productLaunchNetwork = new AgentNetwork({
     If the task requires both coding and marketing expertise, coordinate between the agents.
     Always provide clear reasoning for your agent selection decisions.
   `,
-  router: {
-    routingInstructions: `
-      Analyze each task and route it to the most appropriate agent:
-
-      CODER AGENT:
-      - Code generation and implementation
-      - Technical documentation
-      - API design and documentation
-      - Performance optimization
-      - Bug fixes and debugging
-
-      COPYWRITER AGENT:
-      - Marketing copy and messaging
-      - Product descriptions and feature highlights
-      - Email campaign content
-      - Landing page copy
-      - Social media content
-
-      For tasks requiring both agents, break down the requirements and route subtasks accordingly.
-      Ensure alignment by sharing context between agents when routing related tasks.
-    `,
-  },
-  // Note: Hooks would normally be configured here, but we're using a simpler approach
-  // based on the AgentNetworkConfig interface
 });
 
 /**

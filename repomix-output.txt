@@ -38,6 +38,7 @@ The content is organized as follows:
 
 # Directory Structure
 ```
+.github/work/
 knowledge/archive/
 knowledge/categories/
 knowledge/domain-knowledge/
@@ -45,26 +46,49 @@ knowledge/schemas/
 knowledge/templates/
 src/mastra/tools/config/
 .env.example
+.github/.copilot-instructions.md
 .gitignore
+API.md
 knowledge/codeviz-diagram-2025-04-08T19-14-00.drawio
 mastra.config.ts
 package.json
 README.md
 src/mastra/agents/agentic.agent.ts
 src/mastra/agents/analyst.agent.ts
+src/mastra/agents/architect.agent.ts
 src/mastra/agents/base.agent.ts
+src/mastra/agents/codeDocumenter.agent.ts
+src/mastra/agents/coder.agent.ts
 src/mastra/agents/config/agentic.config.ts
 src/mastra/agents/config/analyst.config.ts
+src/mastra/agents/config/architect.config.ts
 src/mastra/agents/config/base.config.ts
+src/mastra/agents/config/codeDocumenter.config.ts
+src/mastra/agents/config/coder.config.ts
+src/mastra/agents/config/config.types.ts
+src/mastra/agents/config/copywriter.config.ts
 src/mastra/agents/config/dataManager.config.ts
+src/mastra/agents/config/debugger.config.ts
 src/mastra/agents/config/index.ts
+src/mastra/agents/config/marketResearch.config.ts
+src/mastra/agents/config/model.utils.ts
+src/mastra/agents/config/provider.utils.ts
 src/mastra/agents/config/research.config.ts
 src/mastra/agents/config/rlTrainer.config.ts
+src/mastra/agents/config/seoAgent.config.ts
+src/mastra/agents/config/socialMedia.config.ts
+src/mastra/agents/config/uiUxCoder.config.ts
 src/mastra/agents/config/writer.config.ts
+src/mastra/agents/copywriter.agent.ts
 src/mastra/agents/dataManager.agent.ts
+src/mastra/agents/debugger.agent.ts
 src/mastra/agents/index.ts
+src/mastra/agents/marketResearch.agent.ts
 src/mastra/agents/research.agent.ts
 src/mastra/agents/rlTrainer.agent.ts
+src/mastra/agents/seoAgent.agent.ts
+src/mastra/agents/socialMedia.agent.ts
+src/mastra/agents/uiUxCoder.agent.ts
 src/mastra/agents/writer.agent.ts
 src/mastra/database/examples.ts
 src/mastra/database/index.ts
@@ -111,10 +135,154 @@ src/mastra/voice/googlevoice.ts
 src/mastra/voice/index.ts
 src/mastra/workflows/index.ts
 src/mastra/workflows/Networks/agentNetwork.ts
+src/mastra/workflows/Networks/productLaunch.network.ts
+src/mastra/workflows/Networks/productLaunchNetwork.ts
 tsconfig.json
 ```
 
 # Files
+
+## File: API.md
+````markdown
+# DeanmachinesAI API Documentation
+
+```plaintext
+INFO [2025-04-09 08:14:22.888 -0400] (DeanmachinesAI): ≡ƒôÜ Open API documentation available at <http://localhost:4111/openapi.json>
+INFO [2025-04-09 08:14:22.888 -0400] (DeanmachinesAI): ≡ƒº¬ Swagger UI available at <http://localhost:4111/swagger-ui>
+INFO [2025-04-09 08:14:22.888 -0400] (DeanmachinesAI): ≡ƒæ¿ΓÇì≡ƒÆ╗ Playground available at <http://localhost:4111/>
+```
+
+## Agent Configuration System Updates (April 9, 2025)
+
+### Enhanced Configuration System
+
+The agent configuration system has been significantly improved with a modular, extensible design:
+
+1. **Centralized Configuration Types**
+   - Created `config.types.ts` as the main source for configuration type definitions
+   - Added proper TypeScript interfaces with comprehensive JSDoc comments
+   - Implemented Zod schema validation for runtime configuration verification
+
+2. **Model Provider Support**
+   - Added support for multiple AI model providers (Google AI, Google Vertex AI)
+   - Created `provider.utils.ts` for centralized provider management
+   - Designed an extensible system for adding new providers (e.g., OpenAI) in the future
+
+3. **Agent Implementation Improvements**
+   - Fixed memory injection in agent implementations following best practices
+   - Standardized error handling across all agents
+   - Ensured all agents use correct tool IDs from the tools registry
+
+### Key Files and Components
+
+- **`config.types.ts`**: Core type definitions for agent configurations
+- **`provider.utils.ts`**: Utilities for managing different model providers
+- **`model.utils.ts`**: Functions for creating model instances
+- **Agent Configuration Files**: Updated to use the new type system
+- **Agent Implementation Files**: Fixed to use consistent memory injection and error handling
+
+### Usage Examples
+
+#### Creating a Standard Agent
+
+```typescript
+// Import configuration and utilities
+import { createAgentFromConfig } from "./base.agent";
+import analystConfig from "./config/analyst.config";
+import { sharedMemory } from "../database";
+
+// Create the agent with proper memory injection and error handling
+export const analystAgent = createAgentFromConfig({
+  config: analystConfig,
+  memory: sharedMemory, // Following RULE-MemoryInjection
+  onError: async (error: Error) => {
+    logger.error("Analyst agent error:", error);
+    return {
+      text: "I encountered an error during analysis."
+    };
+  },
+});
+```
+
+#### Using Google Vertex AI
+
+```typescript
+// In your agent configuration file
+import { createVertexModel } from './config/model.utils';
+
+export const myAgentConfig = {
+  // Other configuration properties
+  model: createVertexModel('gemini-2.0-pro'),
+  // Rest of configuration
+};
+```
+
+## Documentation Improvement Plan
+
+### How to Improve Documentation for Better Context
+
+1. **Code Structure Documentation**
+   - Create architectural diagrams showing component relationships
+   - Document data flow between agents, tools, and databases
+   - Maintain up-to-date dependency graphs
+
+2. **Type System Documentation**
+   - Generate TypeScript interface documentation
+   - Provide examples for each interface/type
+   - Document constraints and validation rules
+
+3. **Integration Test Examples**
+   - Add examples showing how components work together
+   - Document expected behavior and error cases
+   - Include sample configurations for different scenarios
+
+4. **Provider-Specific Documentation**
+   - Create dedicated documentation for each model provider
+   - Include setup instructions and authentication requirements
+   - Provide examples of provider-specific features and limitations
+
+5. **Agent Capability Matrix**
+   - Document which tools each agent can access
+   - Specify agent-specific behaviors and limitations
+   - Include decision trees for agent selection
+
+6. **Knowledge Graph**
+   - Build a knowledge graph showing relationships between components
+   - Document cross-cutting concerns and dependencies
+   - Track evolution of the system architecture over time
+
+7. **Contextual Comments**
+   - Add more descriptive code comments explaining "why" not just "what"
+   - Include references to architectural decisions and principles
+   - Document assumptions and preconditions
+
+Implementation of these documentation improvements will enhance context awareness for both developers and AI assistants working on the DeanmachinesAI project.
+
+## GitHub Copilot Findings
+
+- [2025-04-09] **Finding**: Tool IDs in agent configurations didn't match actual tool registry IDs
+  - **Resolution**: Updated all agent configurations to use correct tool IDs from the registry
+  - **Files**: Various `*.config.ts` files in `src/mastra/agents/config/`
+
+- [2025-04-09] **Finding**: Agent implementations were inconsistent in their use of memory injection and error handling
+  - **Resolution**: Standardized agent creation using proper memory injection pattern
+  - **Files**: Various `*.agent.ts` files in `src/mastra/agents/`
+
+- [2025-04-09] **Enhancement**: Created centralized configuration type system
+  - **Implementation**: Added `config.types.ts` as the primary source for configuration types
+  - **Benefits**: Improved type safety, modular design, and maintainability
+
+- [2025-04-09] **Enhancement**: Added multi-provider support with Google Vertex AI integration
+  - **Implementation**: Created `provider.utils.ts` and updated configuration types
+  - **Benefits**: Flexibility to use different AI model providers
+
+- Note: config.types.ts, provider.utils.ts, and model.utils.ts are not yet fully implemented. They are in progress and will be completed in the next sprint. Please refer to the upcoming sprint planning for updates on their status.
+- config.types.ts is going to be the main source of truth for all configuration types for agents instead of base.config.ts It will include Zod schema validation for runtime configuration verification.
+- provider.utils.ts will include all the utilities for managing different model providers, including Google AI and Google Vertex AI. It will also provide an extensible system for adding new providers in the future (e.g., OpenAI).
+- model.utils.ts will include functions for creating model instances based on the selected provider and configuration. It will also handle any provider-specific logic required for model instantiation.
+- agent implementations will be updated to use the new type system and provider utilities. This will ensure consistency and maintainability across all agents.
+- agent configuration files will be updated to use the new type system and provider utilities. This will ensure that all configurations are consistent and easy to maintain.
+````
 
 ## File: knowledge/codeviz-diagram-2025-04-08T19-14-00.drawio
 ````
@@ -551,344 +719,943 @@ import { memory } from "./src/mastra/database";
 // Track request timing for RL metrics
 ````
 
-## File: src/mastra/agents/agentic.agent.ts
+## File: src/mastra/agents/architect.agent.ts
 ````typescript
 /**
- * Agentic-style Agent Implementation
+ * Architecture Agent Implementation
  *
- * This module implements an advanced agent using Mastra's core functionality,
- * combining multiple tools for enhanced capabilities.
+ * This module implements the Architecture Agent based on its configuration.
+ */
+⋮----
+import { sharedMemory } from "../database";
+import { createAgentFromConfig } from "./base.agent";
+import architectConfig from "./config/architect.config";
+import { createLogger } from "@mastra/core/logger";
+⋮----
+/**
+ * Architecture Agent
+ *
+ * Specializes in system design, architecture decisions, and technical planning.
+ *
+ * @remarks
+ * This agent is responsible for creating architecture diagrams, making technical
+ * decisions, and providing guidance on system design and implementation.
+ */
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
+````
+
+## File: src/mastra/agents/codeDocumenter.agent.ts
+````typescript
+/**
+ * Code Documenter Agent Implementation
+ *
+ * This module implements the Code Documenter Agent based on its configuration.
+ */
+⋮----
+import { sharedMemory } from "../database";
+import { createAgentFromConfig } from "./base.agent";
+import codeDocumenterConfig from "./config/codeDocumenter.config";
+import { createLogger } from "@mastra/core/logger";
+⋮----
+/**
+ * Code Documenter Agent
+ *
+ * Specializes in creating comprehensive code documentation.
+ *
+ * @remarks
+ * This agent is responsible for creating API documentation, writing code comments,
+ * generating user guides, and ensuring documentation stays synchronized with code.
+ */
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
+````
+
+## File: src/mastra/agents/coder.agent.ts
+````typescript
+/**
+ * Coder Agent Implementation
+ *
+ * This module implements the Coder Agent responsible for code generation,
+ * analysis, and refactoring tasks within the DeanmachinesAI system.
  */
 ⋮----
 import { Agent } from "@mastra/core/agent";
+import { createAgentFromConfig } from "./base.agent";
+import { coderAgentConfig } from "./config/coder.config";
 import { createLogger } from "@mastra/core/logger";
 import { sharedMemory } from "../database";
-import { allToolsMap } from "../tools";
-import {
-  agenticAssistantConfig,
-  agenticResponseSchema,
-  getToolsFromIds,
-  type AgenticResponse,
-} from "./config/agentic.config";
-import { createResponseHook } from "../hooks";
 ⋮----
-// Initialize logger for this module
+// Configure logger for the coder agent
 ⋮----
 /**
- * Creates and initializes the agentic assistant agent with all required tools
+ * Initialize the coder agent instance using its configuration
  *
- * @returns An initialized Mastra agent instance
- * @throws {Error} If agent creation fails or required tools are missing
+ * @returns The initialized coder agent instance
  */
-export function createAgenticAssistant(): Agent
+export function initializeCoderAgent(): Agent
 ⋮----
-// Get tools for the agent
-⋮----
-// Create response hook if validation is configured
-⋮----
-// Create the agent
-⋮----
-// Create the agent instance
+memory: sharedMemory, // Following RULE-MemoryInjection
 ⋮----
 /**
- * Generates a structured response using the agentic assistant
- *
- * @param query - The user's question or request
- * @returns A promise resolving to the structured response
- * @throws {Error} If generation fails or response validation fails
- */
-export async function getStructuredResponse(
-  query: string
-): Promise<AgenticResponse>
-⋮----
-// Use the agent with structured output schema
-⋮----
-/**
- * Streams a response from the agentic assistant
- *
- * @param query - The user's question or request
- * @returns A promise resolving to the streaming response
- * @throws {Error} If streaming setup fails
- */
-export async function streamResponse(query: string)
-⋮----
-/**
- * Example usage:
- *
- * ```typescript
- * import { agenticAssistant, getStructuredResponse } from "./agents/agentic.agent";
- *
- * // Simple text response
- * const response = await agenticAssistant.generate("What's the weather like today?");
- * console.log(response.text);
- *
- * // Structured response with schema validation
- * const structuredResponse = await getStructuredResponse(
- *   "Analyze the current trends in renewable energy"
- * );
- * console.log(structuredResponse.answer);
- * console.log(structuredResponse.sources);
- * ```
+ * Singleton instance of the coder agent
  */
 ````
 
-## File: src/mastra/agents/analyst.agent.ts
+## File: src/mastra/agents/config/architect.config.ts
 ````typescript
 /**
- * Analyst Agent Implementation
+ * Architecture Agent Configuration
  *
- * This agent is specialized in interpreting data, identifying patterns,
- * and extracting meaningful insights from information.
+ * This module defines the configuration for the Architecture Agent,
+ * which specializes in system design, architecture decisions, and technical planning.
  */
 ⋮----
-import { createAgentFromConfig } from "./base.agent";
-import { analystAgentConfig } from "./config/analyst.config";
-⋮----
-/**
- * Analyst Agent with data analysis capabilities
- *
- * @remarks
- * This agent can analyze information, identify trends and patterns,
- * and extract meaningful insights from data sources.
- */
-````
-
-## File: src/mastra/agents/config/agentic.config.ts
-````typescript
-/**
- * Agentic-style Agent Configuration
- *
- * This file configures a Mastra agent with advanced capabilities,
- * leveraging Mastra's core features and compatible tools.
- */
-⋮----
-import { google } from "@ai-sdk/google";
 import { z } from "zod";
-import type { Tool } from "@mastra/core/tools";
-import { BaseAgentConfig, defaultResponseValidation } from "./base.config";
+import { google } from "@ai-sdk/google";
+import { BaseAgentConfig } from "./base.config";
 ⋮----
 /**
- * Configuration for retrieving relevant tools for the agent
+ * Architecture Agent Configuration
  *
- * @param toolIds - Array of tool identifiers to include
- * @param allTools - Map of all available tools
- * @returns Record of tools mapped by their IDs
- * @throws {Error} When required tools are missing
- */
-export function getToolsFromIds(
-  toolIds: string[],
-  allTools: Map<string, Tool>
-): Record<string, Tool>
-⋮----
-/**
- * Configuration for the agentic assistant
+ * @remarks
+ * The Architecture Agent focuses on system design, technical decision making,
+ * and creating architectural plans. It analyzes requirements and provides
+ * guidance on component structures, interactions, and technical trade-offs.
  */
 ⋮----
-/**
- * Schema for structured agent responses
- */
-⋮----
-/**
- * Type for structured responses from the agent
- */
-export type AgenticResponse = z.infer<typeof agenticResponseSchema>;
+export type ArchitectConfig = typeof architectConfig;
 ````
 
-## File: src/mastra/agents/config/analyst.config.ts
+## File: src/mastra/agents/config/codeDocumenter.config.ts
 ````typescript
 /**
- * Analyst Agent Configuration
+ * Code Documenter Agent Configuration
  *
- * This module defines the specific configuration for the Analyst Agent,
- * which specializes in interpreting data, identifying patterns,
- * and extracting meaningful insights.
+ * This module defines the configuration for the Code Documenter Agent,
+ * which specializes in creating comprehensive code documentation.
+ */
+⋮----
+import { z } from "zod";
+import { google } from "@ai-sdk/google";
+import { BaseAgentConfig } from "./base.config";
+⋮----
+/**
+ * Code Documenter Agent Configuration
+ *
+ * @remarks
+ * The Code Documenter Agent focuses on creating clear, comprehensive documentation
+ * for code, APIs, and technical systems. It analyzes code structures and generates
+ * appropriate documentation formats.
+ */
+⋮----
+export type CodeDocumenterConfig = typeof codeDocumenterConfig;
+````
+
+## File: src/mastra/agents/config/coder.config.ts
+````typescript
+/**
+ * Coder Agent Configuration
+ *
+ * This module defines the configuration for the Coder Agent, which specializes in
+ * generating, analyzing, and refactoring code in various programming languages.
  */
 ⋮----
 import { google } from "@ai-sdk/google";
 import {
   BaseAgentConfig,
   defaultResponseValidation,
-  DEFAULT_MODEL_ID, // Import the shared constant
+  DEFAULT_MODEL_ID,
 } from "./base.config";
 ⋮----
-DEFAULT_MODEL_ID, // Import the shared constant
-⋮----
 /**
- * Configuration for the Analyst Agent
+ * Configuration for the Coder Agent.
  *
  * @remarks
- * The Analyst Agent focuses on analyzing information, identifying trends and patterns,
- * and extracting meaningful insights from various data sources.
+ * The Coder Agent focuses on code generation, refactoring, and analysis
+ * using code manipulation tools, file operations, and GitHub integration.
+ *
+ * @property {string[]} toolIds - The list of tool IDs required by the agent.
  */
 ⋮----
-model: google(DEFAULT_MODEL_ID), // Use the constant here
+export type CoderAgentConfig = typeof coderAgentConfig;
 ````
 
-## File: src/mastra/agents/config/dataManager.config.ts
+## File: src/mastra/agents/config/config.types.ts
 ````typescript
 /**
- * Data Manager Agent Configuration
+ * Agent Configuration Type Definitions
  *
- * This module defines the specific configuration for the Data Manager Agent,
- * which specializes in managing data operations, file organization,
- * storage, and retrieval of information.
+ * This module defines shared types and interfaces for agent configurations,
+ * ensuring consistent typing across the agent configuration system.
+ *
+ * @module config.types
  */
 ⋮----
+import { z } from "zod";
 import { google } from "@ai-sdk/google";
-import { BaseAgentConfig, defaultResponseValidation } from "./base.config";
+import { vertex, createVertex } from "@ai-sdk/google-vertex";
+import { Tool } from "@mastra/core/tools";
+⋮----
+// ========== MODEL PROVIDER CONFIGURATION ==========
 ⋮----
 /**
- * Configuration for the Data Manager Agent
+ * Supported AI model providers
+ */
+export type ModelProvider = "google" | "vertex" | "openai";
+⋮----
+/**
+ * Options specific to Google Vertex AI
+ */
+export interface GoogleVertexOptions {
+  /** Project ID for Vertex AI */
+  projectId?: string;
+
+  /** Location for Vertex AI */
+  location?: string;
+
+  /** Path to credentials file */
+  credentialsPath?: string;
+
+  /** Model-specific options */
+  [key: string]: unknown;
+}
+⋮----
+/** Project ID for Vertex AI */
+⋮----
+/** Location for Vertex AI */
+⋮----
+/** Path to credentials file */
+⋮----
+/** Model-specific options */
+⋮----
+/**
+ * Options specific to Google AI
+ */
+export interface GoogleOptions {
+  /** API Key for Google AI */
+  apiKey?: string;
+
+  /** Model-specific options */
+  [key: string]: unknown;
+}
+⋮----
+/** API Key for Google AI */
+⋮----
+/** Model-specific options */
+⋮----
+/**
+ * Options specific to OpenAI
+ */
+export interface OpenAIOptions {
+  /** API Key for OpenAI */
+  apiKey?: string;
+
+  /** Organization ID for OpenAI */
+  organizationId?: string;
+
+  /** Model-specific options */
+  [key: string]: unknown;
+}
+⋮----
+/** API Key for OpenAI */
+⋮----
+/** Organization ID for OpenAI */
+⋮----
+/** Model-specific options */
+⋮----
+/**
+ * Provider-specific options
+ */
+export interface ProviderOptions {
+  /** Google AI specific options */
+  google?: GoogleOptions;
+
+  /** Google Vertex AI specific options */
+  googleVertex?: GoogleVertexOptions;
+
+  /** OpenAI specific options */
+  openai?: OpenAIOptions;
+}
+⋮----
+/** Google AI specific options */
+⋮----
+/** Google Vertex AI specific options */
+⋮----
+/** OpenAI specific options */
+⋮----
+/**
+ * Model configuration options
+ */
+export interface ModelConfig {
+  /** The provider to use for this agent */
+  provider: ModelProvider;
+
+  /** Model ID to use (e.g., "gemini-2.0-flash") */
+  modelId: string;
+
+  /** Maximum tokens to generate */
+  maxTokens?: number;
+
+  /** Temperature for generation (0-1) */
+  temperature?: number;
+
+  /** Top-p for sampling */
+  topP?: number;
+
+  /** Provider-specific options */
+  providerOptions?: ProviderOptions;
+}
+⋮----
+/** The provider to use for this agent */
+⋮----
+/** Model ID to use (e.g., "gemini-2.0-flash") */
+⋮----
+/** Maximum tokens to generate */
+⋮----
+/** Temperature for generation (0-1) */
+⋮----
+/** Top-p for sampling */
+⋮----
+/** Provider-specific options */
+⋮----
+// ========== RESPONSE VALIDATION CONFIGURATION ==========
+⋮----
+/**
+ * Response hook options interface for agent response validation
+ */
+export interface ResponseHookOptions {
+  /** Minimum length of valid responses (in characters) */
+  minResponseLength?: number;
+
+  /** Maximum number of attempts to generate a valid response */
+  maxAttempts?: number;
+
+  /** Custom validation function for response content */
+  validateResponse?: (response: unknown) => boolean;
+}
+⋮----
+/** Minimum length of valid responses (in characters) */
+⋮----
+/** Maximum number of attempts to generate a valid response */
+⋮----
+/** Custom validation function for response content */
+⋮----
+/**
+ * Base configuration interface for all agent configs
  *
- * @remarks
- * The Data Manager Agent focuses on organizing, storing, retrieving, and managing
- * data assets across the system, including file operations and vector database management.
+ * @interface BaseAgentConfig
+ */
+export interface BaseAgentConfig {
+  /** Unique identifier for the agent */
+  id: string;
+
+  /** Display name of the agent */
+  name: string;
+
+  /** Brief description of the agent's purpose and capabilities */
+  description: string;
+
+  /**
+   * Model instance from @ai-sdk
+   * Can be from google() or googleVertex()
+   */
+  model: ReturnType<typeof google> | ReturnType<typeof googleVertex>;
+
+  /** Main instructions that define the agent's behavior */
+  instructions: string;
+
+  /** Tool IDs that this agent has access to */
+  toolIds: string[];
+
+  /** Optional response validation settings */
+  responseValidation?: ResponseHookOptions;
+
+  /** Optional model configuration for creating the model dynamically */
+  modelConfig?: ModelConfig;
+}
+⋮----
+/** Unique identifier for the agent */
+⋮----
+/** Display name of the agent */
+⋮----
+/** Brief description of the agent's purpose and capabilities */
+⋮----
+/**
+   * Model instance from @ai-sdk
+   * Can be from google() or googleVertex()
+   */
+⋮----
+/** Main instructions that define the agent's behavior */
+⋮----
+/** Tool IDs that this agent has access to */
+⋮----
+/** Optional response validation settings */
+⋮----
+/** Optional model configuration for creating the model dynamically */
+⋮----
+/**
+ * Agent configuration type that can be used with z.infer<>
+ * This is a Zod schema version of BaseAgentConfig for validation
+ */
+⋮----
+model: z.any(), // Can't strictly type the Google model return type with Zod
+⋮----
+/**
+ * Type for agent configuration objects using Zod schema
+ */
+export type ValidatedAgentConfig = z.infer<typeof AgentConfigSchema>;
+⋮----
+/**
+ * Interface representing an initialized agent tool record
+ */
+export interface AgentToolRecord {
+  [toolId: string]: Tool<any, any>;
+}
+⋮----
+/**
+ * Represents a record of agent capabilities by capability name
+ */
+export interface AgentCapabilities {
+  [capability: string]: boolean;
+}
+⋮----
+/**
+ * Agent initialization options for creating agent instances
+ */
+export interface AgentInitOptions {
+  /** The agent configuration object */
+  config: BaseAgentConfig;
+
+  /** Optional set of override tools */
+  tools?: AgentToolRecord;
+
+  /** Whether to validate the configuration */
+  validate?: boolean;
+}
+⋮----
+/** The agent configuration object */
+⋮----
+/** Optional set of override tools */
+⋮----
+/** Whether to validate the configuration */
+⋮----
+/**
+ * Agent error handler function signature
+ */
+export type AgentErrorHandler = (error: Error) => Promise<{ text: string }>;
+⋮----
+/**
+ * Export type definitions to be used elsewhere in the system
  */
 ````
 
-## File: src/mastra/agents/config/rlTrainer.config.ts
+## File: src/mastra/agents/config/copywriter.config.ts
 ````typescript
 /**
- * RL Trainer Agent Configuration
+ * Copywriter Agent Configuration
  *
- * This module defines the specific configuration for the RL Trainer Agent,
- * which specializes in reinforcement learning, collecting and analyzing
- * feedback, and optimizing agent behaviors.
+ * This module defines the configuration for the Copywriter Agent, which specializes in
+ * creating compelling marketing copy and content for various channels.
  */
 ⋮----
 import { google } from "@ai-sdk/google";
 import {
   BaseAgentConfig,
   defaultResponseValidation,
-  DEFAULT_MODEL_ID, // Import the shared constant
+  DEFAULT_MODEL_ID,
 } from "./base.config";
 ⋮----
-DEFAULT_MODEL_ID, // Import the shared constant
-⋮----
 /**
- * Configuration for the RL Trainer Agent
+ * Configuration for the Copywriter Agent.
  *
  * @remarks
- * The RL Trainer Agent focuses on collecting user feedback, analyzing agent performance,
- * and implementing reinforcement learning techniques to improve agent behaviors.
+ * The Copywriter Agent focuses on creating marketing copy and content,
+ * adapting to different brand voices, and optimizing messaging for various channels.
+ *
+ * @property {string[]} toolIds - The list of tool IDs required by the agent.
  */
 ⋮----
-model: google(DEFAULT_MODEL_ID), // Use the constant here
+export type CopywriterAgentConfig = typeof copywriterAgentConfig;
 ````
 
-## File: src/mastra/agents/config/writer.config.ts
+## File: src/mastra/agents/config/debugger.config.ts
 ````typescript
 /**
- * Writer Agent Configuration
+ * Debugger Agent Configuration
  *
- * This module defines the specific configuration for the Writer Agent,
- * which specializes in creating clear, engaging, and well-structured
- * documentation from complex information.
+ * This module defines the configuration for the Debugger Agent,
+ * which specializes in identifying and fixing code issues and bugs.
+ */
+⋮----
+import { z } from "zod";
+import { google } from "@ai-sdk/google";
+import { BaseAgentConfig } from "./base.config";
+⋮----
+/**
+ * Debugger Agent Configuration
+ *
+ * @remarks
+ * The Debugger Agent focuses on troubleshooting, debugging, and resolving
+ * technical issues in code. It analyzes error logs, traces execution paths,
+ * and proposes fixes for bugs.
+ */
+⋮----
+"e2b", // E2B for executing code in a sandbox
+⋮----
+"calculate-reward", // For analyzing performance improvements
+⋮----
+export type DebuggerConfig = typeof debuggerConfig;
+````
+
+## File: src/mastra/agents/config/marketResearch.config.ts
+````typescript
+/**
+ * Market Research Agent Configuration
+ *
+ * This module defines the configuration for the Market Research Agent,
+ * which specializes in analyzing markets, competitors, and user needs.
+ */
+⋮----
+import { z } from "zod";
+import { google } from "@ai-sdk/google";
+import { BaseAgentConfig } from "./base.config";
+⋮----
+/**
+ * Market Research Agent Configuration
+ *
+ * @remarks
+ * The Market Research Agent focuses on gathering and analyzing market data,
+ * competitive intelligence, and user feedback to inform product and marketing strategies.
+ */
+⋮----
+"brave", // Correct ID for Brave search
+"google", // Correct ID for Google search
+"tavily", // Correct ID for Tavily search
+"exa", // Correct ID for Exa search
+⋮----
+"calculate-reward", // For analyzing metrics
+⋮----
+export type MarketResearchAgentConfig = typeof marketResearchConfig;
+````
+
+## File: src/mastra/agents/config/model.utils.ts
+````typescript
+/**
+ * Model Utility Functions
+ *
+ * This module provides utility functions for creating AI model instances
+ * based on configuration settings, supporting multiple providers.
+ *
+ * @module model.utils
  */
 ⋮----
 import { google } from "@ai-sdk/google";
-import {
-  BaseAgentConfig,
-  defaultResponseValidation,
-  DEFAULT_MODEL_ID, // Import the shared constant
-} from "./base.config";
+import { vertex, createVertex } from "@ai-sdk/google-vertex";
 ⋮----
-DEFAULT_MODEL_ID, // Import the shared constant
+import { ModelConfig, ModelProvider } from "./config.types";
 ⋮----
 /**
- * Configuration for the Writer Agent
- *
- * @remarks
- * The Writer Agent focuses on transforming complex information into accessible content,
- * adapting tone and style for different audiences, and maintaining consistency across documents.
+ * Default vertex credentials file path
  */
 ⋮----
-model: google(DEFAULT_MODEL_ID), // Use the constant here
+/**
+ * Model creation options
+ */
+export interface ModelCreationOptions {
+  /** Path to Google Vertex AI credentials JSON file */
+  vertexCredentialsPath?: string;
+
+  /** Project ID for Vertex AI */
+  vertexProjectId?: string;
+
+  /** Location for Vertex AI */
+  vertexLocation?: string;
+}
+⋮----
+/** Path to Google Vertex AI credentials JSON file */
+⋮----
+/** Project ID for Vertex AI */
+⋮----
+/** Location for Vertex AI */
+⋮----
+/**
+ * Creates a model instance based on the provided configuration
+ *
+ * @param modelConfig - Configuration for the model
+ * @param options - Additional options for model creation
+ * @returns A model instance compatible with @mastra/core/agent
+ * @throws {Error} If the model provider is unsupported or configuration is invalid
+ */
+export function createModelFromConfig(
+  modelConfig: ModelConfig,
+  options: ModelCreationOptions = {}
+): ReturnType<typeof google> | ReturnType<typeof vertex>
+⋮----
+// Get credentials path from options or use default
+⋮----
+// Check if credentials file exists
+⋮----
+// Read credentials file
+⋮----
+// Create Vertex configuration
+⋮----
+// Create and return Vertex model instance
+⋮----
+/**
+ * Creates a Google AI model instance with default settings
+ *
+ * @param modelId - Model ID to use
+ * @param options - Additional model options
+ * @returns A Google AI model instance
+ */
+export function createGoogleModel(
+  modelId: string,
+  options?: Record<string, unknown>
+): ReturnType<typeof google>
+⋮----
+/**
+ * Creates a Google Vertex AI model instance with default settings
+ *
+ * @param modelId - Model ID to use
+ * @param credentialsPath - Optional path to credentials file
+ * @param options - Additional model options
+ * @returns A Google Vertex AI model instance
+ */
+export function createVertexModel(
+  modelId: string,
+  credentialsPath?: string,
+  options?: Record<string, unknown>
+): ReturnType<typeof vertex>
 ````
 
-## File: src/mastra/agents/dataManager.agent.ts
+## File: src/mastra/agents/config/provider.utils.ts
 ````typescript
 /**
- * Data Manager Agent Implementation
+ * Model Provider Utilities
  *
- * This agent is specialized in managing data operations, file organization,
- * storage, and retrieval of information across the system.
+ * This module provides utilities for managing different AI model providers,
+ * allowing for a centralized location to handle provider configurations and instances.
+ *
+ * @module provider.utils
  */
 ⋮----
-import { createAgentFromConfig } from "./base.agent";
-import { dataManagerAgentConfig } from "./config/dataManager.config";
+import { google } from "@ai-sdk/google";
+import { vertex, createVertex } from "@ai-sdk/google-vertex";
+⋮----
+import { ModelConfig, ModelProvider, ProviderOptions } from "./config.types";
 ⋮----
 /**
- * Data Manager Agent with file and storage management capabilities
+ * Default credentials path for different providers
+ */
+⋮----
+// Add other providers' default credential paths here as needed
+⋮----
+/**
+ * Creates an AI model instance based on the specified provider
+ *
+ * @param provider - The model provider to use
+ * @param modelId - The specific model ID to instantiate
+ * @param options - Additional provider-specific options
+ * @returns A model instance compatible with @mastra/core/agent
+ * @throws {Error} If the provider is unsupported or configuration is invalid
+ */
+export function createModelInstance(
+  provider: ModelProvider,
+  modelId: string,
+  options?: ProviderOptions
+): ReturnType<typeof google> | ReturnType<typeof googleVertex>
+⋮----
+// Add support for additional providers here
+// case "openai":
+//   return createOpenAIModel(modelId, options?.openai);
+⋮----
+/**
+ * Creates a Google AI model instance
+ *
+ * @param modelId - The model ID to use
+ * @param options - Additional model options
+ * @returns A Google AI model instance
+ */
+export function createGoogleModel(
+  modelId: string,
+  options?: Record<string, unknown>
+): ReturnType<typeof google>
+⋮----
+/**
+ * Creates a Google Vertex AI model instance
+ *
+ * @param modelId - The model ID to use
+ * @param credentialsPath - Path to credentials file
+ * @param projectId - Google Cloud project ID
+ * @param location - Google Cloud region
+ * @param options - Additional model options
+ * @returns A Google Vertex AI model instance
+ * @throws {Error} If credentials file is not found or invalid
+ */
+export function createVertexModel(
+  modelId: string,
+  credentialsPath?: string,
+  projectId?: string,
+  location?: string,
+  options?: Record<string, unknown>
+): ReturnType<typeof googleVertex>
+⋮----
+// Get credentials path from options or use default
+⋮----
+// Check if credentials file exists
+⋮----
+// Read credentials file
+⋮----
+// Create Vertex model
+⋮----
+/**
+ * Loads and validates credentials from a JSON file
+ *
+ * @param filePath - Path to the credentials file
+ * @returns Parsed credentials object
+ * @throws {Error} If file doesn't exist or contains invalid JSON
+ */
+export function loadCredentials(filePath: string): Record<string, unknown>
+````
+
+## File: src/mastra/agents/config/seoAgent.config.ts
+````typescript
+/**
+ * SEO Agent Configuration
+ *
+ * This module defines the configuration for the SEO Agent,
+ * which specializes in search engine optimization strategies and implementation.
+ */
+⋮----
+import { z } from "zod";
+import { google } from "@ai-sdk/google";
+import { BaseAgentConfig } from "./base.config";
+⋮----
+/**
+ * SEO Agent Configuration
  *
  * @remarks
- * This agent specializes in organizing, storing, retrieving, and managing
- * data assets across the system, including file operations and vector database management.
+ * The SEO Agent focuses on optimizing content for search engines,
+ * analyzing keywords, and improving website visibility and rankings.
+ */
+⋮----
+"calculate-reward", // For analyzing SEO metrics
+⋮----
+export type SeoAgentConfig = typeof seoAgentConfig;
+````
+
+## File: src/mastra/agents/config/socialMedia.config.ts
+````typescript
+/**
+ * Social Media Agent Configuration
+ *
+ * This module defines the configuration for the Social Media Agent,
+ * which specializes in creating and managing social media content and campaigns.
+ */
+⋮----
+import { z } from "zod";
+import { google } from "@ai-sdk/google";
+import { BaseAgentConfig } from "./base.config";
+⋮----
+/**
+ * Social Media Agent Configuration
+ *
+ * @remarks
+ * The Social Media Agent focuses on creating engaging social media content,
+ * planning campaigns, and analyzing social engagement metrics to optimize reach.
+ */
+⋮----
+"calculate-reward", // For analyzing engagement metrics
+⋮----
+export type SocialMediaAgentConfig = typeof socialMediaConfig;
+````
+
+## File: src/mastra/agents/config/uiUxCoder.config.ts
+````typescript
+/**
+ * UI/UX Coder Agent Configuration
+ *
+ * This module defines the configuration for the UI/UX Coder Agent,
+ * which specializes in frontend development and user experience implementation.
+ */
+⋮----
+import { z } from "zod";
+import { google } from "@ai-sdk/google";
+import { BaseAgentConfig } from "./base.config";
+⋮----
+/**
+ * UI/UX Coder Agent Configuration
+ *
+ * @remarks
+ * The UI/UX Coder Agent focuses on implementing user interfaces and user experience designs.
+ * It specializes in frontend technologies, responsive design, and creating intuitive user interactions.
+ */
+⋮----
+"e2b", // For previewing UI components
+⋮----
+export type UIUXCoderConfig = typeof uiUxCoderConfig;
+````
+
+## File: src/mastra/agents/copywriter.agent.ts
+````typescript
+/**
+ * Copywriter Agent Implementation
+ *
+ * This module implements the Copywriter Agent responsible for creating
+ * marketing copy and content within the DeanmachinesAI system.
+ */
+⋮----
+import { Agent } from "@mastra/core/agent";
+import { createAgentFromConfig } from "./base.agent";
+import copywriterConfig from "./config/copywriter.config";
+import { createLogger } from "@mastra/core/logger";
+import { sharedMemory } from "../database";
+⋮----
+// Configure logger for the copywriter agent
+⋮----
+/**
+ * Initialize the copywriter agent instance using its configuration
+ *
+ * @returns The initialized copywriter agent instance
+ */
+export function initializeCopywriterAgent(): Agent
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
+⋮----
+/**
+ * Singleton instance of the copywriter agent
  */
 ````
 
-## File: src/mastra/agents/research.agent.ts
+## File: src/mastra/agents/debugger.agent.ts
 ````typescript
 /**
- * Research Agent Implementation
+ * Debugger Agent Implementation
  *
- * This agent is specialized in finding, gathering, and synthesizing information
- * from various sources including web searches, document repositories, and files.
+ * This module implements the Debugger Agent based on its configuration.
  */
 ⋮----
+import { sharedMemory } from "../database";
 import { createAgentFromConfig } from "./base.agent";
-import { researchAgentConfig } from "./config/research.config";
+import debuggerConfig from "./config/debugger.config";
+import { createLogger } from "@mastra/core/logger";
 ⋮----
 /**
- * Research Agent with web search capabilities
+ * Debugger Agent
+ *
+ * Specializes in identifying and fixing code issues and bugs.
  *
  * @remarks
- * This agent can perform web searches, read and write files, and maintain
- * research context across interactions using semantic memory.
+ * This agent is responsible for analyzing error logs, debugging code execution,
+ * and proposing fixes for bugs and performance issues.
  */
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
 ````
 
-## File: src/mastra/agents/rlTrainer.agent.ts
+## File: src/mastra/agents/marketResearch.agent.ts
 ````typescript
 /**
- * RL Trainer Agent Implementation
+ * Market Research Agent Implementation
  *
- * This agent is specialized in reinforcement learning, collecting and analyzing
- * feedback, and optimizing agent behaviors based on performance data.
+ * This module implements the Market Research Agent based on its configuration.
  */
 ⋮----
+import { sharedMemory } from "../database";
 import { createAgentFromConfig } from "./base.agent";
-import { rlTrainerAgentConfig } from "./config/rlTrainer.config";
+import marketResearchConfig from "./config/marketResearch.config";
+import { createLogger } from "@mastra/core/logger";
 ⋮----
 /**
- * RL Trainer Agent with reinforcement learning capabilities
+ * Market Research Agent
+ *
+ * Specializes in analyzing markets, competitors, and user needs.
  *
  * @remarks
- * This agent specializes in collecting user feedback, analyzing agent performance,
- * and implementing reinforcement learning techniques to improve agent behaviors.
+ * This agent is responsible for gathering and analyzing market data,
+ * conducting competitive analysis, and providing actionable insights.
  */
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
 ````
 
-## File: src/mastra/agents/writer.agent.ts
+## File: src/mastra/agents/seoAgent.agent.ts
 ````typescript
 /**
- * Writer Agent Implementation
+ * SEO Agent Implementation
  *
- * This agent is specialized in creating clear, engaging, and well-structured
- * documentation from complex information.
+ * This module implements the SEO Agent based on its configuration.
  */
 ⋮----
+import { sharedMemory } from "../database";
 import { createAgentFromConfig } from "./base.agent";
-import { writerAgentConfig } from "./config/writer.config";
+import seoAgentConfig from "./config/seoAgent.config";
+import { createLogger } from "@mastra/core/logger";
 ⋮----
 /**
- * Writer Agent with content formatting capabilities
+ * SEO Agent
+ *
+ * Specializes in search engine optimization strategies and implementation.
  *
  * @remarks
- * This agent can transform complex information into accessible content,
- * adapt tone and style for different audiences, and maintain consistency
- * across documents.
+ * This agent is responsible for keyword research, content optimization,
+ * and improving website visibility and rankings in search engines.
  */
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
+````
+
+## File: src/mastra/agents/socialMedia.agent.ts
+````typescript
+/**
+ * Social Media Agent Implementation
+ *
+ * This module implements the Social Media Agent based on its configuration.
+ */
+⋮----
+import { sharedMemory } from "../database";
+import { createAgentFromConfig } from "./base.agent";
+import socialMediaConfig from "./config/socialMedia.config";
+import { createLogger } from "@mastra/core/logger";
+⋮----
+/**
+ * Social Media Agent
+ *
+ * Specializes in creating and managing social media content and campaigns.
+ *
+ * @remarks
+ * This agent is responsible for creating platform-specific content,
+ * planning social media campaigns, and analyzing engagement metrics.
+ */
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
+````
+
+## File: src/mastra/agents/uiUxCoder.agent.ts
+````typescript
+/**
+ * UI/UX Coder Agent Implementation
+ *
+ * This module implements the UI/UX Coder Agent based on its configuration.
+ */
+⋮----
+import { sharedMemory } from "../database";
+import { createAgentFromConfig } from "./base.agent";
+import uiUxCoderConfig from "./config/uiUxCoder.config";
+import { createLogger } from "@mastra/core/logger";
+⋮----
+/**
+ * UI/UX Coder Agent
+ *
+ * Specializes in frontend development and user experience implementation.
+ *
+ * @remarks
+ * This agent is responsible for implementing user interfaces based on designs,
+ * creating responsive layouts, and implementing intuitive user interactions.
+ */
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
 ````
 
 ## File: src/mastra/database/examples.ts
@@ -2504,6 +3271,203 @@ export function getAgentNetwork(networkName: string): AgentNetwork | undefined
  */
 ````
 
+## File: src/mastra/workflows/Networks/productLaunch.network.ts
+````typescript
+/**
+ * Product Launch Network
+ *
+ * This module implements a comprehensive agent network that coordinates between
+ * the coding team and marketing team for end-to-end product development and launch.
+ *
+ * @module ProductLaunchNetwork
+ */
+⋮----
+import { AgentNetwork } from "@mastra/core/network";
+import { createLogger } from "@mastra/core/logger";
+import { sharedMemory } from "../../database";
+⋮----
+// Import all required agents
+import {
+  // Core agents
+  researchAgent,
+  analystAgent,
+
+  // Coding team
+  architectAgent,
+  coderAgent,
+  debuggerAgent,
+  uiUxCoderAgent,
+  codeDocumenterAgent,
+
+  // Marketing team
+  marketResearchAgent,
+  copywriterAgent,
+  socialMediaAgent,
+  seoAgent,
+} from "../../agents";
+⋮----
+// Core agents
+⋮----
+// Coding team
+⋮----
+// Marketing team
+⋮----
+/**
+ * ProductLaunchNetwork
+ *
+ * A comprehensive agent network that coordinates between specialized coding and marketing teams
+ * to deliver an end-to-end product development and launch process.
+ *
+ * @remarks
+ * This network facilitates the workflow from initial research and architecture planning
+ * through development, testing, documentation, and marketing launch.
+ */
+export class ProductLaunchNetwork extends AgentNetwork {
+⋮----
+/**
+   * Creates a new ProductLaunchNetwork instance.
+   *
+   * @param options - Optional configuration options for the network
+   */
+constructor(options:
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
+⋮----
+// Store configuration
+⋮----
+// Register all agents in the network
+⋮----
+// Define the network topology and connections
+⋮----
+/**
+   * Registers all agents required for the product launch process.
+   *
+   * @private
+   */
+private registerAgents(): void
+⋮----
+// Register research and analysis agents
+⋮----
+// Register coding team agents
+⋮----
+// Register marketing team agents
+⋮----
+/**
+   * Defines the workflow and connections between agents.
+   *
+   * @private
+   */
+private defineWorkflow(): void
+⋮----
+// Define primary workflow phases
+⋮----
+// Define agent connections in the research phase
+⋮----
+// Define agent connections in the planning phase
+⋮----
+// Define agent connections in the development phase
+⋮----
+// Define agent connections in the marketing phase
+⋮----
+/**
+   * Executes the product launch process with the given input.
+   *
+   * @param input - The initial product requirements and specifications
+   * @returns A promise resolving to the result of the product launch process
+   */
+async execute(input: {
+    requirements: string;
+    specifications: string;
+    targetAudience: string;
+}): Promise<any>
+⋮----
+// Initialize the context with input data
+⋮----
+// Execute the workflow through the defined phases
+⋮----
+/**
+   * Executes a specific phase of the product launch process.
+   *
+   * @private
+   * @param phaseName - The name of the phase to execute
+   * @param context - The context data for the phase
+   * @returns A promise resolving to the result of the phase execution
+   */
+private async executePhase(
+    phaseName: string,
+    context: Record<string, any>
+): Promise<any>
+⋮----
+// Get agents in this phase based on the workflow definition
+⋮----
+// Execute each agent in the phase
+⋮----
+// Update context with this agent's results
+⋮----
+/**
+   * Gets the agents that should be executed in a specific phase.
+   *
+   * @private
+   * @param phaseName - The name of the phase
+   * @returns An array of agent roles in the phase
+   */
+private getAgentsInPhase(phaseName: string): string[]
+⋮----
+// Export singleton instance creator function
+export function createProductLaunchNetwork(options: {
+  projectName: string;
+  productType: string;
+}): ProductLaunchNetwork
+````
+
+## File: src/mastra/workflows/Networks/productLaunchNetwork.ts
+````typescript
+/**
+ * ProductLaunchNetwork Implementation
+ *
+ * This module implements a collaborative network that coordinates between
+ * coding and marketing teams to support product launch activities.
+ * It connects the Coder agent with the Copywriter agent to streamline
+ * the creation of both code and marketing materials.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import { AgentNetwork, type AgentNetworkConfig } from "@mastra/core/network";
+import { createLogger } from "@mastra/core/logger";
+import { coderAgent, copywriterAgent } from "../../agents";
+import { createResponseHook } from "../../hooks";
+⋮----
+// Configure logger for the network
+⋮----
+/**
+ * Hooks for the ProductLaunchNetwork
+ */
+⋮----
+/**
+ * ProductLaunchNetwork
+ *
+ * This network connects the Coder agent with the Copywriter agent to streamline
+ * the creation of both code and marketing materials for product launches.
+ *
+ * @remarks
+ * The network uses an LLM-based router to determine which agent to call based on
+ * the task requirements. This enables dynamic collaboration between development
+ * and marketing teams.
+ */
+⋮----
+// Note: Hooks would normally be configured here, but we're using a simpler approach
+// based on the AgentNetworkConfig interface
+⋮----
+/**
+ * Initialize the ProductLaunchNetwork
+ *
+ * @returns The initialized network instance
+ */
+export function initializeProductLaunchNetwork(): AgentNetwork
+⋮----
+// Export the initialized network
+````
+
 ## File: tsconfig.json
 ````json
 {
@@ -2522,166 +3486,375 @@ export function getAgentNetwork(networkName: string): AgentNetwork | undefined
 }
 ````
 
-## File: src/mastra/agents/base.agent.ts
+## File: src/mastra/agents/agentic.agent.ts
 ````typescript
 /**
- * Base Agent Implementation
+ * Agentic-style Agent Implementation
  *
- * This module provides utility functions to create agents from configurations,
- * ensuring consistent agent creation patterns across the application.
+ * This module implements an advanced agent using Mastra's core functionality,
+ * combining multiple tools for enhanced capabilities.
  */
 ⋮----
-import { google } from "@ai-sdk/google";
 import { Agent } from "@mastra/core/agent";
-import { Tool } from "@mastra/core/tools";
 import { createLogger } from "@mastra/core/logger";
-import { sharedMemory } from "../database";
-import {
-  BaseAgentConfig,
-  defaultErrorHandler,
-  DEFAULT_MODEL_ID,
-} from "./config/base.config";
-import { createResponseHook } from "../hooks";
+import { Memory, sharedMemory } from "../database";
 import { allToolsMap } from "../tools";
+import {
+  agenticAssistantConfig,
+  agenticResponseSchema,
+  getToolsFromIds,
+  type AgenticResponse,
+} from "./config/agentic.config";
+import { createResponseHook } from "../hooks";
+import { BaseAgentConfig } from "./config";
 ⋮----
-// Configure logger for agent initialization
+// Initialize logger for this module
 ⋮----
 /**
- * Creates an agent instance from a configuration object
+ * Creates and initializes the agentic assistant agent with all required tools
  *
- * @param config The agent configuration object
- * @returns A configured Agent instance
- * @throws Error if required tools are not available
+ * @returns An initialized Mastra agent instance
+ * @throws {Error} If agent creation fails or required tools are missing
  */
-export function createAgentFromConfig(config: BaseAgentConfig): Agent
+export function createAgenticAssistant(): Agent
 ⋮----
-// Validate configuration
+// Create the agent using the standardized createAgentFromConfig function
 ⋮----
-// Resolve tools from toolIds
+memory: sharedMemory, // Following RULE-MemoryInjection
 ⋮----
-// Log and throw error for missing tools
+// Create the agent instance
 ⋮----
-// Create response hook if validation options are provided
+/**
+ * Generates a structured response using the agentic assistant
+ *
+ * @param query - The user's question or request
+ * @returns A promise resolving to the structured response
+ * @throws {Error} If generation fails or response validation fails
+ */
+export async function getStructuredResponse(
+  query: string
+): Promise<AgenticResponse>
 ⋮----
-// Create and return the agent instance
+// Use the agent with structured output schema
+⋮----
+/**
+ * Streams a response from the agentic assistant
+ *
+ * @param query - The user's question or request
+ * @returns A promise resolving to the streaming response
+ * @throws {Error} If streaming setup fails
+ */
+export async function streamResponse(query: string)
+⋮----
+function createAgentFromConfig(arg0: {
+  config: BaseAgentConfig; memory: Memory; // Following RULE-MemoryInjection
+onError: (error: Error) => Promise<
+⋮----
+config: BaseAgentConfig; memory: Memory; // Following RULE-MemoryInjection
+⋮----
+/**
+ * Example usage:
+ *
+ * ```typescript
+ * import { agenticAssistant, getStructuredResponse } from "./agents/agentic.agent";
+ *
+ * // Simple text response
+ * const response = await agenticAssistant.generate("What's the weather like today?");
+ * console.log(response.text);
+ *
+ * // Structured response with schema validation
+ * const structuredResponse = await getStructuredResponse(
+ *   "Analyze the current trends in renewable energy"
+ * );
+ * console.log(structuredResponse.answer);
+ * console.log(structuredResponse.sources);
+ * ```
+ */
 ````
 
-## File: src/mastra/agents/config/base.config.ts
+## File: src/mastra/agents/analyst.agent.ts
 ````typescript
 /**
- * Base Agent Configuration
+ * Analyst Agent Implementation
  *
- * This module defines the core configuration types and shared settings
- * for all agents in the system. It serves as a foundation for more
- * specialized agent configurations.
+ * This agent is specialized in interpreting data, identifying patterns,
+ * and extracting meaningful insights from information.
  */
+⋮----
+import { createAgentFromConfig } from "./base.agent";
+import analystConfig from "./config/analyst.config";
+import { sharedMemory } from "../database";
+import { createLogger } from "@mastra/core/logger";
+⋮----
+/**
+ * Analyst Agent with data analysis capabilities
+ *
+ * @remarks
+ * This agent can analyze information, identify trends and patterns,
+ * and extract meaningful insights from data sources.
+ */
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
+````
+
+## File: src/mastra/agents/config/agentic.config.ts
+````typescript
+/**
+ * Agentic-style Agent Configuration
+ *
+ * This file configures a Mastra agent with advanced capabilities,
+ * leveraging Mastra's core features and compatible tools.
+ */
+⋮----
 import { google } from "@ai-sdk/google";
-⋮----
-/** Default Google AI Model ID */
-⋮----
-/** Default Maximum Tokens for Model Output */
-⋮----
-/** Default Maximum Context Tokens for Model Input */
+import { z } from "zod";
+import type { Tool } from "@mastra/core/tools";
+import { BaseAgentConfig, defaultResponseValidation } from "./base.config";
 ⋮----
 /**
- * Response hook options interface
- */
-export interface ResponseHookOptions {
-  minResponseLength?: number;
-  maxAttempts?: number;
-  validateResponse?: (response: any) => boolean;
-}
-⋮----
-/**
- * Base configuration interface for all agent configs
+ * Configuration for retrieving relevant tools for the agent
  *
- * @interface BaseAgentConfig
+ * @param toolIds - Array of tool identifiers to include
+ * @param allTools - Map of all available tools
+ * @returns Record of tools mapped by their IDs
+ * @throws {Error} When required tools are missing
  */
-export interface BaseAgentConfig {
-  /** Unique identifier for the agent */
-  id: string;
-
-  /** Display name of the agent */
-  name: string;
-
-  /** Brief description of the agent's purpose and capabilities */
-  description: string;
-
-  /** Model instance from @ai-sdk/google */
-  model: ReturnType<typeof google>;
-
-  /** Main instructions that define the agent's behavior */
-  instructions: string;
-
-  /** Tool IDs that this agent has access to */
-  toolIds: string[];
-
-  /** Optional response validation settings */
-  responseValidation?: ResponseHookOptions;
-}
-⋮----
-/** Unique identifier for the agent */
-⋮----
-/** Display name of the agent */
-⋮----
-/** Brief description of the agent's purpose and capabilities */
-⋮----
-/** Model instance from @ai-sdk/google */
-⋮----
-/** Main instructions that define the agent's behavior */
-⋮----
-/** Tool IDs that this agent has access to */
-⋮----
-/** Optional response validation settings */
+export function getToolsFromIds(
+  toolIds: string[],
+  allTools: ReadonlyMap<string, Tool<any, any>>
+): Record<string, Tool<any, any>>
 ⋮----
 /**
- * Standard response validation options
+ * Configuration for the agentic assistant
  */
 ⋮----
 /**
- * Standard error handler function for agents
+ * Schema for structured agent responses
  */
-export const defaultErrorHandler = async (error: Error) =>
+⋮----
+/**
+ * Type for structured responses from the agent
+ */
+export type AgenticResponse = z.infer<typeof agenticResponseSchema>;
 ````
 
-## File: src/mastra/agents/config/index.ts
+## File: src/mastra/agents/config/analyst.config.ts
 ````typescript
 /**
- * Agent Configuration Module
+ * Analyst Agent Configuration
  *
- * This module exports all agent configurations and configuration types.
- * Each agent has its own configuration file, and this module serves as
- * the central export point.
- */
-⋮----
-// All agent configurations are now exported here
-````
-
-## File: src/mastra/agents/config/research.config.ts
-````typescript
-/**
- * Research Agent Configuration
- *
- * This module defines the configuration for the Research Agent, which specializes in
- * gathering, synthesizing, and analyzing information from various sources.
+ * This module defines the specific configuration for the Analyst Agent,
+ * which specializes in interpreting data, identifying patterns,
+ * and extracting meaningful insights.
  */
 ⋮----
 import { google } from "@ai-sdk/google";
 import {
   BaseAgentConfig,
   defaultResponseValidation,
-  DEFAULT_MODEL_ID,
+  DEFAULT_MODEL_ID, // Import the shared constant
 } from "./base.config";
 ⋮----
+DEFAULT_MODEL_ID, // Import the shared constant
+⋮----
 /**
- * Configuration for the Research Agent.
+ * Configuration for the Analyst Agent
  *
  * @remarks
- * The Research Agent focuses on information gathering and synthesis
- * using web searches, document analysis, and file operations.
- *
- * @property {string[]} toolIds - The list of tool IDs required by the agent.
+ * The Analyst Agent focuses on analyzing information, identifying trends and patterns,
+ * and extracting meaningful insights from various data sources.
  */
+⋮----
+model: google(DEFAULT_MODEL_ID), // Use the constant here
+⋮----
+export type AnalystAgentConfig = typeof analystAgentConfig;
+````
+
+## File: src/mastra/agents/config/dataManager.config.ts
+````typescript
+/**
+ * Data Manager Agent Configuration
+ *
+ * This module defines the specific configuration for the Data Manager Agent,
+ * which specializes in managing data operations, file organization,
+ * storage, and retrieval of information.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import { BaseAgentConfig, defaultResponseValidation } from "./base.config";
+⋮----
+/**
+ * Configuration for the Data Manager Agent
+ *
+ * @remarks
+ * The Data Manager Agent focuses on organizing, storing, retrieving, and managing
+ * data assets across the system, including file operations and vector database management.
+ */
+⋮----
+export type DataManagerAgentConfig = typeof dataManagerAgentConfig;
+````
+
+## File: src/mastra/agents/config/rlTrainer.config.ts
+````typescript
+/**
+ * RL Trainer Agent Configuration
+ *
+ * This module defines the specific configuration for the RL Trainer Agent,
+ * which specializes in reinforcement learning, collecting and analyzing
+ * feedback, and optimizing agent behaviors.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import {
+  BaseAgentConfig,
+  defaultResponseValidation,
+  DEFAULT_MODEL_ID, // Import the shared constant
+} from "./base.config";
+⋮----
+DEFAULT_MODEL_ID, // Import the shared constant
+⋮----
+/**
+ * Configuration for the RL Trainer Agent
+ *
+ * @remarks
+ * The RL Trainer Agent focuses on collecting user feedback, analyzing agent performance,
+ * and implementing reinforcement learning techniques to improve agent behaviors.
+ */
+⋮----
+model: google(DEFAULT_MODEL_ID), // Use the constant here
+````
+
+## File: src/mastra/agents/config/writer.config.ts
+````typescript
+/**
+ * Writer Agent Configuration
+ *
+ * This module defines the specific configuration for the Writer Agent,
+ * which specializes in creating clear, engaging, and well-structured
+ * documentation from complex information.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import {
+  BaseAgentConfig,
+  defaultResponseValidation,
+  DEFAULT_MODEL_ID, // Import the shared constant
+} from "./base.config";
+⋮----
+DEFAULT_MODEL_ID, // Import the shared constant
+⋮----
+/**
+ * Configuration for the Writer Agent
+ *
+ * @remarks
+ * The Writer Agent focuses on transforming complex information into accessible content,
+ * adapting tone and style for different audiences, and maintaining consistency across documents.
+ */
+⋮----
+model: google(DEFAULT_MODEL_ID), // Use the constant here
+⋮----
+export type WriterAgentConfig = typeof writerAgentConfig;
+````
+
+## File: src/mastra/agents/dataManager.agent.ts
+````typescript
+/**
+ * Data Manager Agent Implementation
+ *
+ * This agent is specialized in managing data operations, file organization,
+ * storage, and retrieval of information across the system.
+ */
+⋮----
+import { createAgentFromConfig } from "./base.agent";
+import { dataManagerAgentConfig } from "./config/dataManager.config";
+import { sharedMemory } from "../database";
+import { createLogger } from "@mastra/core/logger";
+⋮----
+/**
+ * Data Manager Agent with file and storage management capabilities
+ *
+ * @remarks
+ * This agent specializes in organizing, storing, retrieving, and managing
+ * data assets across the system, including file operations and vector database management.
+ */
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
+````
+
+## File: src/mastra/agents/research.agent.ts
+````typescript
+/**
+ * Research Agent Implementation
+ *
+ * This agent is specialized in finding, gathering, and synthesizing information
+ * from various sources including web searches, document repositories, and files.
+ */
+⋮----
+import { createAgentFromConfig } from "./base.agent";
+import researchConfig from "./config/research.config";
+import { sharedMemory } from "../database";
+import { createLogger } from "@mastra/core/logger";
+⋮----
+/**
+ * Research Agent with web search capabilities
+ *
+ * @remarks
+ * This agent can perform web searches, read and write files, and maintain
+ * research context across interactions using semantic memory.
+ */
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
+````
+
+## File: src/mastra/agents/rlTrainer.agent.ts
+````typescript
+/**
+ * RL Trainer Agent Implementation
+ *
+ * This agent is specialized in reinforcement learning, collecting and analyzing
+ * feedback, and optimizing agent behaviors based on performance data.
+ */
+⋮----
+import { createAgentFromConfig } from "./base.agent";
+import rlTrainerConfig from "./config/rlTrainer.config";
+import { sharedMemory } from "../database";
+import { createLogger } from "@mastra/core/logger";
+⋮----
+/**
+ * RL Trainer Agent with reinforcement learning capabilities
+ *
+ * @remarks
+ * This agent specializes in collecting user feedback, analyzing agent performance,
+ * and implementing reinforcement learning techniques to improve agent behaviors.
+ */
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
+````
+
+## File: src/mastra/agents/writer.agent.ts
+````typescript
+/**
+ * Writer Agent Implementation
+ *
+ * This agent is specialized in creating clear, engaging, and well-structured
+ * documentation from complex information.
+ */
+⋮----
+import { createAgentFromConfig } from "./base.agent";
+import writerConfig from "./config/writer.config";
+import { sharedMemory } from "../database";
+import { createLogger } from "@mastra/core/logger";
+⋮----
+/**
+ * Writer Agent with content formatting capabilities
+ *
+ * @remarks
+ * This agent can transform complex information into accessible content,
+ * adapt tone and style for different audiences, and maintain consistency
+ * across documents.
+ */
+⋮----
+memory: sharedMemory, // Following RULE-MemoryInjection
 ````
 
 ## File: src/mastra/services/exasearch.ts
@@ -3751,6 +4924,391 @@ LANGFUSE_HOST="https://us.cloud.langfuse.com"
 E2B_API_KEY="your_e2b_api_key"
 ````
 
+## File: .github/.copilot-instructions.md
+````markdown
+# GitHub Copilot Context Document for DeanmachinesAI
+
+# This document provides context for the DeanmachinesAI project to assist GitHub Copilot in generating code, debugging, and understanding the project's architecture and conventions
+
+**GitHub Copilot Context Document: DeanmachinesAI (Final Version)**
+
+**Generated by:** Codex, the Software Cartographer
+**Date:** April 9, 2025
+**Version:** 2.0 (Final Comprehensive Version)
+
+**1. Purpose & Scope:**
+
+* **Goal:** This document provides comprehensive context about the DeanmachinesAI project to enable GitHub Copilot to generate accurate, relevant, and high-quality code, assist in debugging, and understand the project's architecture and conventions.
+* **Scope:** Based on analysis of project files (primarily `src/mastra/` directory and root configurations), user feedback, and inferred project goals. Covers architecture, components, data flow, coding standards, and known limitations.
+* **Target Audience:** Primarily GitHub Copilot, but also serves as a concise project overview for developers.
+
+**2. How to Use This Document (Guidance for Copilot):**
+
+* **Prioritize Rules:** Adhere strictly to rules marked with `RULE-`. These are mandatory.
+* **Follow Conventions:** Adhere to conventions noted in `CONV-` sections.
+* **Understand Architecture:** Use `ARCH-` sections for design principles.
+* **Identify Components:** Use `COMP-` sections to understand system parts. Refer to `#file:` links for implementation details.
+* **Avoid Anti-Patterns:** Avoid patterns marked with `ANTI-`.
+* **Handle Gaps:** Explicitly state when encountering information gaps (`GAPS-` section) and request clarification.
+* **Provide Feedback:** Follow `RULE-FeedbackLoop` to document findings/completions in `#file:API.md`.
+* **Use References:** Utilize `#file:` references for specific code locations.
+
+**3. Project Overview & Goals**
+
+* **FIND-ProjectName:** DeanmachinesAI
+* **FIND-ProjectPurpose:** AI-powered platform using the Mastra framework for research, analysis, and content generation. Focuses on automating knowledge work via specialized agents and workflows.
+* **FIND-CoreTech:** TypeScript, Node.js, Mastra framework (`@mastra/*`), Google AI (`@google/generative-ai`), Pinecone (vector DB), LibSQL/Turso (memory DB), LangSmith/LangFuse (observability).
+* **FIND-KeyFeatures:** Agent-based architecture, RAG pipeline, RL improvement loop, extensive tooling, integrated observability.
+* **FB-Plan-Expansion:** Plans include adding specialized Coding and Marketing agent teams, potentially integrating with external platforms like Twitter.
+
+**4. Key Directories/Modules**
+
+* **DIR-SrcMastra (*):** Root for core application logic (`agents/`, `database/`, `services/`, `tools/`, `workflows/`).
+* **DIR-Knowledge:** Non-code assets (e.g., `.drawio` diagrams), agent file I/O target/source.
+* **DIR-Root:** Project root containing configurations (`package.json`, `tsconfig.json`, `mastra.config.ts`, `.env.example`), `README.md`.
+
+**5. Core Components & Logic (Key components marked with *)**
+
+* **COMP-MastraInstance (*):** Central application object (`src/mastra/index.ts`). Integrates core components. **Note:** Currently receives `memory` globally, which needs refactoring (`#REFACTOR-MemoryInjection`).
+* **COMP-Agents (*):** Specialized units (`agents/`). Created via factory (`#RULE-AgentFactory`), defined by config (`#RULE-AgentConfig`). Should receive `memory` individually (`#RULE-MemoryInjection`). *Existing:* Research, Analyst, Writer, RLTrainer, DataManager, AgenticAssistant. *Planned:* Coding & Marketing teams.
+* **COMP-Tools (*):** Agent capabilities registry (`#file:src/mastra/tools/index.ts`). Defined via `createTool`, use Zod schemas (`#RULE-ToolSchemas`). Key groups: Search, FileIO, Document Processing, Vector Store Interaction, RL Tools, Memory, ExternalAPI, Utility, Code. *Planned:* Twitter tool.
+* **COMP-Services:** External API/SDK wrappers (`src/mastra/services/`). Follow `#RULE-ServiceUsage`.
+* **COMP-Database:** Persistence layer.
+  * `COMP-DB-Memory (*)`: LibSQL/Turso via `sharedMemory` in `#file:src/mastra/database/index.ts`. **Note:** This instance should be injected per-agent (`#RULE-MemoryInjection`), not globally.
+  * `COMP-DB-Vector (*)`: Pinecone in `#file:src/mastra/database/vector-store.ts`. Used for RAG.
+* **COMP-Workflows/Networks (*):** Task orchestration (`workflows/`). Linear Workflows (`index.ts`), dynamic AgentNetworks (`Networks/agentNetwork.ts`).
+
+**6. Key Architectural Patterns & Guidance**
+
+* **ARCH-AgentBasedSystem (*):** Core design. Structure features around specialized, collaborating agents. Memory should be scoped per agent (`#RULE-MemoryInjection`).
+* **ARCH-ServiceAbstraction (*):** Wrap external dependencies (APIs, SDKs) in dedicated service modules (`src/mastra/services/`). **Guidance:** Improves modularity, testability. See `#RULE-ServiceUsage`.
+* **ARCH-ConfigManagement (*):** Use TS config files (`agents/config/`) & `.env` for configuration. **Guidance:** Separates configuration from logic. See `#RULE-AgentConfig`, `#RULE-EnvVars`.
+* **ARCH-ToolAugmentation (*):** Define agent capabilities as tools in registry (`#file:src/mastra/tools/index.ts`). **Guidance:** Promotes reuse, modularity. Prefer using existing tools. See `#RULE-ToolRegistry`.
+* **ARCH-RLLoop:** System includes RL components (`COMP-RLTrainerAgent`, `COMP-ToolGroup-RL`). **Guidance:** Consider feedback loops for new features.
+* **ARCH-RAG:** Leverage vector stores (`#COMP-DB-Vector`) for knowledge retrieval. **Guidance:** Use for tasks requiring access to external knowledge.
+* **ARCH-Observability (*):** Integrate tracing/monitoring (`#RULE-Observability`). **Guidance:** Essential for debugging and performance analysis.
+
+**7. Explicit Standards & Rules (Apply these strictly)**
+
+* **RULE-MemoryInjection (*CRITICAL*):** Inject `sharedMemory` (`#COMP-DB-Memory`) directly into individual `Agent` constructors (e.g., within `#file:src/mastra/agents/base.agent.ts`'s `createAgentFromConfig`) using `new Agent({ ..., memory: sharedMemory })`. Do **NOT** pass `memory` globally to the `Mastra` constructor in `#file:src/mastra/index.ts`. **Rationale:** Aligns with Mastra framework best practices for memory scoping and avoids future breaking changes (Ref: Framework Warning `WARN [...] Memory should be added to Agents, not to Mastra`). See `#ANTI-GlobalMemoryInjection` and `#REFACTOR-MemoryInjection`.
+* **RULE-AgentFactory (*):** Use `#file:src/mastra/agents/base.agent.ts` (`createAgentFromConfig`) for agent creation. **Rationale:** Ensures consistent agent initialization.
+* **RULE-AgentConfig (*):** Define agent configs in `src/mastra/agents/config/` implementing `BaseAgentConfig`. Must include `id`, `name`, `description`, `model`, `instructions`, and `toolIds`. **Rationale:** Centralized definition.
+* **RULE-ToolRegistry (*):** Register all tools in `#file:src/mastra/tools/index.ts` using `createTool`. **Rationale:** Discoverability, consistency.
+* **RULE-ToolSchemas (*):** Define Zod schemas for all tool inputs/outputs. **Rationale:** Validation, clear interfaces.
+* **RULE-Observability (*):** Integrate LangSmith/LangFuse tracing (`#file:src/mastra/services/langsmith.ts`, `#file:src/mastra/services/langfuse.ts`) into significant operations. **Rationale:** Monitoring, debugging.
+* **RULE-EnvVars (*):** Source secrets/external config from environment variables (`#file:.env.example`). **Rationale:** Security, environment management.
+* **RULE-ServiceUsage:** Use service modules (`src/mastra/services/`) for external API/SDK interactions. **Rationale:** Modularity, testability.
+* **RULE-FileAccess:** Restrict filesystem tools generally to `#DIR-Knowledge`. **Rationale:** Security, organization.
+* **RULE-FeedbackLoop (*):** When assisting, if you encounter issues, gaps (`GAPS-` section), or potential bugs/violations, **append a note to `#file:API.md`**. Also, **append a note upon successful completion** of significant tasks. Format: `- [Date] Copilot Finding/Completion: [Brief Description] (Relevant File: path/to/file)`. **Rationale:** Creates a feedback loop for improving this context and tracking progress.
+
+**8. Dos and Don'ts (Best Practices & Common Pitfalls)**
+
+* **DO:** Reuse tools from `#SRC-ToolIndex`. Check `allToolsMap` first.
+* **DO:** Maintain separation of concerns (`#ARCH-Modularity`).
+* **DO:** Use `@mastra/core/logger` for logging.
+* **DO:** Add TSDoc explaining the *intent* (why).
+* **DO:** Follow config patterns (`#RULE-AgentConfig`, `#RULE-EnvVars`).
+* **DO:** Inject memory per agent (`#RULE-MemoryInjection`).
+* **DON'T:** Pass memory globally to `Mastra` (`#ANTI-GlobalMemoryInjection`).
+* **DON'T:** Call databases directly from Agents (`#ANTI-DirectDBInAgent`).
+* **DON'T:** Tightly couple agents (`#ANTI-AgentCoupling`).
+* **DON'T:** Hardcode secrets (`#ANTI-HardcodedConfig`).
+* **DON'T:** Create monolithic tools (`#ANTI-MonolithicTools`).
+* **DON'T:** Bypass tool registry (`#ANTI-IgnoringRegistry`).
+* **DON'T:** Neglect observability (`#ANTI-IgnoringObservability`).
+
+**9. Anti-Patterns to Avoid**
+
+* **ANTI-GlobalMemoryInjection (*):** Passing `memory` via `new Mastra({ memory: ... })` in `#file:src/mastra/index.ts`. **Impact:** Deprecated, breaks future compatibility, incorrect scoping. Refactor immediately (`#REFACTOR-MemoryInjection`).
+* **ANTI-DirectDBInAgent:** Agents calling DB clients directly. **Impact:** Violates separation, hinders testing.
+* **ANTI-AgentCoupling:** Agents directly importing/calling other agents. **Impact:** Rigidity, poor testability. Use Memory/Networks.
+* **ANTI-HardcodedConfig:** Secrets/URLs in code. **Impact:** Security risk, deployment complexity. Use Env Vars.
+* **ANTI-MonolithicTools:** Overly complex tools. **Impact:** Poor maintainability/reusability. Decompose.
+* **ANTI-IgnoringRegistry:** Not registering tools in `#SRC-ToolIndex`. **Impact:** Tools unusable.
+* **ANTI-IgnoringObservability:** Not adding tracing. **Impact:** Debugging difficulty, performance blind spots.
+
+**10. Key Context Sources (For Copilot's Reference)**
+
+* **SRC-ThisFile (*):** This document (`.github/copilot-instructions.md`). Primary source for rules and structure.
+* **SRC-README:** `README.md` (Overview, diagrams).
+* **SRC-CodeBase (*):** `src/mastra/` and root config files.
+* **SRC-PackageJson:** `package.json` (Dependencies).
+* **SRC-ToolIndex (*):** `src/mastra/tools/index.ts` (Tool definitions).
+* **SRC-BaseAgentConfig (*):** `src/mastra/agents/config/base.config.ts` (Agent interface).
+* **SRC-EnvExample:** `.env.example` (Env var structure).
+* **SRC-ApiMd (*):** `#file:API.md` (Target for feedback loop, per `#RULE-FeedbackLoop`).
+
+**11. Observed Conventions**
+
+* **CONV-FileNaming:** `.agent.ts`, `.config.ts`, etc. Follow pattern.
+* **CONV-BarrelExports:** `index.ts` for module exports. Use within modules.
+* **CONV-TypeScript:** Strict mode, ESNext. Adhere to strict typing.
+* **CONV-ConfigStructure:** Separate config files/dirs. Maintain separation.
+* **CONV-ZodSchemas:** Standard for schema validation. Use for new schemas.
+* **CONV-Logging:** Use `@mastra/core/logger`.
+* **CONV-ExternalConfig:** Use environment variables (`#RULE-EnvVars`).
+
+**12. EXT-CONTEXT: External AI Agent Trends (April 2025)**
+*(Source: User request & Google Search. Provides external context for planning).*
+
+* **EXT-TREND-AgenticShift:** Confirms project alignment.
+* **EXT-TREND-Specialization:** Validates plans for specialized teams.
+* **EXT-TREND-MAS:** Reinforces value of `AgentNetwork`.
+* **EXT-TREND-Learning:** Highlights relevance of RL components.
+* **EXT-TECH-Frameworks & ToolUse:** Affirms strategy.
+
+**13. Potential Complexities & Refactoring Needs**
+
+* **REFACTOR-MemoryInjection (*):** The current global memory injection pattern (`new Mastra({ memory: ... })`) **must be refactored** to per-agent injection (`new Agent({ memory: ... })`). This is a high-priority task. See `#RULE-MemoryInjection`.
+* **COMPLEXITY-ToolInterdependencies:** Debugging tool chains. **Mitigation:** Observability, error handling.
+* **COMPLEXITY-AgentCoordination:** Emergent behavior in networks. **Mitigation:** Logging, tracing, simple designs first.
+* **COMPLEXITY-RLTraining:** Tuning reward functions. **Mitigation:** Iteration, monitoring.
+* **COMPLEXITY-ObservabilityOverhead:** Performance vs. detail. **Mitigation:** Sampling/levels.
+* **COMPLEXITY-ToolGaps:** Need for new tools (e.g., AST analysis). **Mitigation:** Early identification.
+
+**14. User Feedback Highlights**
+
+* **FB-Plan-CodingTeam:** Coder, Debugger, Refactorer, Doc, Arch agents.
+* **FB-Plan-MarketingTeam:** MarketResearch, Copywriter, SocialMedia, etc.
+* **FB-Plan-Tools:** Add Twitter; Assign ArXiv/Wiki to Research, GitHub to Coding.
+* **FB-Goal-InstructionFile:** This document guides Copilot.
+* **FB-Goal-FeedbackLoop:** Copilot should log findings/completions to `#file:API.md`.
+* **FB-Input-MemoryWarning:** User provided critical warning about memory injection.
+
+**15. Key Assumptions & Information Gaps (Context Enhancement Areas)**
+
+* **Guidance:** When assistance requires information from these GAPS, explicitly state the gap ID (e.g., `GAPS-DataSchemas`) and request clarification from the user. Follow `#RULE-FeedbackLoop`.
+* **ASSUM-MapAccuracy:** Assumes `repomix.txt` is accurate.
+* **ASSUM-FrameworkUsage:** Assumes standard Mastra patterns (except where warning indicates deviation).
+* **GAPS-ObscuredLogic (*):** Internal function logic (`⋮----`) hidden. **Impact:** Limits understanding for refactoring/debugging internal algorithms. **User Action Needed:** Provide explanations/pseudocode for key algorithms.
+* **GAPS-RuntimeDetails (*):** Runtime behavior/errors unknown from static analysis. **Impact:** Cannot predict runtime issues. **User Action Needed:** Define project's error handling strategy (`GAPS-ErrorHandling`).
+* **GAPS-IgnoredFiles:** `.env` content unknown. **Impact:** Actual deployment configs unknown.
+* **GAPS-AgentInstructions (*):** The *content* of `BaseAgentConfig.instructions` is unknown. **Impact:** Agent behavior hard to predict accurately. **User Action Needed:** Provide summaries/excerpts if needed.
+* **GAPS-DataSchemas (*):** Exact structure of data in `sharedMemory` (RL data, agent state) and Pinecone metadata undefined here. **Impact:** May generate incorrect data manipulation code. **User Action Needed:** Provide interfaces/examples.
+* **GAPS-ErrorHandling (*):** Project's specific error handling philosophy undefined. **Impact:** Suggestions may not align. **User Action Needed:** Document strategy.
+* **GAPS-Algorithms (*):** Detailed logic for key algorithms (RL, GraphRAG) missing. **Impact:** Copilot treats complex logic as black box. **User Action Needed:** Add high-level explanations/pseudocode.
+* **GAPS-SDKUsage:** Project-specific patterns for external SDKs not detailed. **Impact:** Suggestions might be generic. **User Action Needed:** Document key SDK usage patterns.
+* **GAPS-Testing:** Testing strategy details missing. **Impact:** Cannot generate aligned tests. **User Action Needed:** Document testing approach.
+
+**16. Suggested Copilot Interactions**
+
+* **SUG-RefactorMemory (*):** "Help refactor the memory injection. Remove the `memory` property from the `Mastra` constructor in `#file:src/mastra/index.ts` and ensure `sharedMemory` is correctly passed to the `Agent` constructor within `#file:src/mastra/agents/base.agent.ts`'s `createAgentFromConfig`, following `#RULE-MemoryInjection`. Log completion to `#file:API.md`."
+* **SUG-NewAgent:** "Create agent config `coder.config.ts` following `#RULE-AgentConfig`, including tool IDs for `#COMP-ToolGroup-FileIO`, `#COMP-ToolGroup-Code`, `#COMP-ToolGroup-Memory`, `#COMP-ToolGroup-Search`, GitHub tool. Log completion to `#file:API.md`."
+* **SUG-AssignTool:** "Add ArXiv/Wikipedia tool IDs (from `#SRC-ToolIndex`) to `toolIds` in `#file:src/mastra/agents/config/research.config.ts`."
+* **SUG-NewToolImpl:** "Implement Twitter tool `src/mastra/tools/twitter.ts` following `#RULE-ToolSchemas`, `#RULE-EnvVars`, `#RULE-Observability`. Log completion or issues to `#file:API.md`."
+* **SUG-RegisterTool:** "Register `twitterPostTool` in `#SRC-ToolIndex` following `#RULE-ToolRegistry`."
+* **SUG-CrossTeamNetwork:** "Define `ProductLaunchNetwork` in `#file:src/mastra/workflows/Networks/agentNetwork.ts` including 'CodeDocumenterAgent', 'CopywriterAgent'."
+* **SUG-MemoryInteraction:** "Show how Marketing agents read data written by Coding agents via `memoryQueryTool` targeting `sharedMemory` (`#RULE-MemoryAccess`)."
+* **SUG-AddObservability:** "Add LangSmith/LangFuse tracing to the `execute` function of the `graphRagQueryTool` following `#RULE-Observability`."
+* **SUG-ApplyRule:** "Review `#file:src/mastra/services/exasearch.ts`. Does it follow `#RULE-EnvVars`? Log findings to `#file:API.md`."
+* **SUG-FillGap:** "I need to generate code interacting with RL feedback data, but the schema is unclear (`#GAPS-DataSchemas`). Please provide the interface or an example. Logged gap to `#file:API.md`."
+
+**17. References for Copilot Chat**
+
+* `@workspace`
+* `#file:src/mastra/index.ts` (`#COMP-MastraInstance`)
+* `#file:src/mastra/tools/index.ts` (`#SRC-ToolIndex`)
+* `#file:src/mastra/agents/base.agent.ts` (`#RULE-AgentFactory`)
+* `#file:src/mastra/agents/config/base.config.ts` (`#SRC-BaseAgentConfig`)
+* `#file:src/mastra/database/index.ts` (`#COMP-DB-Memory`)
+* `#file:src/mastra/database/vector-store.ts` (`#COMP-DB-Vector`)
+* `#file:src/mastra/workflows/Networks/agentNetwork.ts`
+* `#file:README.md` (`#SRC-README`)
+* `#file:.env.example` (`#SRC-EnvExample`)
+* `#file:API.md` (`#SRC-ApiMd`, `#RULE-FeedbackLoop`)
+* Specific Agent Configs (e.g., `#file:src/mastra/agents/config/research.config.ts`)
+* Specific Tool Files (e.g., `#file:src/mastra/tools/readwrite.ts`)
+* Specific Service Files (e.g., `#file:src/mastra/services/langfuse.ts`)
+
+---
+
+This version incorporates the feedback loop mechanism and highlights the critical memory injection issue, providing a more comprehensive and actionable context document for GitHub Copilot. Remember to keep this document updated as the project evolves.
+````
+
+## File: src/mastra/agents/base.agent.ts
+````typescript
+/**
+ * Base Agent Implementation
+ *
+ * This module provides utility functions to create agents from configurations,
+ * ensuring consistent agent creation patterns across the application.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import { Agent } from "@mastra/core/agent";
+import { Tool } from "@mastra/core/tools";
+import { createLogger } from "@mastra/core/logger";
+import { sharedMemory } from "../database";
+import {
+  BaseAgentConfig,
+  defaultErrorHandler,
+  DEFAULT_MODEL_ID,
+  DEFAULT_MAX_TOKENS,
+  DEFAULT_MAX_CONTEXT_TOKENS,
+  defaultResponseValidation,
+  type ResponseHookOptions,
+} from "./config/base.config";
+import { createResponseHook } from "../hooks";
+import { allToolsMap } from "../tools";
+⋮----
+// Configure logger for agent initialization
+⋮----
+/**
+ * Creates an agent instance from a configuration object and options
+ *
+ * @param params - Object containing configuration and agent options
+ * @param params.config - The agent configuration object
+ * @param params.memory - The memory instance to be injected into the agent (following RULE-MemoryInjection)
+ * @param params.onError - Optional error handler callback function
+ * @returns A configured Agent instance
+ * @throws Error if required tools are not available
+ */
+export function createAgentFromConfig({
+  config,
+  memory,
+  onError,
+}: {
+  config: BaseAgentConfig;
+  memory: typeof sharedMemory;
+onError?: (error: Error) => Promise<
+⋮----
+// Validate configuration
+⋮----
+// Resolve tools from toolIds
+⋮----
+// Log and throw error for missing tools
+⋮----
+// Create response hook if validation options are provided
+⋮----
+// Create and return the agent instance
+⋮----
+memory, // Using injected memory instead of global reference
+⋮----
+...(onError ? { onError } : {}), // Add error handler if provided
+````
+
+## File: src/mastra/agents/config/base.config.ts
+````typescript
+/**
+ * Base Agent Configuration
+ *
+ * This module defines the core configuration types and shared settings
+ * for all agents in the system. It serves as a foundation for more
+ * specialized agent configurations.
+ */
+import { google } from "@ai-sdk/google";
+⋮----
+/** Default Google AI Model ID */
+⋮----
+/** Default Maximum Tokens for Model Output */
+⋮----
+/** Default Maximum Context Tokens for Model Input */
+⋮----
+/**
+ * Response hook options interface
+ */
+export interface ResponseHookOptions {
+  minResponseLength?: number;
+  maxAttempts?: number;
+  validateResponse?: (response: any) => boolean;
+}
+⋮----
+/**
+ * Base configuration interface for all agent configs
+ *
+ * @interface BaseAgentConfig
+ */
+export interface BaseAgentConfig {
+  /** Unique identifier for the agent */
+  id: string;
+
+  /** Display name of the agent */
+  name: string;
+
+  /** Brief description of the agent's purpose and capabilities */
+  description: string;
+
+  /** Model instance from @ai-sdk/google */
+  model: ReturnType<typeof google>;
+
+  /** Main instructions that define the agent's behavior */
+  instructions: string;
+
+  /** Tool IDs that this agent has access to */
+  toolIds: string[];
+
+  /** Optional response validation settings */
+  responseValidation?: ResponseHookOptions;
+}
+⋮----
+/** Unique identifier for the agent */
+⋮----
+/** Display name of the agent */
+⋮----
+/** Brief description of the agent's purpose and capabilities */
+⋮----
+/** Model instance from @ai-sdk/google */
+⋮----
+/** Main instructions that define the agent's behavior */
+⋮----
+/** Tool IDs that this agent has access to */
+⋮----
+/** Optional response validation settings */
+⋮----
+/**
+ * Standard response validation options
+ */
+⋮----
+/**
+ * Standard error handler function for agents
+ */
+export const defaultErrorHandler = async (error: Error) =>
+⋮----
+export type BaseAgentConfigType = BaseAgentConfig;
+````
+
+## File: src/mastra/agents/config/index.ts
+````typescript
+/**
+ * Agent Configuration Module
+ *
+ * This module exports all agent configurations and configuration types.
+ * Each agent has its own configuration file, and this module serves as
+ * the central export point.
+ */
+⋮----
+// All agent configurations are now exported here
+````
+
+## File: src/mastra/agents/config/research.config.ts
+````typescript
+/**
+ * Research Agent Configuration
+ *
+ * This module defines the configuration for the Research Agent, which specializes in
+ * gathering, synthesizing, and analyzing information from various sources.
+ */
+⋮----
+import { google } from "@ai-sdk/google";
+import {
+  BaseAgentConfig,
+  defaultResponseValidation,
+  DEFAULT_MODEL_ID,
+} from "./base.config";
+⋮----
+/**
+ * Configuration for the Research Agent.
+ *
+ * @remarks
+ * The Research Agent focuses on information gathering and synthesis
+ * using web searches, document analysis, and file operations.
+ *
+ * @property {string[]} toolIds - The list of tool IDs required by the agent.
+ */
+⋮----
+export type ResearchAgentConfig = typeof researchAgentConfig;
+````
+
 ## File: src/mastra/tools/graphRag.ts
 ````typescript
 /**
@@ -4178,26 +5736,6 @@ export function createMastraVectorQueryTool(config: VectorQueryConfig =
 // Tool with filters enabled
 ````
 
-## File: .gitignore
-````
-output.txt
-node_modules
-dist
-.mastra
-.env.development
-.env
-*.db
-.repomix/bundles.json
-.repomix
-gcp-vertexai-credentials.json
-.github
-.github/
-/.github
-/.github/
-/.github/*
-/.github/work
-````
-
 ## File: src/mastra/database/index.ts
 ````typescript
 /**
@@ -4290,6 +5828,23 @@ import {
 // Use the properly configured memory from the database module
 ⋮----
 // Track request timing for RL metrics
+````
+
+## File: .gitignore
+````
+output.txt
+node_modules
+dist
+.mastra
+
+
+*.db
+.repomix/bundles.json
+.repomix
+gcp-vertexai-credentials.json
+.env
+.roo
+.env.development
 ````
 
 ## File: src/mastra/workflows/index.ts
@@ -4524,7 +6079,7 @@ interface SearchToolRecord {
 ````json
 {
   "name": "deanmachinesai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -4553,9 +6108,6 @@ interface SearchToolRecord {
   "license": "ISC",
   "description": "",
   "type": "module",
-  "overrides": {
-    "pathe": "^1.1.2"
-  },
   "engines": {
     "node": ">=18.0.0"
   },
@@ -4585,33 +6137,35 @@ interface SearchToolRecord {
     "@agentic/serper": "^7.6.3",
     "@agentic/tavily": "^7.6.3",
     "@agentic/wikipedia": "^7.6.3",
+    "@ai-sdk/anthropic": "^1.2.9",
     "@ai-sdk/google": "^1.2.10",
+    "@ai-sdk/google-vertex": "^2.2.14",
+    "@ai-sdk/openai": "^1.3.9",
     "@e2b/code-interpreter": "^1.1.0",
-    "@google/genai": "^0.7.0",
-    "@google/generative-ai": "^0.1.3",
     "@hyperbrowser/sdk": "^0.43.0",
-    "@langchain/community": "^0.3.39",
-    "@langchain/core": "^0.3.43",
-    "@langchain/google-genai": "^0.2.2",
-    "@langchain/openai": "^0.5.4",
+    "@langchain/community": "^0.3.40",
+    "@langchain/core": "^0.3.44",
+    "@langchain/google-genai": "^0.2.3",
+    "@langchain/openai": "^0.5.5",
     "@langchain/pinecone": "^0.2.0",
-    "@mastra/client-js": "^0.1.13",
-    "@mastra/core": "^0.7.0",
-    "@mastra/deployer": "^0.2.5",
-    "@mastra/evals": "^0.1.14",
-    "@mastra/github": "^1.1.14",
-    "@mastra/loggers": "^0.1.14",
-    "@mastra/mcp": "^0.3.6",
-    "@mastra/memory": "^0.2.6",
-    "@mastra/pinecone": "^0.2.4",
-    "@mastra/rag": "^0.1.14",
-    "@mastra/upstash": "^0.2.1",
+    "@mastra/client-js": "^0.1.15",
+    "@mastra/core": "^0.8.1",
+    "@mastra/deployer": "^0.2.7",
+    "@mastra/evals": "^0.1.16",
+    "@mastra/github": "^1.1.16",
+    "@mastra/loggers": "^0.1.16",
+    "@mastra/mcp": "^0.3.8",
+    "@mastra/memory": "^0.2.8",
+    "@mastra/pinecone": "^0.2.6",
+    "@mastra/rag": "^0.1.16",
+    "@mastra/upstash": "^0.2.3",
     "@mastra/vector-libsql": "^0.1.0-alpha.24",
     "@mastra/vector-pinecone": "^0.1.5",
     "@mastra/vector-upstash": "^0.1.5",
-    "@mastra/voice-elevenlabs": "^0.1.9",
-    "@mastra/voice-google": "^0.1.9",
+    "@mastra/voice-elevenlabs": "^0.1.11",
+    "@mastra/voice-google": "^0.1.11",
     "@modelcontextprotocol/sdk": "^1.9.0",
+    "@nanostores/react": "git+https://github.com/ai/react.git",
     "@opentelemetry/instrumentation": "^0.200.0",
     "@opentelemetry/semantic-conventions": "^1.30.0",
     "@pinecone-database/pinecone": "^5.1.1",
@@ -4622,19 +6176,19 @@ interface SearchToolRecord {
     "exa-js": "^1.5.13",
     "fast-xml-parser": "^5.2.0",
     "fs-extra": "^11.3.0",
-    "genkit": "^1.5.0",
+    "genkit": "^1.6.0",
     "husky": "^9.1.7",
     "inversify": "^7.5.0",
     "json": "^11.0.0",
     "ky": "^1.8.0",
-    "langchain": "^0.3.20",
+    "langchain": "^0.3.21",
     "langfuse": "^3.37.1",
     "langsmith": "^0.3.15",
-    "llamaindex": "^0.9.16",
+    "llamaindex": "^0.9.17",
     "lodash": "^4.17.21",
     "octokit": "^4.1.2",
     "p-throttle": "^6.2.0",
-    "puppeteer-core": "^24.6.0",
+    "puppeteer-core": "^24.6.1",
     "ramda": "^0.30.1",
     "ts-node": "^10.9.2",
     "uuid": "^11.1.0",
@@ -4644,11 +6198,14 @@ interface SearchToolRecord {
   "devDependencies": {
     "@types/node": "^22.14.0",
     "js-tiktoken": "^1.0.19",
-    "mastra": "^0.4.4",
+    "mastra": "^0.4.7",
     "tsx": "^4.19.3",
     "typescript": "^5.8.3"
   },
   "pnpm": {
+    "overrides": {
+      "pathe": "^1.1.2"
+    },
     "onlyBuiltDependencies": [
       "@swc/core",
       "canvas",
@@ -4680,9 +6237,37 @@ import { writerAgent } from "./writer.agent";
 import { rlTrainerAgent } from "./rlTrainer.agent";
 import { dataManagerAgent } from "./dataManager.agent";
 import { agenticAssistant } from "./agentic.agent";
+import { coderAgent } from "./coder.agent";
+import { copywriterAgent } from "./copywriter.agent";
+⋮----
+// Import coding team agents
+import { architectAgent } from "./architect.agent";
+import { debuggerAgent } from "./debugger.agent";
+import { uiUxCoderAgent } from "./uiUxCoder.agent";
+import { codeDocumenterAgent } from "./codeDocumenter.agent";
+⋮----
+// Import marketing team agents
+import { marketResearchAgent } from "./marketResearch.agent";
+import { socialMediaAgent } from "./socialMedia.agent";
+import { seoAgent } from "./seoAgent.agent";
 // Export individual agents
 ⋮----
+// Core agents
+⋮----
+// Coding team agents
+⋮----
+// Marketing team agents
+⋮----
 // Define the agents object
+⋮----
+// Core agents
+⋮----
+rlTrainerAgent, // RL Trainer agent included
+dataManagerAgent, // Data Manager agent included
+⋮----
+// Coding team agents
+⋮----
+// Marketing team agents
 ⋮----
 // Export agents object for Mastra configuration
 ⋮----

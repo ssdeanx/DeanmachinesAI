@@ -8,31 +8,22 @@
  */
 
 import { google } from "@ai-sdk/google";
-import { vertex, createVertex } from "@ai-sdk/google-vertex";
-import * as fs from "fs";
-import * as path from "path";
+import { vertex } from "@ai-sdk/google-vertex";
 import { ModelConfig, ModelProvider } from "./config.types";
 
-/**
- * Default vertex credentials file path
- */
-const DEFAULT_VERTEX_CREDENTIALS_PATH = path.resolve(
-  process.cwd(),
-  "gcp-vertexai-credentials.json"
-);
 
 /**
  * Model creation options
  */
 export interface ModelCreationOptions {
-  /** Path to Google Vertex AI credentials JSON file */
-  vertexCredentialsPath?: string;
-
   /** Project ID for Vertex AI */
   vertexProjectId?: string;
 
   /** Location for Vertex AI */
   vertexLocation?: string;
+
+  /** Google API key */
+  googleApiKey?: string;
 }
 
 /**
@@ -46,53 +37,16 @@ export interface ModelCreationOptions {
 export function createModelFromConfig(
   modelConfig: ModelConfig,
   options: ModelCreationOptions = {}
-): ReturnType<typeof google> | ReturnType<typeof vertex> {
-  try {
+): ReturnType<typeof google> | ReturnType<typeof vertex> {  try {
     const { provider, modelId, temperature, topP, maxTokens, providerOptions } =
       modelConfig;
 
-    switch (provider) {
-      case "google":
-        return google(modelId, {
-          generationConfig: {
-            temperature,
-            topP,
-            maxOutputTokens: maxTokens,
-          },
-          ...providerOptions?.google,
-        });
-
-      case "vertex": {
-        // Get credentials path from options or use default
-        const credentialsPath =
-          options.vertexCredentialsPath || DEFAULT_VERTEX_CREDENTIALS_PATH;
-
-        // Check if credentials file exists
-        if (!fs.existsSync(credentialsPath)) {
-          throw new Error(
-            `Vertex AI credentials file not found at: ${credentialsPath}`
-          );
-        }
-
-        // Read credentials file
-        const credentials = JSON.parse(
-          fs.readFileSync(credentialsPath, "utf-8")
-        );
-
-        // Create Vertex configuration
-        const vertexConfig = createVertex({
-          project: options.vertexProjectId || credentials.project_id,
-          location: options.vertexLocation || "us-central1",
-          googleApplicationCredentials: credentials,
-        });
-
+    switch (provider) {      case "google": {
+        // Create and return Google model instance using the @ai-sdk/google format
+        return google(modelId);
+      }      case "vertex": {
         // Create and return Vertex model instance
-        return vertex(modelId, {
-          temperature,
-          topP,
-          maxOutputTokens: maxTokens,
-          ...providerOptions?.vertex,
-        });
+        return vertex(modelId);
       }
 
       default:
@@ -111,11 +65,13 @@ export function createModelFromConfig(
  * Creates a Google AI model instance with default settings
  *
  * @param modelId - Model ID to use
+ * @param apiKey - Optional Google API key (otherwise uses environment variable)
  * @param options - Additional model options
  * @returns A Google AI model instance
  */
 export function createGoogleModel(
   modelId: string,
+  apiKey?: string,
   options?: Record<string, unknown>
 ): ReturnType<typeof google> {
   return createModelFromConfig(
@@ -124,7 +80,7 @@ export function createGoogleModel(
       modelId,
       ...options,
     },
-    {}
+    { googleApiKey: apiKey }
   ) as ReturnType<typeof google>;
 }
 
@@ -132,13 +88,15 @@ export function createGoogleModel(
  * Creates a Google Vertex AI model instance with default settings
  *
  * @param modelId - Model ID to use
- * @param credentialsPath - Optional path to credentials file
+ * @param projectId - Optional Vertex project ID (otherwise uses GOOGLE_VERTEX_PROJECT env var)
+ * @param location - Optional Vertex location (otherwise uses GOOGLE_VERTEX_LOCATION env var or default)
  * @param options - Additional model options
  * @returns A Google Vertex AI model instance
  */
 export function createVertexModel(
   modelId: string,
-  credentialsPath?: string,
+  projectId?: string,
+  location?: string,
   options?: Record<string, unknown>
 ): ReturnType<typeof vertex> {
   return createModelFromConfig(
@@ -147,6 +105,24 @@ export function createVertexModel(
       modelId,
       ...options,
     },
-    { vertexCredentialsPath: credentialsPath }
+    {
+      vertexProjectId: projectId,
+      vertexLocation: location
+    }
   ) as ReturnType<typeof vertex>;
+}
+
+/**
+ * Creates a model instance based on the model configuration
+ * This is an alias for createModelFromConfig with a more concise name
+ *
+ * @param config - Model configuration
+ * @param options - Optional creation options
+ * @returns A model instance for the specified provider
+ */
+export function createModelInstance(
+  config: ModelConfig,
+  options: ModelCreationOptions = {}
+): ReturnType<typeof google> | ReturnType<typeof vertex> {
+  return createModelFromConfig(config, options);
 }

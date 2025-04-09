@@ -6,7 +6,7 @@
  */
 
 import { createAgentFromConfig } from "./base.agent";
-import rlTrainerConfig from "./config/rlTrainer.config";
+import { rlTrainerAgentConfig } from "./config";
 import { sharedMemory } from "../database";
 import { createLogger } from "@mastra/core/logger";
 
@@ -20,7 +20,7 @@ const logger = createLogger({ name: "rl-trainer-agent", level: "info" });
  * and implementing reinforcement learning techniques to improve agent behaviors.
  */
 export const rlTrainerAgent = createAgentFromConfig({
-  config: rlTrainerConfig,
+  config: rlTrainerAgentConfig,
   memory: sharedMemory, // Following RULE-MemoryInjection
   onError: async (error: Error) => {
     logger.error("RL Trainer agent error:", error);
@@ -29,3 +29,17 @@ export const rlTrainerAgent = createAgentFromConfig({
     };
   },
 });
+
+/**
+ * RL Trainer Agent with reinforcement learning capabilities
+ *
+ * @remarks
+ * This agent specializes in collecting user feedback, analyzing agent performance,
+ * and implementing reinforcement learning techniques to improve agent behaviors.
+ */
+export type RLTrainerAgent = typeof rlTrainerAgent;
+export default rlTrainerAgent;
+export type RLTrainerAgentConfig = typeof rlTrainerAgentConfig;
+export type RLTrainerAgentConfigType = typeof rlTrainerAgentConfig;
+export type RLTrainerAgentMemory = typeof sharedMemory;
+export type RLTrainerAgentMemoryType = typeof sharedMemory;

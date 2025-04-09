@@ -6,7 +6,7 @@
  */
 
 import { createAgentFromConfig } from "./base.agent";
-import analystConfig from "./config/analyst.config";
+import { analystAgentConfig } from "./config";
 import { sharedMemory } from "../database";
 import { createLogger } from "@mastra/core/logger";
 
@@ -20,7 +20,7 @@ const logger = createLogger({ name: "analyst-agent", level: "info" });
  * and extract meaningful insights from data sources.
  */
 export const analystAgent = createAgentFromConfig({
-  config: analystConfig,
+  config: analystAgentConfig,
   memory: sharedMemory, // Following RULE-MemoryInjection
   onError: async (error: Error) => {
     logger.error("Analyst agent error:", error);
@@ -29,3 +29,10 @@ export const analystAgent = createAgentFromConfig({
     };
   },
 });
+
+export default analystAgent;
+export type AnalystAgent = typeof analystAgent;
+export type AnalystAgentConfig = typeof analystAgentConfig;
+export type AnalystAgentConfigType = typeof analystAgentConfig;
+export type AnalystAgentMemory = typeof sharedMemory;
+export type AnalystAgentMemoryType = typeof sharedMemory;

@@ -6,7 +6,7 @@
 
 import { sharedMemory } from "../database";
 import { createAgentFromConfig } from "./base.agent";
-import codeDocumenterConfig from "./config/codeDocumenter.config";
+import {codeDocumenterConfig} from "./config";
 import { createLogger } from "@mastra/core/logger";
 
 const logger = createLogger({ name: "code-documenter-agent", level: "info" });
@@ -32,3 +32,9 @@ export const codeDocumenterAgent = createAgentFromConfig({
 });
 
 export default codeDocumenterAgent;
+export type CodeDocumenterAgent = typeof codeDocumenterAgent;
+export type CodeDocumenterAgentConfig = typeof codeDocumenterConfig;
+export type CodeDocumenterAgentConfigType = typeof codeDocumenterConfig;
+export type CodeDocumenterAgentMemory = typeof sharedMemory;
+export type CodeDocumenterAgentMemoryType = typeof sharedMemory;
+

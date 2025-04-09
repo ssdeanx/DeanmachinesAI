@@ -6,7 +6,7 @@
 
 import { sharedMemory } from "../database";
 import { createAgentFromConfig } from "./base.agent";
-import socialMediaConfig from "./config/socialMedia.config";
+import { socialMediaAgentConfig } from "./config";
 import { createLogger } from "@mastra/core/logger";
 
 const logger = createLogger({ name: "social-media-agent", level: "info" });
@@ -21,7 +21,7 @@ const logger = createLogger({ name: "social-media-agent", level: "info" });
  * planning social media campaigns, and analyzing engagement metrics.
  */
 export const socialMediaAgent = createAgentFromConfig({
-  config: socialMediaConfig,
+  config: socialMediaAgentConfig,
   memory: sharedMemory, // Following RULE-MemoryInjection
   onError: async (error: Error) => {
     logger.error("Social Media agent error:", error);
@@ -32,3 +32,7 @@ export const socialMediaAgent = createAgentFromConfig({
 });
 
 export default socialMediaAgent;
+export type SocialMediaAgent = typeof socialMediaAgent;
+export type SocialMediaAgentConfig = typeof socialMediaAgentConfig;
+export type SocialMediaAgentMemory = typeof sharedMemory;
+export type SocialMediaAgentMemoryType = typeof sharedMemory;

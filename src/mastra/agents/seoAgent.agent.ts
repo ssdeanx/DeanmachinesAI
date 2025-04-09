@@ -6,7 +6,7 @@
 
 import { sharedMemory } from "../database";
 import { createAgentFromConfig } from "./base.agent";
-import seoAgentConfig from "./config/seoAgent.config";
+import { seoAgentConfig } from "./config";
 import { createLogger } from "@mastra/core/logger";
 
 const logger = createLogger({ name: "seo-agent", level: "info" });
@@ -32,3 +32,8 @@ export const seoAgent = createAgentFromConfig({
 });
 
 export default seoAgent;
+export type SEOAgent = typeof seoAgent;
+export type SEOAgentConfig = typeof seoAgentConfig;
+export type SEOAgentConfigType = typeof seoAgentConfig;
+export type SEOAgentMemory = typeof sharedMemory;
+export type SEOAgentMemoryType = typeof sharedMemory;

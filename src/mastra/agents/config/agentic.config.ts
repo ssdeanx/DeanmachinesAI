@@ -5,10 +5,13 @@
  * leveraging Mastra's core features and compatible tools.
  */
 
-import { google } from "@ai-sdk/google";
-import { z } from "zod";
+import { z, type ZodTypeAny } from "zod";
 import type { Tool } from "@mastra/core/tools";
-import { BaseAgentConfig, defaultResponseValidation } from "./base.config";
+import {
+  BaseAgentConfig,
+  DEFAULT_MODELS,
+  defaultResponseValidation
+} from "./config.types";
 
 /**
  * Configuration for retrieving relevant tools for the agent
@@ -20,9 +23,15 @@ import { BaseAgentConfig, defaultResponseValidation } from "./base.config";
  */
 export function getToolsFromIds(
   toolIds: string[],
-  allTools: ReadonlyMap<string, Tool<any, any>>
-): Record<string, Tool<any, any>> {
-  const tools: Record<string, Tool<any, any>> = {};
+  allTools: ReadonlyMap<
+    string,
+    Tool<z.ZodTypeAny | undefined, z.ZodTypeAny | undefined>
+  >
+): Record<string, Tool<z.ZodTypeAny | undefined, z.ZodTypeAny | undefined>> {
+  const tools: Record<
+    string,
+    Tool<z.ZodTypeAny | undefined, z.ZodTypeAny | undefined>
+  > = {};
   const missingTools: string[] = [];
 
   for (const id of toolIds) {
@@ -49,7 +58,8 @@ export const agenticAssistantConfig: BaseAgentConfig = {
   name: "Agentic Assistant",
   description:
     "A versatile assistant with capabilities for search and analysis",
-  model: google("gemini-2.0-flash"),
+  modelConfig: DEFAULT_MODELS.GOOGLE_STANDARD,
+  responseValidation: defaultResponseValidation,
   instructions: `
     You are a helpful AI assistant with access to various tools.
 
@@ -74,7 +84,6 @@ export const agenticAssistantConfig: BaseAgentConfig = {
     "read-file",
     "exa-search",
   ],
-  responseValidation: defaultResponseValidation,
 };
 
 /**
@@ -107,3 +116,6 @@ export const agenticResponseSchema = z.object({
  * Type for structured responses from the agent
  */
 export type AgenticResponse = z.infer<typeof agenticResponseSchema>;
+
+export default agenticAssistantConfig;
+export type AgenticAssistantConfig = typeof agenticAssistantConfig;
