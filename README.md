@@ -234,105 +234,110 @@ DeanmachinesAI is licensed under the ISC License. See the [LICENSE](LICENSE) fil
 graph TB
     User((External User))
 
-    subgraph "DeanmachinesAI System"
-        subgraph "Core Service Layer"
-            MastraCore["Mastra Core Service<br>(TypeScript/Node.js)"]
+    subgraph "Mastra AI System"
+        subgraph "Agent Network Layer"
+            DeanInsights["DeanInsights Network<br>(AgentNetwork)"]
+            DataFlow["DataFlow Network<br>(AgentNetwork)"]
+            ContentCreation["ContentCreation Network<br>(AgentNetwork)"]
+        end
 
-            subgraph "Agent Network Container"
-                DeanInsights["DeanInsights Network<br>(Agent Network)"]
-                DataFlow["DataFlow Network<br>(Agent Network)"]
-                ContentCreation["ContentCreation Network<br>(Agent Network)"]
+        subgraph "Core Agents"
+            ResearchAgent["Research Agent<br>(TypeScript)"]
+            AnalystAgent["Analyst Agent<br>(TypeScript)"]
+            WriterAgent["Writer Agent<br>(TypeScript)"]
+            RLTrainerAgent["RL Trainer Agent<br>(TypeScript)"]
+            DataManagerAgent["Data Manager Agent<br>(TypeScript)"]
+        end
 
-                subgraph "Agent Components"
-                    ResearchAgent["Research Agent<br>(LLM-based)"]
-                    AnalystAgent["Analyst Agent<br>(LLM-based)"]
-                    WriterAgent["Writer Agent<br>(LLM-based)"]
-                    RLTrainerAgent["RL Trainer Agent<br>(LLM-based)"]
-                    DataManagerAgent["Data Manager Agent<br>(LLM-based)"]
-                end
+        subgraph "Database Layer"
+            VectorStore["Vector Store<br>(Pinecone)"]
+            RedisCache["Cache<br>(Redis)"]
+            ThreadManager["Thread Manager<br>(In-Memory)"]
+        end
+
+        subgraph "Services Layer"
+            LangChain["LangChain Service<br>(LangChain)"]
+            LangFuse["LangFuse Service<br>(Telemetry)"]
+            ExaSearch["ExaSearch Service<br>(Search)"]
+            HyperBrowser["HyperBrowser Service<br>(Browser)"]
+        end
+
+        subgraph "Tools Layer"
+            subgraph "Search Tools"
+                BraveSearch["Brave Search<br>(API)"]
+                GoogleSearch["Google Search<br>(API)"]
+                TavilySearch["Tavily Search<br>(API)"]
             end
 
-            subgraph "Database Container"
-                VectorStore["Vector Store<br>(Pinecone)"]
-                SharedMemory["Shared Memory<br>(LibSQL)"]
-                Redis["Cache Store<br>(Redis)"]
+            subgraph "Vector Tools"
+                VectorQuery["Vector Query<br>(TypeScript)"]
+                GoogleVectorQuery["Google Vector Query<br>(TypeScript)"]
+                FilteredQuery["Filtered Query<br>(TypeScript)"]
             end
 
-            subgraph "Service Components"
-                LangChain["LangChain Service<br>(LangChain)"]
-                LangFuse["LangFuse Service<br>(Telemetry)"]
-                LangSmith["LangSmith Service<br>(Monitoring)"]
-                ExaSearch["ExaSearch Service<br>(Search)"]
+            subgraph "File Tools"
+                ReadFile["Read File<br>(TypeScript)"]
+                WriteFile["Write File<br>(TypeScript)"]
             end
 
-            subgraph "Tool Container"
-                SearchTools["Search Tools<br>(Multiple Providers)"]
-                VectorTools["Vector Tools<br>(Pinecone)"]
-                FileTools["File Tools<br>(Node.js)"]
-                RLTools["RL Tools<br>(Custom)"]
-                ContentTools["Content Tools<br>(Custom)"]
-                DocumentTools["Document Tools<br>(Custom)"]
+            subgraph "RL Tools"
+                FeedbackTool["Feedback Collection<br>(TypeScript)"]
+                RewardTool["Reward Calculation<br>(TypeScript)"]
             end
+        end
 
-            subgraph "Workflow Container"
-                RAGWorkflow["RAG Workflow<br>(Custom)"]
-                ResearchWorkflow["Research Workflow<br>(Custom)"]
-            end
+        subgraph "Workflow Layer"
+            RAGWorkflow["RAG Workflow<br>(TypeScript)"]
+            ResearchStep["Research Step<br>(Workflow)"]
+            AnalysisStep["Analysis Step<br>(Workflow)"]
+            DocumentationStep["Documentation Step<br>(Workflow)"]
+            FeedbackStep["Feedback Step<br>(Workflow)"]
         end
     end
 
     subgraph "External Services"
-        GoogleAI["Google AI<br>(Gemini)"]
-        PineconeDB["Pinecone DB<br>(Vector Database)"]
-        ExternalAPIs["External APIs<br>(Multiple)"]
+        GoogleAI["Google AI<br>(API)"]
+        PineconeDB["Pinecone DB<br>(Vector DB)"]
+        ExternalAPIs["External APIs<br>(Various)"]
     end
 
-    %% Relationships
-    User -->|"Interacts with"| MastraCore
-    MastraCore -->|"Orchestrates"| DeanInsights
-    MastraCore -->|"Orchestrates"| DataFlow
-    MastraCore -->|"Orchestrates"| ContentCreation
+    %% Connections
+    User -->|Interacts with| DeanInsights
+    User -->|Interacts with| DataFlow
+    User -->|Interacts with| ContentCreation
 
-    %% Agent Network Relationships
-    DeanInsights -->|"Uses"| ResearchAgent
-    DeanInsights -->|"Uses"| AnalystAgent
-    DeanInsights -->|"Uses"| WriterAgent
-    DeanInsights -->|"Uses"| RLTrainerAgent
-    DeanInsights -->|"Uses"| DataManagerAgent
+    %% Agent Network connections
+    DeanInsights -->|Coordinates| ResearchAgent
+    DeanInsights -->|Coordinates| AnalystAgent
+    DeanInsights -->|Coordinates| WriterAgent
+    DataFlow -->|Coordinates| DataManagerAgent
+    DataFlow -->|Coordinates| AnalystAgent
+    ContentCreation -->|Coordinates| ResearchAgent
+    ContentCreation -->|Coordinates| WriterAgent
 
-    DataFlow -->|"Uses"| DataManagerAgent
-    DataFlow -->|"Uses"| AnalystAgent
-    DataFlow -->|"Uses"| RLTrainerAgent
+    %% Workflow connections
+    RAGWorkflow -->|Executes| ResearchStep
+    ResearchStep -->|Followed by| AnalysisStep
+    AnalysisStep -->|Followed by| DocumentationStep
+    DocumentationStep -->|Followed by| FeedbackStep
 
-    ContentCreation -->|"Uses"| ResearchAgent
-    ContentCreation -->|"Uses"| WriterAgent
-    ContentCreation -->|"Uses"| RLTrainerAgent
+    %% Service connections
+    ResearchAgent -->|Uses| LangChain
+    AnalystAgent -->|Uses| LangChain
+    WriterAgent -->|Uses| LangChain
+    LangChain -->|Connects to| GoogleAI
+    VectorStore -->|Stores in| PineconeDB
 
-    %% Service Relationships
-    MastraCore -->|"Uses"| LangChain
-    MastraCore -->|"Monitors with"| LangFuse
-    MastraCore -->|"Tracks with"| LangSmith
-    MastraCore -->|"Searches with"| ExaSearch
+    %% Tool connections
+    ResearchAgent -->|Uses| VectorQuery
+    ResearchAgent -->|Uses| GoogleSearch
+    AnalystAgent -->|Uses| FilteredQuery
+    DataManagerAgent -->|Uses| ReadFile
+    DataManagerAgent -->|Uses| WriteFile
+    RLTrainerAgent -->|Uses| FeedbackTool
+    RLTrainerAgent -->|Uses| RewardTool
 
-    %% Database Relationships
-    MastraCore -->|"Stores vectors in"| VectorStore
-    MastraCore -->|"Uses"| SharedMemory
-    MastraCore -->|"Caches in"| Redis
-
-    %% Tool Relationships
-    ResearchAgent -->|"Uses"| SearchTools
-    DataManagerAgent -->|"Uses"| FileTools
-    AnalystAgent -->|"Uses"| VectorTools
-    RLTrainerAgent -->|"Uses"| RLTools
-    WriterAgent -->|"Uses"| ContentTools
-    ResearchAgent -->|"Uses"| DocumentTools
-
-    %% External Service Relationships
-    LangChain -->|"Calls"| GoogleAI
-    VectorStore -->|"Stores in"| PineconeDB
-    SearchTools -->|"Queries"| ExternalAPIs
-
-    %% Workflow Relationships
-    MastraCore -->|"Executes"| RAGWorkflow
-    MastraCore -->|"Executes"| ResearchWorkflow
+    %% Database connections
+    ThreadManager -->|Manages| VectorStore
+    ThreadManager -->|Manages| RedisCache
 ```
