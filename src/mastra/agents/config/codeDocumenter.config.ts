@@ -13,14 +13,7 @@ import {
   defaultResponseValidation,
 } from "./config.types";
 
-/**
- * Configuration for retrieving relevant tools for the agent
- *
- * @param toolIds - Array of tool identifiers to include
- * @param allTools - Map of all available tools
- * @returns Record of tools mapped by their IDs
- * @throws {Error} When required tools are missing
- */
+// Note: This function might be redundant if tool resolution happens centrally in base.agent.ts
 export function getToolsFromIds(
   toolIds: string[],
   allTools: ReadonlyMap<
@@ -49,15 +42,6 @@ export function getToolsFromIds(
 
   return tools;
 }
-
-/**
- * Code Documenter Agent Configuration
- *
- * @remarks
- * The Code Documenter Agent focuses on creating clear, comprehensive documentation
- * for code, APIs, and technical systems. It analyzes code structures and generates
- * appropriate documentation formats.
- */
 
 /**
  * Detailed instructions for the Code Documenter Agent.
@@ -172,8 +156,10 @@ Let's walk through each step with examples...
 
 /**
  * Configuration object for the Code Documenter Agent.
+ * THIS IS THE VALUE BEING EXPORTED.
  */
-const codeDocumenterConfig: BaseAgentConfig = {
+// --- ENSURE 'export' IS PRESENT HERE ---
+export const codeDocumenterConfig: BaseAgentConfig = {
   id: "code-documenter",
   name: "Code Documenter",
   description: "Specializes in creating comprehensive code documentation",
@@ -184,7 +170,7 @@ const codeDocumenterConfig: BaseAgentConfig = {
     "read-file",
     "write-file",
     "memory-query",
-    "github",
+    //"github",
     "format-content",
     "analyze-content",
     "search-documents",
@@ -194,8 +180,10 @@ const codeDocumenterConfig: BaseAgentConfig = {
 
 /**
  * Schema for structured code documenter responses
+ * THIS IS A VALUE, BUT NOT EXPORTED (to fix TS6133).
  */
-export const codeDocumenterResponseSchema = z.object({
+// --- ENSURE 'export' IS REMOVED HERE ---
+const codeDocumenterResponseSchema = z.object({
   documentation: z.string().describe("The generated documentation content"),
   apiEndpoints: z
     .array(
@@ -241,13 +229,16 @@ export const codeDocumenterResponseSchema = z.object({
 
 /**
  * Type for structured responses from the Code Documenter agent
+ * THIS IS A TYPE BEING EXPORTED.
  */
-/**
- * Type for structured responses from the Code Documenter agent
- */
+// --- Use PascalCase ---
 export type CodeDocumenterResponse = z.infer<
   typeof codeDocumenterResponseSchema
 >;
 
-// This type export is fine and can remain:
+/**
+ * Type derived from the config object
+ * THIS IS A TYPE BEING EXPORTED.
+ */
+// --- Use PascalCase ---
 export type CodeDocumenterConfig = typeof codeDocumenterConfig;

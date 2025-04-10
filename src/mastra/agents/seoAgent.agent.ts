@@ -33,7 +33,4 @@ export const seoAgent = createAgentFromConfig({
 
 export default seoAgent;
 export type SEOAgent = typeof seoAgent;
-export type SEOAgentConfig = typeof seoAgentConfig;
-export type SEOAgentConfigType = typeof seoAgentConfig;
-export type SEOAgentMemory = typeof sharedMemory;
-export type SEOAgentMemoryType = typeof sharedMemory;
+

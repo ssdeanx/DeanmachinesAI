@@ -33,6 +33,3 @@ export const socialMediaAgent = createAgentFromConfig({
 
 export default socialMediaAgent;
 export type SocialMediaAgent = typeof socialMediaAgent;
-export type SocialMediaAgentConfig = typeof socialMediaAgentConfig;
-export type SocialMediaAgentMemory = typeof sharedMemory;
-export type SocialMediaAgentMemoryType = typeof sharedMemory;

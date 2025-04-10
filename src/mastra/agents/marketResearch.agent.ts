@@ -33,7 +33,3 @@ export const marketResearchAgent = createAgentFromConfig({
 
 export default marketResearchAgent;
 export type MarketResearchAgent = typeof marketResearchAgent;
-export type MarketResearchAgentConfig = typeof marketResearchAgentConfig;
-export type MarketResearchAgentConfigType = typeof marketResearchAgentConfig;
-export type MarketResearchAgentMemory = typeof sharedMemory;
-export type MarketResearchAgentMemoryType = typeof sharedMemory;

@@ -39,7 +39,4 @@ export const rlTrainerAgent = createAgentFromConfig({
  */
 export type RLTrainerAgent = typeof rlTrainerAgent;
 export default rlTrainerAgent;
-export type RLTrainerAgentConfig = typeof rlTrainerAgentConfig;
-export type RLTrainerAgentConfigType = typeof rlTrainerAgentConfig;
-export type RLTrainerAgentMemory = typeof sharedMemory;
-export type RLTrainerAgentMemoryType = typeof sharedMemory;
+

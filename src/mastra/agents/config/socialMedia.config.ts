@@ -160,8 +160,9 @@ export const socialMediaAgentConfig: BaseAgentConfig = {
     "read-file",
     "write-file",
     "memory-query",
-    "brave",
-    "google",
+    "google-search", // Corrected ID
+    "tavily-search", // Corrected ID
+    "brave-search", // Corrected ID
     "format-content",
     "analyze-content",
     "calculate-reward", // For analyzing engagement metrics

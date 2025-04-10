@@ -36,9 +36,6 @@ export const agenticAssistant = createAgentFromConfig({
 
 export default agenticAssistant;
 export type AgenticAgent = typeof agenticAssistant;
-export type AgenticAgentConfig = typeof agenticAssistantConfig;
-export type AgenticAgentMemory = typeof sharedMemory;
-export type AgenticAgentMemoryType = typeof sharedMemory;
 
 /**
  * Example usage:

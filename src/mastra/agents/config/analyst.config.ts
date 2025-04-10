@@ -129,12 +129,13 @@ export const analystAgentConfig: BaseAgentConfig = {
     When you receive a request for analysis, mentally walkthrough this process before responding, ensuring your analytical approach is systematic, comprehensive, and insightful.
   `,
   toolIds: [
-    "analyze-content",
-    "search-documents",
     "read-file",
-    "write-file",
-    "analyze-feedback",
-    "exa-search",
+    "vector-query",
+    "google-vector-query",
+    "filtered-vector-query", // Corrected ID
+    "calculator",
+    "memory-query",
+    "analyze-content", // Added based on role
   ],
 };
 

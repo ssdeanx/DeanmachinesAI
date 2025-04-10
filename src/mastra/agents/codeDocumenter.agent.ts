@@ -6,7 +6,7 @@
 
 import { sharedMemory } from "../database";
 import { createAgentFromConfig } from "./base.agent";
-import {codeDocumenterConfig} from "./config";
+import { codeDocumenterConfig } from "./config/"; // Import directly
 import { createLogger } from "@mastra/core/logger";
 
 const logger = createLogger({ name: "code-documenter-agent", level: "info" });
@@ -19,6 +19,7 @@ const logger = createLogger({ name: "code-documenter-agent", level: "info" });
  * @remarks
  * This agent is responsible for creating API documentation, writing code comments,
  * generating user guides, and ensuring documentation stays synchronized with code.
+ * @version 1.0.0
  */
 export const codeDocumenterAgent = createAgentFromConfig({
   config: codeDocumenterConfig,
@@ -33,8 +34,3 @@ export const codeDocumenterAgent = createAgentFromConfig({
 
 export default codeDocumenterAgent;
 export type CodeDocumenterAgent = typeof codeDocumenterAgent;
-export type CodeDocumenterAgentConfig = typeof codeDocumenterConfig;
-export type CodeDocumenterAgentConfigType = typeof codeDocumenterConfig;
-export type CodeDocumenterAgentMemory = typeof sharedMemory;
-export type CodeDocumenterAgentMemoryType = typeof sharedMemory;
-

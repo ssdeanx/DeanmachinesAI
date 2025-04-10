@@ -152,7 +152,6 @@ export const architectConfig: BaseAgentConfig = {
     "analyze-content",
     "search-documents",
     "embed-document",
-    "github",
   ],
 };
 

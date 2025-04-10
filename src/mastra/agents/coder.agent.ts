@@ -48,8 +48,4 @@ export function initializeCoderAgent(): Agent {
 export const coderAgent = initializeCoderAgent();
 export default coderAgent;
 export type CoderAgent = typeof coderAgent;
-export type CoderAgentConfig = typeof coderAgentConfig;
-export type CoderAgentConfigType = typeof coderAgentConfig;
-export type CoderAgentMemory = typeof sharedMemory;
-export type CoderAgentMemoryType = typeof sharedMemory;
 

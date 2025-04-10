@@ -32,7 +32,4 @@ export const researchAgent = createAgentFromConfig({
 
 export type ResearchAgent = typeof researchAgent;
 export default researchAgent;
-export type ResearchAgentConfig = typeof researchAgentConfig;
-export type ResearchAgentConfigType = typeof researchAgentConfig;
-export type ResearchAgentMemory = typeof sharedMemory;
-export type ResearchAgentMemoryType = typeof sharedMemory;
+

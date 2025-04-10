@@ -33,7 +33,3 @@ export const debuggerAgent = createAgentFromConfig({
 
 export default debuggerAgent;
 export type DebuggerAgent = typeof debuggerAgent;
-export type DebuggerAgentConfig = typeof debuggerConfig;
-export type DebuggerAgentConfigType = typeof debuggerConfig;
-export type DebuggerAgentMemory = typeof sharedMemory;
-export type DebuggerAgentMemoryType = typeof sharedMemory;

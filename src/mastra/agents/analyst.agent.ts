@@ -32,4 +32,4 @@ export const analystAgent = createAgentFromConfig({
 
 export default analystAgent;
 export type AnalystAgent = typeof analystAgent;
-export type AnalystAgentConfig = typeof analystAgentConfig;
+

@@ -207,3 +207,90 @@ We've enhanced all agent configurations with cutting-edge prompt engineering tec
    - Standardized communication patterns across agents
 
 These enhancements have been systematically applied to all agent configurations, resulting in significant improvements in reasoning quality, task execution, and output consistency.
+
+
+{
+  "activePaths": {
+    "research-step": {
+      "status": "failed",
+      "stepPath": [
+        "research-step"
+      ]
+    }
+  },
+  "runId": "dfc05fc1-30d2-42b4-846a-96c58286551c",
+  "timestamp": 1744289860175,
+  "results": {
+    "research-step": {
+      "status": "failed",
+      "error": "Invalid value at 'tools.function_declarations[10].parameters.properties[1].value.properties[1].value.any_of[1].enum[0]' (TYPE_STRING), false"
+    }
+  },
+  "sanitizedOutput": "{\n  \"activePaths\": {\n    \"research-step\": {\n      \"status\": \"failed\",\n      \"stepPath\": [\n        \"research-step\"\n      ]\n    }\n  },\n  \"runId\": \"dfc05fc1-30d2-42b4-846a-96c58286551c\",\n  \"timestamp\": 1744289860175,\n  \"results\": {\n    \"research-step\": {\n      \"status\": \"failed\",\n      \"error\": \"Invalid value at 'tools.function_declarations[10].parameters.properties[1].value.properties[1].value.any_of[1].enum[0]' (TYPE_STRING), false\"\n    }\n  }\n}"
+}
+
+```
+
+GET
+
+/api/networks
+
+GET
+
+/api/networks/Knowledge_Work_MoE_Network__knowledge-work-moe-v1_
+
+POST
+
+/api/networks/Knowledge_Work_MoE_Network__knowledge-work-moe-v1_/generate
+
+POST
+
+/api/networks/Knowledge_Work_MoE_Network__knowledge-work-moe-v1_/stream
+
+GET
+
+/api/networks
+
+GET
+
+/api/networks/ContentCreation_Network
+
+POST
+
+/api/networks/ContentCreation_Network/generate
+
+POST
+
+/api/networks/ContentCreation_Network/stream
+
+GET
+
+/api/networks
+
+GET
+
+/api/networks/DataFlow_Network
+
+POST
+
+/api/networks/DataFlow_Network/generate
+
+POST
+
+/api/networks/DataFlow_Network/stream
+
+GET
+
+/api/networks
+
+GET
+
+/api/networks/DeanInsights_Network
+
+POST
+
+/api/networks/DeanInsights_Network/generate
+
+POST
+
+/api/networks/DeanInsights_Network/stream

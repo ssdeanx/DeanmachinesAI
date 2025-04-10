@@ -78,11 +78,13 @@ export const agenticAssistantConfig: BaseAgentConfig = {
     The user is relying on you for accurate and helpful information.
   `,
   toolIds: [
-    "brave-search",
-    "vector-query",
-    "memory-query",
-    "read-file",
-    "exa-search",
+  "read-file",
+  "write-file",
+  "exa-search",
+  "google-search",
+  "tavily-search",
+  "brave-search",
+  "memory-query"
   ],
 };
 

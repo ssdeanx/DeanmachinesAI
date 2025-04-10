@@ -168,13 +168,11 @@ export const copywriterAgentConfig: BaseAgentConfig = {
     When receiving a copywriting request, mentally explore multiple messaging approaches before creating content, ensuring your copy is persuasive, distinctive, and precisely aligned with strategic objectives.
   `,
   toolIds: [
-    "readFileTool",
-    "writeToFileTool",
-    "memoryQueryTool",
-    "memoryStoreTool",
-    "documentAnalysisTool",
-    "contentStructureTool",
-    "sentimentAnalysisTool",
+    "read-file",
+    "format-content",
+    "exa-search", // Corrected ID
+    "tavily-search", // Corrected ID
+    "analyze-content",
   ],
 };
 

@@ -147,10 +147,13 @@ export const dataManagerAgentConfig: BaseAgentConfig = {
   toolIds: [
     "read-file",
     "write-file",
-    "search-documents",
-    "embed-document",
     "vector-query",
-    "graph-rag",
+    "google-vector-query",
+    "filtered-vector-query", // Corrected ID
+    "embed-document",
+    "search-documents",
+    "memory-query",
+    "graph-rag", // Alias exists
   ],
 };
 

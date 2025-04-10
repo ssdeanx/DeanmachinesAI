@@ -155,10 +155,10 @@ export const marketResearchAgentConfig: BaseAgentConfig = {
     "read-file",
     "write-file",
     "memory-query",
-    "brave", // Correct ID for Brave search
-    "google", // Correct ID for Google search
-    "tavily", // Correct ID for Tavily search
-    "exa", // Correct ID for Exa search
+    "exa-search", // Corrected ID
+    "google-search", // Corrected ID
+    "tavily-search", // Corrected ID
+    "brave-search", // Correct ID for Exa search
     "analyze-content",
     "search-documents",
     "embed-document",

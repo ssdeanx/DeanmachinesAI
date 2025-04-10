@@ -153,14 +153,14 @@ export const coderAgentConfig: BaseAgentConfig = {
     When receiving a coding request, mentally evaluate multiple solution strategies before implementing, ensuring your code is efficient, maintainable, and precisely aligned with requirements.
   `,
   toolIds: [
-    "readFileTool",
-    "writeToFileTool",
-    "searchFilesTool",
-    "githubTool",
-    "memoryQueryTool",
-    "memoryStoreTool",
-    "documentAnalysisTool",
-    "calculatorTool",
+    "read-file",         // Correct ID for reading files
+    "write-file",        // Correct ID for writing files
+    "search-documents",  // For searching relevant code snippets/docs
+    // "github",         // Omitted - Needs clarification on how GitHub tools are registered in tools/index.ts
+    "memory-query",      // Correct ID for querying conversation memory
+    "analyze-content",   // For understanding code/text content
+    "calculator",        // Correct ID for calculations (e.g., complexity analysis)              // For executing code snippets safely
+    // Add other relevant tools like specific search tools if needed
   ],
 };
 

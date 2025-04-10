@@ -6,7 +6,7 @@
  */
 
 import { createAgentFromConfig } from "./base.agent";
-import writerConfig from "./config/writer.config";
+import { writerAgentConfig as writerConfig } from "./config";
 import { sharedMemory } from "../database";
 import { createLogger } from "@mastra/core/logger";
 
@@ -30,3 +30,5 @@ export const writerAgent = createAgentFromConfig({
     };
   },
 });
+
+export default writerAgent;

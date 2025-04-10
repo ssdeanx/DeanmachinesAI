@@ -159,11 +159,11 @@ export const debuggerConfig: BaseAgentConfig = {
   toolIds: [
     "read-file",
     "write-file",
-    "memory-query",
-    "github",
-    "e2b", // E2B for executing code in a sandbox
-    "format-content",
-    "calculate-reward", // For analyzing performance improvements
+    // "github", // Removed - clarify registration if needed
+    //"e2b",
+    "analyze-feedback",
+    "calculate-reward",
+    "analyze-content", // Added based on role
   ],
 };
 
