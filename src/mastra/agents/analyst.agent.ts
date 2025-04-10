@@ -29,10 +29,3 @@ export const analystAgent = createAgentFromConfig({
     };
   },
 });
-
-export default analystAgent;
-export type AnalystAgent = typeof analystAgent;
-export type AnalystAgentConfig = typeof analystAgentConfig;
-export type AnalystAgentConfigType = typeof analystAgentConfig;
-export type AnalystAgentMemory = typeof sharedMemory;
-export type AnalystAgentMemoryType = typeof sharedMemory;

@@ -8,10 +8,11 @@
 import { Agent } from "@mastra/core/agent";
 import { createLogger } from "@mastra/core/logger";
 import { sharedMemory } from "../database";
-import { createAgentFromConfig } from "./base.agent";
+import { createAgentFromConfig, createModelInstance } from "./base.agent";
 import {
   agenticAssistantConfig,
   agenticResponseSchema,
+  type AgenticResponse,
 } from "./config";
 
 // Initialize logger for this module
@@ -31,6 +32,7 @@ export function createAgenticAssistant(): Agent {
     return createAgentFromConfig({
       config: agenticAssistantConfig,
       memory: sharedMemory, // Following RULE-MemoryInjection
+      model: createModelInstance(agenticAssistantConfig.modelConfig),
       onError: async (error: Error) => {
         logger.error("Agentic assistant error:", error);
         return {
@@ -60,6 +62,29 @@ export const agenticAssistant = createAgenticAssistant();
  * @returns A promise resolving to the structured response
  * @throws {Error} If generation fails or response validation fails
  */
+export async function getStructuredResponse(
+  query: string
+): Promise<AgenticResponse> {
+  try {
+    // Use the agent with structured output schema
+    const result = await agenticAssistant.generate(query, {
+      output: agenticResponseSchema,
+    });
+
+    if (!result.object) {
+      throw new Error("Failed to generate structured response");
+    }
+
+    return result.object as AgenticResponse;
+  } catch (error) {
+    logger.error("Error generating structured response:", { error });
+    throw new Error(
+      `Failed to generate response: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
+  }
+}
 
 /**
  * Streams a response from the agentic assistant

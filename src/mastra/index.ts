@@ -53,8 +53,8 @@ export const mastra = new Mastra({
   },
   networks,
   logger: createLogger({ name: "DeanmachinesAI", level: "info" }),
-  // Use the properly configured memory from the database module
-  memory,
+  // Memory is now injected per agent via createAgentFromConfig instead of globally
+  // This follows RULE-MemoryInjection from best practices
   serverMiddleware: [
     {
       handler: (c, next) => {

@@ -6,8 +6,7 @@
 
 import { sharedMemory } from "../database";
 import { createAgentFromConfig } from "./base.agent";
-import { initializeCoderAgent } from "./coder.agent";
-import { uiUxCoderConfig } from "./config/index";
+import uiUxCoderConfig from "./config/uiUxCoder.config";
 import { createLogger } from "@mastra/core/logger";
 
 const logger = createLogger({ name: "ui-ux-coder-agent", level: "info" });
@@ -32,16 +31,4 @@ export const uiUxCoderAgent = createAgentFromConfig({
   },
 });
 
-export const uiUxCoderAgentConfig = initializeuiUxCoderAgentConfig();
-export function initializeuiUxCoderAgentConfig() {
-
-  return {
-
-  };
-}
 export default uiUxCoderAgent;
-export type UIUXCoderAgent = typeof uiUxCoderAgent;
-export type UIUXCoderAgentConfig = typeof uiUxCoderConfig;
-export type UIUXCoderAgentConfigType = typeof uiUxCoderConfig;
-export type UIUXCoderAgentMemory = typeof sharedMemory;
-export type UIUXCoderAgentMemoryType = typeof sharedMemory;

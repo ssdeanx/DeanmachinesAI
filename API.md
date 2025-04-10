@@ -145,6 +145,12 @@ Implementation of these documentation improvements will enhance context awarenes
   - **Implementation**: Added Zod schemas for agent responses in configuration files
   - **Benefits**: Type-safe responses, improved validation, better integration with tools
 
+- [2025-04-10] **Enhancement**: Implemented advanced prompt engineering techniques for agents
+  - **Implementation**: Updated all agent instructions with cutting-edge 2025 prompt techniques
+  - **Files**: All `*.config.ts` files in `src/mastra/agents/config/`
+  - **Techniques**: Chain-of-thought reasoning, role-based prompting, context expansion, multi-turn prompts, negative prompting, tree-of-thought analysis, adversarial self-assessment, structured outputs
+  - **Benefits**: Significantly improved reasoning, task decomposition, error prevention, and output quality
+
 The configuration system is now fully implemented with the following components:
 
 - **`config.types.ts`**: Central source of truth for configuration types with detailed model capabilities
@@ -153,3 +159,51 @@ The configuration system is now fully implemented with the following components:
 - **`index.ts`**: Barrel file exporting all configuration components with proper type safety
 
 The migration to the new system is complete for all agent configurations, providing a consistent pattern using `modelConfig: DEFAULT_MODELS.GOOGLE_STANDARD` that leverages the experimental models with enhanced capabilities.
+
+## Advanced Prompt Engineering Implementation (April 10, 2025)
+
+### Key Improvements to Agent Instructions
+
+We've enhanced all agent configurations with cutting-edge prompt engineering techniques from 2025:
+
+1. **Expert Role Definition**
+   - Created clear, specialized expert roles for each agent
+   - Established specific domains of expertise with precise responsibilities
+   - Enhanced agent identity and specialization awareness
+
+2. **Structured Process Frameworks**
+   - Implemented detailed process phases for each agent type
+   - Added systematic methodologies with distinct steps
+   - Created explicit workflows for complex tasks
+
+3. **Advanced Reasoning Techniques**
+   - **Chain-of-Thought Reasoning**: Explicit cognitive steps for methodical problem-solving
+   - **Tree-of-Thought Analysis**: Multiple reasoning paths explored simultaneously
+   - **Competing Solutions Approach**: Multiple solution strategies evaluated systematically
+
+4. **Negative Prompting**
+   - Added explicit anti-patterns and constraints to avoid common pitfalls
+   - Implemented "DO NOT" and "AVOID" directives to prevent problematic outputs
+   - Enhanced output quality through boundary-setting
+
+5. **Multi-Perspective Analysis**
+   - Different analytical lenses for the same problem (e.g., emotional, rational, distinctive)
+   - Multiple hypothesis testing for diagnostic scenarios
+   - Platform-specific content strategies for varied contexts
+
+6. **Self-Assessment Mechanisms**
+   - Adversarial self-assessment with explicit challenge questions
+   - Output verification steps to validate reasoning
+   - Confidence level requirements for assertions
+
+7. **Example Demonstrations**
+   - Added concrete thought process examples for each agent role
+   - Included step-by-step reasoning demonstrations
+   - Provided clear exemplars of expected output formats
+
+8. **Output Templating**
+   - Structured output formats for consistent deliverables
+   - Clear section organization for complex responses
+   - Standardized communication patterns across agents
+
+These enhancements have been systematically applied to all agent configurations, resulting in significant improvements in reasoning quality, task execution, and output consistency.

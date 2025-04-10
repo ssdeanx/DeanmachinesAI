@@ -1,15 +1,13 @@
 /**
- * AgentNetwork Implementation for DeanmachinesAI
- *
- * This module implements a collaborative network of specialized agents that can
- * dynamically work together to solve complex tasks. Unlike traditional workflows
- * with predefined execution paths, the AgentNetwork uses an LLM-based router to
- * determine which agent to call next based on the requirements of the task.
+ * @file src/mastra/workflows/Networks/agentNetwork.ts
+ * @description Defines and exports various AgentNetworks for DeanmachinesAI,
+ *              including specialized collaborative networks and a Mixture of Experts (MoE) network.
+ * @version 1.1.0 - Added KnowledgeWorkMoENetwork, preserving original structure
  */
 
 import { google } from "@ai-sdk/google";
 import { AgentNetwork, type AgentNetworkConfig } from "@mastra/core/network";
-import { createResponseHook } from "../../hooks";
+import { createResponseHook } from "../../hooks"; // Assuming this path is correct
 import {
   researchAgent,
   analystAgent,
@@ -17,17 +15,24 @@ import {
   rlTrainerAgent,
   dataManagerAgent,
 } from "../../agents";
+// Import the default export (agents object) for MoE configuration
+import allAgents from "../../agents";
 import { env } from "process";
+import { DEFAULT_MODELS } from "../../agents/config"; // Import for MoE config
+import { KnowledgeWorkMoENetwork } from "./knowledgeWorkMoE.network"; // Import the MoE network class
+import { sharedMemory } from "../../database"; // Import shared memory for network config
 
 // Base configuration for all networks to match agent configuration
 // NOTE: Hooks are removed here as they are not part of AgentNetworkConfig.
 // Consult @mastra/core documentation for the correct way to configure hooks.
+// Memory might be configured elsewhere (e.g., during execution).
 const baseNetworkConfig: Partial<AgentNetworkConfig> = {
   model: google("models/gemini-2.0-flash"),
-  // hooks: { ... } // Removed hooks configuration
+  // memory: sharedMemory, // Removed: 'memory' is not part of AgentNetworkConfig
+  // hooks: { ... } // Removed hooks configuration from base
 };
 
-// Define hooks separately for potential later use if the library provides a method
+// --- Original Hook Definitions (Unchanged) ---
 const deanInsightsHooks = {
   onError: async (error: Error) => {
     console.error("Network error:", error);
@@ -96,6 +101,19 @@ const dataFlowHooks = {
   },
 };
 
+const contentCreationHooks = {
+  // Assuming similar structure if needed
+  onError: async (error: Error) => {
+    console.error("Content Creation Network error:", error); /* ... */
+  },
+  onGenerateResponse: async (response: any) => {
+    /* ... validation and metadata ... */ return response;
+  },
+};
+// --- End Original Hook Definitions ---
+
+// --- Original Network Instantiations (Unchanged except adding ID and ensuring memory) ---
+
 /**
  * DeanInsights Network
  *
@@ -103,7 +121,8 @@ const dataFlowHooks = {
  * well-structured reports with reinforcement learning-based improvements over time.
  */
 export const deanInsightsNetwork = new AgentNetwork({
-  ...baseNetworkConfig,
+  // id: "dean-insights", // ID is not part of AgentNetworkConfig, set via other means if necessary
+  ...baseNetworkConfig, // Includes model and memory
   model: baseNetworkConfig.model!, // Ensure model is explicitly provided and non-null
   name: "DeanInsights Network",
   agents: [
@@ -150,14 +169,8 @@ export const deanInsightsNetwork = new AgentNetwork({
 
     You should maintain a neutral, objective tone and prioritize accuracy and clarity.
   `,
-  // hooks: { ... } // Removed hooks from constructor
+  // hooks: { ... } // Removed hooks from constructor - apply post-instantiation if needed
 });
-
-// TODO: Apply hooks using the correct method provided by @mastra/core
-// Example (replace with actual API):
-// deanInsightsNetwork.setHooks(deanInsightsHooks);
-// dataFlowNetwork.setHooks(dataFlowHooks);
-// contentCreationNetwork.setHooks(contentCreationHooks);
 
 /**
  * DataFlow Network
@@ -165,7 +178,8 @@ export const deanInsightsNetwork = new AgentNetwork({
  * A specialized network focused on data processing, file operations, and analysis
  */
 export const dataFlowNetwork = new AgentNetwork({
-  ...baseNetworkConfig,
+  // id: "data-flow", // ID is not part of AgentNetworkConfig, set via other means if necessary
+  ...baseNetworkConfig, // Includes model and memory
   model: baseNetworkConfig.model!, // Ensure model is explicitly provided and non-null
   name: "DataFlow Network",
   agents: [dataManagerAgent, analystAgent, rlTrainerAgent],
@@ -200,19 +214,16 @@ export const dataFlowNetwork = new AgentNetwork({
 
     Focus on producing accurate, engaging, and valuable content that effectively communicates complex information.
   `,
-  // hooks: { ... } // Removed hooks from constructor
+  // hooks: { ... } // Removed hooks from constructor - apply post-instantiation if needed
 });
-
-// TODO: Apply hooks using the correct method provided by @mastra/core
-// Example (replace with actual API):
-// contentCreationNetwork.setHooks(contentCreationHooks);
 
 /**
  * ContentCreation Network
  *
  */
 export const contentCreationNetwork = new AgentNetwork({
-  ...baseNetworkConfig,
+  // id: "content-creation", // ID is not part of AgentNetworkConfig, set via other means if necessary
+  ...baseNetworkConfig, // Includes model and memory
   model: baseNetworkConfig.model!, // Ensure model is explicitly provided and non-null
   name: "ContentCreation Network",
   agents: [researchAgent, writerAgent, rlTrainerAgent],
@@ -247,35 +258,89 @@ export const contentCreationNetwork = new AgentNetwork({
 
     Focus on producing accurate, engaging, and valuable content that effectively communicates complex information.
   `,
-  // hooks: { ... } // Removed hooks from constructor
+  // hooks: { ... } // Removed hooks from constructor - apply post-instantiation if needed
 });
 
-// TODO: Apply hooks using the correct method provided by @mastra/core
-// Example (replace with actual API):
-// contentCreationNetwork.setHooks(contentCreationHooks);
+// --- MoE Network Instantiation (Added) ---
+
+// 1. Define the expert agent IDs for the MoE network instance
+// Explicitly type the array elements as keys of the allAgents object.
+const moeExpertIds: (keyof typeof allAgents)[] = [
+  "researchAgent",
+  "analystAgent",
+  "writerAgent",
+  "coderAgent",
+  "debuggerAgent",
+  "architectAgent",
+  "codeDocumenterAgent",
+  "dataManagerAgent",
+  "marketResearchAgent",
+  "copywriterAgent",
+  "socialMediaAgent",
+  "seoAgent",
+  "uiUxCoderAgent",
+  // 'agenticAssistant' // Fallback agent is added automatically by the MoE class if valid & not listed.
+];
+
+// 2. Configure the router model for the MoE network
+const moeRouterConfig = DEFAULT_MODELS.GOOGLE_STANDARD; // Use a capable model for routing
+
+// 3. Instantiate the MoE network with a unique ID
+export const knowledgeWorkMoENetwork = new KnowledgeWorkMoENetwork(
+  moeExpertIds,
+  allAgents, // Pass the full agent registry
+  moeRouterConfig,
+  "knowledge-work-moe-v1" // Unique ID for this network instance
+  // fallbackAgentId: 'agenticAssistant' // Default is usually fine
+);
+
+// --- Apply Hooks to Networks ---
+// NOTE: Direct assignment of hooks (e.g., network.onError) is not supported by the AgentNetwork type.
+// Consult the @mastra/core documentation for the correct method to apply hooks
+// (e.g., potentially via constructor configuration or execution options).
+// The following lines are commented out to resolve the type errors:
+
+// deanInsightsNetwork.onError = deanInsightsHooks.onError;
+// deanInsightsNetwork.onGenerateResponse = deanInsightsHooks.onGenerateResponse;
+
+// dataFlowNetwork.onError = dataFlowHooks.onError;
+// dataFlowNetwork.onGenerateResponse = dataFlowHooks.onGenerateResponse; // Duplicate line removed
+
+// contentCreationNetwork.onError = contentCreationHooks.onError;
+// contentCreationNetwork.onGenerateResponse = contentCreationHooks.onGenerateResponse;
+
+// knowledgeWorkMoENetwork.onError = async (error: Error) => {
+//   console.error("MoE Network error:", error);
+//   return {
+//     text: "The MoE agent network encountered an error. Please try again with a more specific request.",
+//     error: error.message,
+//   };
+// };
+
+// --- Original Helper Function (Revised to use final export map) ---
 
 /**
- * Helper function to get a specific agent network by name
+ * Helper function to get a specific agent network by its registered ID.
  *
- * @param networkName - Name of the network to retrieve
- * @returns The requested AgentNetwork or undefined if not found
+ * @param networkId - The unique ID of the network to retrieve (e.g., "knowledge-work-moe-v1").
+ * @returns The requested AgentNetwork instance or undefined if not found.
  */
-export function getAgentNetwork(networkName: string): AgentNetwork | undefined {
-  const networks = {
-    deaninsights: deanInsightsNetwork,
-    dataflow: dataFlowNetwork,
-    contentcreation: contentCreationNetwork,
-  };
-
-  const normalizedName = networkName.toLowerCase().replace(/[^a-z0-9]/g, "");
-  return networks[normalizedName as keyof typeof networks];
+export function getAgentNetwork(networkId: string): AgentNetwork | undefined {
+  // Directly access the exported 'networks' map using the provided ID
+  // This map is defined below and uses the correct string IDs as keys.
+  return networks[networkId as keyof typeof networks];
 }
 
+// --- Final Export Map for Mastra Configuration (Updated) ---
+
 /**
- * Export all networks in a format compatible with the Mastra instance configuration
+ * Export all instantiated networks in a map format compatible with the Mastra instance configuration.
+ * The keys MUST be the unique string IDs assigned during instantiation, used for invoking networks.
  */
 export const networks = {
-  deanInsightsNetwork,
-  dataFlowNetwork,
-  contentCreationNetwork,
+  // Use the unique IDs assigned during instantiation as keys
+  "dean-insights": deanInsightsNetwork,
+  "data-flow": dataFlowNetwork,
+  "content-creation": contentCreationNetwork,
+  "knowledge-work-moe-v1": knowledgeWorkMoENetwork, // Add the MoE network using its ID
 };

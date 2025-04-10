@@ -6,7 +6,8 @@ import { sharedMemory as memory } from "../database";
 import { PineconeStore } from "@langchain/pinecone";
 import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { Pinecone } from "@pinecone-database/pinecone";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { google } from "@ai-sdk/google";
+import { generateText } from "ai";
 
 const embeddings = new GoogleGenerativeAIEmbeddings({
   apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY!,
@@ -20,6 +21,10 @@ const researchStep = new Step({
     query: z.string().describe("The research query to investigate"),
   }),
   execute: async ({ context, mastra }) => {
+    if (mastra?.logger) {
+      mastra.logger.info("Starting research step execution");
+    }
+
     const triggerData = context?.getStepResult<{ query: string }>("trigger");
 
     if (!triggerData) {
@@ -55,6 +60,10 @@ const analysisStep = new Step({
     timestamp: z.string(),
   }),
   execute: async ({ context, mastra }) => {
+    if (mastra?.logger) {
+      mastra.logger.info("Starting analysis step execution");
+    }
+
     const researchData = context?.getStepResult<{
       query: string;
       findings: string;
@@ -97,6 +106,10 @@ const documentationStep = new Step({
     timestamp: z.string(),
   }),
   execute: async ({ context, mastra }) => {
+    if (mastra?.logger) {
+      mastra.logger.info("Starting documentation step execution");
+    }
+
     const analysisData = context?.getStepResult<{
       query: string;
       findings: string;
@@ -196,16 +209,17 @@ const feedbackStep = new Step({
       throw new Error("Document data not found");
     }
 
-    // For simulation purposes, we'll use a simple model to evaluate the document
-    const genAI = new GoogleGenerativeAI(
-      process.env.GOOGLE_GENERATIVE_AI_API_KEY!
-    );
-    const model = genAI.getGenerativeModel({
-      model: "models/gemini-2.0-flash",
-    });
+    // For simulation purposes, we'll use the AI SDK to evaluate the document
+    // Using mastra parameter for logging and tracing if available
+    if (mastra?.logger) {
+      mastra.logger.info("Starting document feedback evaluation using AI SDK");
+    }
 
     try {
-      const result = await model.generateContent(`
+      // Using the ai package's generateText function with google model
+      const result = await generateText({
+        model: google("models/gemini-2.0-flash"),
+        prompt: `
         You are an evaluator for research documents. Rate the following document on a scale of 1-10 for:
         1. Accuracy (factual correctness)
         2. Completeness (covers all aspects of the topic)
@@ -223,9 +237,11 @@ const feedbackStep = new Step({
           "clarity": 9,
           "comments": "Brief feedback comments here"
         }
-      `);
+      `,
+      });
 
-      const feedbackText = result.response.text();
+      // The result structure from generateText() is different
+      const feedbackText = result.text;
       let feedback;
 
       try {

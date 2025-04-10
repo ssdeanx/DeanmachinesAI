@@ -18,7 +18,7 @@ import {
   defaultResponseValidation,
   type ResponseHookOptions,
   createModelInstance
-} from "./config";
+} from "./config/index";
 import { createResponseHook } from "../hooks";
 import { allToolsMap } from "../tools";
 

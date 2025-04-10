@@ -6,10 +6,9 @@
  */
 
 import { createAgentFromConfig } from "./base.agent";
-import { writerAgentConfig } from "./config";
+import writerConfig from "./config/writer.config";
 import { sharedMemory } from "../database";
 import { createLogger } from "@mastra/core/logger";
-import { initializeCoderAgent } from "./coder.agent";
 
 const logger = createLogger({ name: "writer-agent", level: "info" });
 
@@ -22,7 +21,7 @@ const logger = createLogger({ name: "writer-agent", level: "info" });
  * across documents.
  */
 export const writerAgent = createAgentFromConfig({
-  config: writerAgentConfig,
+  config: writerConfig,
   memory: sharedMemory, // Following RULE-MemoryInjection
   onError: async (error: Error) => {
     logger.error("Writer agent error:", error);
@@ -31,10 +30,3 @@ export const writerAgent = createAgentFromConfig({
     };
   },
 });
-
-export type WriterAgent = typeof writerAgent;
-export default writerAgent;
-export type WriterAgentConfig = typeof writerAgentConfig; // Use the imported config type
-export type WriterAgentConfigType = typeof writerAgentConfig; // Use the imported config type
-export type WriterAgentMemory = typeof sharedMemory;
-export type WriterAgentMemoryType = typeof sharedMemory;
