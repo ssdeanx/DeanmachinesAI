@@ -243,5 +243,7 @@ export const uiUxCoderResponseSchema = z.object({
  */
 export type UiUxCoderResponse = z.infer<typeof uiUxCoderResponseSchema>;
 
-export default uiUxCoderConfig;
+/**
+ * Type for the UI/UX Coder Agent configuration
+ */
 export type UIUXCoderConfig = typeof uiUxCoderConfig;

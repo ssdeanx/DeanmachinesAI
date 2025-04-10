@@ -226,5 +226,7 @@ export const copywriterResponseSchema = z.object({
  */
 export type CopywriterResponse = z.infer<typeof copywriterResponseSchema>;
 
-export default copywriterAgentConfig;
+/**
+ * Type for the Copywriter Agent configuration
+ */
 export type CopywriterAgentConfig = typeof copywriterAgentConfig;

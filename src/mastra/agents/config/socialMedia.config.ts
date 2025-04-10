@@ -241,5 +241,7 @@ export const socialMediaResponseSchema = z.object({
  */
 export type SocialMediaResponse = z.infer<typeof socialMediaResponseSchema>;
 
-export default socialMediaAgentConfig;
+/**
+ * Type for the Social Media Agent configuration
+ */
 export type SocialMediaAgentConfig = typeof socialMediaAgentConfig;

@@ -224,5 +224,7 @@ export const debuggerResponseSchema = z.object({
  */
 export type DebuggerResponse = z.infer<typeof debuggerResponseSchema>;
 
-export default debuggerConfig;
+/**
+ * Type for the Debugger agent configuration
+ */
 export type DebuggerConfig = typeof debuggerConfig;

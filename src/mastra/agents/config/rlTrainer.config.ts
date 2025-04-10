@@ -288,5 +288,7 @@ export const rlTrainerResponseSchema = z.object({
  */
 export type RLTrainerResponse = z.infer<typeof rlTrainerResponseSchema>;
 
-export default rlTrainerAgentConfig;
+/**
+ * Type for the RL Trainer Agent configuration
+ */
 export type RLTrainerAgentConfig = typeof rlTrainerAgentConfig;

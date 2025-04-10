@@ -242,9 +242,12 @@ export const codeDocumenterResponseSchema = z.object({
 /**
  * Type for structured responses from the Code Documenter agent
  */
+/**
+ * Type for structured responses from the Code Documenter agent
+ */
 export type CodeDocumenterResponse = z.infer<
   typeof codeDocumenterResponseSchema
 >;
 
-export default codeDocumenterConfig;
+// This type export is fine and can remain:
 export type CodeDocumenterConfig = typeof codeDocumenterConfig;

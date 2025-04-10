@@ -178,5 +178,7 @@ export const researchResponseSchema = z.object({
  */
 export type ResearchResponse = z.infer<typeof researchResponseSchema>;
 
-export default researchAgentConfig;
+/**
+ * Type for the Research Agent configuration
+ */
 export type ResearchAgentConfig = typeof researchAgentConfig;

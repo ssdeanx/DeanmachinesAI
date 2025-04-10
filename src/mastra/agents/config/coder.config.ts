@@ -213,5 +213,7 @@ export const coderResponseSchema = z.object({
  */
 export type CoderResponse = z.infer<typeof coderResponseSchema>;
 
-export default coderAgentConfig;
+/**
+ * Type for the Coder Agent configuration
+ */
 export type CoderAgentConfig = typeof coderAgentConfig;

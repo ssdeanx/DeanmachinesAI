@@ -179,5 +179,4 @@ export const analystResponseSchema = z.object({
  */
 export type AnalystResponse = z.infer<typeof analystResponseSchema>;
 
-export default analystAgentConfig;
 export type AnalystAgentConfig = typeof analystAgentConfig;

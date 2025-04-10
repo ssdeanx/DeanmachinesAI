@@ -156,5 +156,4 @@ export const architectConfig: BaseAgentConfig = {
   ],
 };
 
-export default architectConfig;
 export type ArchitectConfig = typeof architectConfig;

@@ -117,5 +117,4 @@ export const agenticResponseSchema = z.object({
  */
 export type AgenticResponse = z.infer<typeof agenticResponseSchema>;
 
-export default agenticAssistantConfig;
 export type AgenticAssistantConfig = typeof agenticAssistantConfig;

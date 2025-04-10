@@ -239,5 +239,7 @@ export type MarketResearchResponse = z.infer<
   typeof marketResearchResponseSchema
 >;
 
-export default marketResearchAgentConfig;
+/**
+ * Type for the Market Research agent configuration
+ */
 export type MarketResearchAgentConfig = typeof marketResearchAgentConfig;

@@ -212,5 +212,7 @@ export const dataManagerResponseSchema = z.object({
  */
 export type DataManagerResponse = z.infer<typeof dataManagerResponseSchema>;
 
-export default dataManagerAgentConfig;
+/**
+ * Type for the Data Manager Agent configuration
+ */
 export type DataManagerAgentConfig = typeof dataManagerAgentConfig;

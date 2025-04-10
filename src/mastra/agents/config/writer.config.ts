@@ -255,5 +255,7 @@ export const writerResponseSchema = z.object({
  */
 export type WriterResponse = z.infer<typeof writerResponseSchema>;
 
-export default writerAgentConfig;
+/**
+ * Type for the Writer Agent configuration
+ */
 export type WriterAgentConfig = typeof writerAgentConfig;

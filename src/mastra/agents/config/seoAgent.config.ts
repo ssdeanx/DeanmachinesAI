@@ -261,5 +261,7 @@ export const seoResponseSchema = z.object({
  */
 export type SeoResponse = z.infer<typeof seoResponseSchema>;
 
-export default seoAgentConfig;
+/**
+ * Type for the SEO Agent configuration
+ */
 export type SeoAgentConfig = typeof seoAgentConfig;
