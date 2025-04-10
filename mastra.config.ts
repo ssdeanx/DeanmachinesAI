@@ -7,9 +7,7 @@ import {
   rlTrainerAgent,
   dataManagerAgent,
 } from "./src/mastra/agents";
-import { ragWorkflow } from "./src/mastra/workflows";
-import { networks } from "./src/mastra/workflows/agentNetwork";
-import { memory } from "./src/mastra/database";
+import { ragWorkflow, networks } from "./src/mastra/workflows";
 
 export const mastra = new Mastra({
   agents: {
@@ -34,12 +32,13 @@ export const mastra = new Mastra({
     name: "DeanmachinesAI",
     level: "info",
   }),
-  memory: memory,
   serverMiddleware: [
     {
       handler: (c, next) => {
         console.log(
-          `[${new Date().toISOString()}] Processing request: ${c.req.method} ${c.req.url}`
+          `[${new Date().toISOString()}] Processing request: ${c.req.method} ${
+            c.req.url
+          }`
         );
         // Track request timing for RL metrics
         const startTime = Date.now();

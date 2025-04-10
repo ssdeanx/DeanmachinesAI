@@ -71,6 +71,8 @@ export class MastraEmbeddingAdapter
     this.maxEmbeddingsPerCall = options.maxEmbeddingsPerCall || 16;
     this.dimensions =
       options.dimensions || Number(env.PINECONE_DIMENSION) || 2048;
+    // Assume false by default unless underlying implementation confirms otherwise
+    this.supportsParallelCalls = false;
   }
   supportsParallelCalls: boolean;
   doEmbed(options: { values: string[]; abortSignal?: AbortSignal; headers?: Record<string, string | undefined>; }): PromiseLike<{ embeddings: Array<EmbeddingModelV1Embedding>; usage? /** Pinecone environment (e.g., 'us-east-1') */: { tokens: number; }; rawResponse?: { headers?: Record<string, string>; }; }> {

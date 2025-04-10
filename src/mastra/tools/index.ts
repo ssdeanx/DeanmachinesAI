@@ -1,9 +1,9 @@
 /**
  * Tool Registry and Management
  *
- * This module serves as the central registry for all available tools,
+ * This module serves as the central registry for tools,
  * handling their initialization, configuration, and export. It assembles
- * core, optional, additional, and extra tools into a lookup map so that agents
+ * core, optional, and extra tools into a lookup map so that agents
  * can easily find and use them.
  *
  * @module Tools
@@ -16,6 +16,7 @@ import { env } from "process";
 import { z } from "zod";
 import { Tool } from "@mastra/core/tools";
 import { createLogger } from "@mastra/core/logger";
+import { AIFunctionsProvider, type AIFunctionSet } from "@agentic/core";
 
 // === Internal tool imports ===
 import {
@@ -50,12 +51,57 @@ import { GraphNode } from "./graphRag";
 import { createCalculatorTool } from "./calculator";
 import { createLlamaIndexTools } from "./llamaindex";
 import { McpTools } from "./mcptools";
-import { arxiv } from "./arxiv";
+import { ArXivClient } from "./arxiv";
 import { WikipediaClient } from "./wikibase";
 import { createAISDKTools } from "./ai-sdk";
 import { e2b } from "./e2b";
 // Import GraphRag tools so that they are read and fully functional.
 import { createGraphRagTool, graphRagQueryTool } from "./graphRag";
+// Import LLM chain tools for AI model interaction
+import { llmChainTool, aiSdkPromptTool } from "./llmchain";
+// === Type definitions ===
+/**
+ * Tool that can include AIFunctionSet capabilities
+ */
+type ToolOrProvider =
+  | Tool<z.ZodTypeAny, z.ZodTypeAny>
+  | (Tool<z.ZodTypeAny, z.ZodTypeAny> & { functions: AIFunctionSet });
+
+/**
+ * Wrapped tool that includes AI functions
+ */
+type WrappedTool = Tool<z.ZodTypeAny, z.ZodTypeAny> & {
+  functions?: AIFunctionSet;
+};
+
+/**
+ * Creates a tool from an AIFunctionsProvider instance
+ *
+ * @param provider - The AI functions provider
+ * @param id - Tool identifier
+ * @param description - Tool description
+ * @param defaultFunction - Name of default function to execute
+ * @returns A tool wrapping the provider
+ */
+function createProviderTool(
+  provider: AIFunctionsProvider,
+  id: string,
+  description: string,
+  defaultFunction: string
+): WrappedTool {
+  return {
+    id,
+    description,
+    functions: provider.functions,
+    execute: async (context: unknown) => {
+      const fn = provider.functions.get(defaultFunction);
+      if (!fn) {
+        throw new Error(`Function "${defaultFunction}" not found in provider`);
+      }
+      return fn.execute(context);
+    },
+  };
+}
 
 // === Export all tool modules ===
 export * from "./e2b";
@@ -78,6 +124,7 @@ export * from "./wikibase";
 export * from "./ai-sdk";
 export * from "./contentTools";
 export * from "./document-tools";
+export * from "./llmchain";
 
 // === Configure Logger ===
 const logger = createLogger({ name: "tool-initialization", level: "info" });
@@ -121,7 +168,9 @@ function validateConfig(): EnvConfig {
         .filter((e) => e.code === "invalid_type" && e.received === "undefined")
         .map((e) => e.path.join("."));
       if (missingKeys.length > 0) {
-        logger.error(`Missing required environment variables: ${missingKeys.join(", ")}`);
+        logger.error(
+          `Missing required environment variables: ${missingKeys.join(", ")}`
+        );
       }
     }
     logger.error("Environment validation failed:", { error });
@@ -199,31 +248,51 @@ const additionalTools: Tool<z.ZodTypeAny, z.ZodTypeAny>[] = [
  * NOTE: Some imports (like GraphNode, CalculatorConfig, WikipediaClient) are types or configurations,
  * so only tool instances are added to the tools map.
  */
-const extraTools: Tool<z.ZodTypeAny, z.ZodTypeAny>[] = [];
+const extraTools: Array<ToolOrProvider> = [];
 
-// Instantiate GitHub client using the provided API key.
-const gitHubTool = new GitHubClient({ apiKey: config.GITHUB_API_KEY });
-extraTools.push(gitHubTool as unknown as Tool<z.ZodTypeAny, z.ZodTypeAny>);
+// Initialize GitHub tool
+const gitHubTool = createProviderTool(
+  new GitHubClient({ apiKey: config.GITHUB_API_KEY }),
+  "github",
+  "GitHub API client for accessing repository and user information",
+  "github_get_user_by_username"
+);
+extraTools.push(gitHubTool);
 
-// Instantiate (or use) the E2B tool if it is already an instance.
-if (e2b && typeof e2b === "object" && "id" in e2b) {
-  extraTools.push(e2b as Tool<z.ZodTypeAny, z.ZodTypeAny>);
+// Add E2B tool (already has proper ID)
+if (config.E2B_API_KEY && e2b && typeof e2b === "object" && "id" in e2b) {
+  extraTools.push(e2b as WrappedTool);
 }
+
+// Initialize ArXiv tool
+const arxivTool = createProviderTool(
+  new ArXivClient({}),
+  "arxiv",
+  "ArXiv API client for accessing research papers and articles",
+  "arxiv_search"
+);
+extraTools.push(arxivTool);
+
+// Initialize Wikipedia tool
+const wikiTool = createProviderTool(
+  new WikipediaClient(),
+  "wikipedia",
+  "Wikipedia API client for searching and retrieving articles",
+  "wikipedia_search"
+);
+extraTools.push(wikiTool);
 
 // Create and add LlamaIndex tools.
 const llamaIndexArray = createLlamaIndexTools();
 if (Array.isArray(llamaIndexArray)) {
-  extraTools.push(...(llamaIndexArray as unknown as Tool<z.ZodTypeAny, z.ZodTypeAny>[]));
+  extraTools.push(
+    ...(llamaIndexArray as unknown as Tool<z.ZodTypeAny, z.ZodTypeAny>[])
+  );
 }
 
 // Add McpTools if provided as an array.
 if (Array.isArray(McpTools)) {
   extraTools.push(...(McpTools as Tool<z.ZodTypeAny, z.ZodTypeAny>[]));
-}
-
-// Include 'arxiv' tool if it is a valid tool instance.
-if (arxiv && typeof arxiv === "object" && "id" in arxiv) {
-  extraTools.push(({ ...arxiv, description: "Arxiv Tool" } as unknown) as Tool<z.ZodTypeAny, z.ZodTypeAny>);
 }
 
 // Create and add AISDK tools.
@@ -232,13 +301,11 @@ if (Array.isArray(aisdkArray)) {
   extraTools.push(...aisdkArray);
 }
 
-// Instantiate Wikipedia client.
-const wikiClient = new WikipediaClient();
-extraTools.push(wikiClient as unknown as Tool<z.ZodTypeAny, z.ZodTypeAny>);
-
 // Instantiate Calculator tool.
 const calculatorToolInstance = createCalculatorTool();
-extraTools.push(calculatorToolInstance as unknown as Tool<z.ZodTypeAny, z.ZodTypeAny>);
+extraTools.push(
+  calculatorToolInstance as unknown as Tool<z.ZodTypeAny, z.ZodTypeAny>
+);
 
 // Add GraphRag tools to the extra tools array.
 extraTools.push(createGraphRagTool);
@@ -252,8 +319,14 @@ const graphRagAliasTool: Tool<z.ZodTypeAny, z.ZodTypeAny> = {
 };
 extraTools.push(graphRagAliasTool);
 
+// Add LLM chain tools for AI model interactions
+extraTools.push(llmChainTool as Tool<z.ZodTypeAny, z.ZodTypeAny>);
+extraTools.push(aiSdkPromptTool as Tool<z.ZodTypeAny, z.ZodTypeAny>);
+
 // === Filter Optional Search Tools ===
-const optionalTools: Tool<z.ZodTypeAny, z.ZodTypeAny>[] = Object.values(searchTools).filter(
+const optionalTools: Tool<z.ZodTypeAny, z.ZodTypeAny>[] = Object.values(
+  searchTools
+).filter(
   (tool): tool is Tool<z.ZodTypeAny, z.ZodTypeAny> => tool !== undefined
 );
 
@@ -262,7 +335,7 @@ const optionalTools: Tool<z.ZodTypeAny, z.ZodTypeAny>[] = Object.values(searchTo
 /**
  * Complete collection of all available tools (core + optional + additional + extra).
  */
-export const allTools: readonly Tool<z.ZodTypeAny, z.ZodTypeAny>[] = Object.freeze([
+export const allTools: readonly ToolOrProvider[] = Object.freeze([
   ...coreTools,
   ...optionalTools,
   ...additionalTools,
@@ -272,7 +345,7 @@ export const allTools: readonly Tool<z.ZodTypeAny, z.ZodTypeAny>[] = Object.free
 /**
  * Map for efficient lookup of tools by their ID.
  */
-export const allToolsMap: ReadonlyMap<string, Tool<z.ZodTypeAny, z.ZodTypeAny>> = new Map(
+export const allToolsMap: ReadonlyMap<string, ToolOrProvider> = new Map(
   allTools.map((tool) => [tool.id, tool])
 );
 
@@ -302,7 +375,9 @@ export const toolGroups = {
 // === Log Initialization Results ===
 logger.info(`Initialized ${allTools.length} tools successfully`);
 logger.info(
-  `Search tools available: ${toolGroups.search.map((t) => t.id).join(", ") || "none"}`
+  `Search tools available: ${
+    toolGroups.search.map((t) => t.id).join(", ") || "none"
+  }`
 );
 
 // For backward compatibility.

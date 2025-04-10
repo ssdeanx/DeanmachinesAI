@@ -68,7 +68,7 @@ export function createMastraVectorQueryTool(config: VectorQueryConfig = {}) {
       config.vectorStoreName || validatedEnv.VECTOR_STORE_NAME;
     const indexName = config.indexName || validatedEnv.PINECONE_INDEX;
     const embeddingProvider = config.embeddingProvider || "google";
-    const tokenEncoding = config.tokenEncoding || "cl100k_base";
+    const tokenEncoding = config.tokenEncoding || "o200k_base";
     const dimensions = config.dimensions || validatedEnv.PINECONE_DIMENSION;
     const apiKey = config.apiKey || validatedEnv.GOOGLE_AI_API_KEY;
     const topK = config.topK || 5;
@@ -119,7 +119,9 @@ export function createMastraVectorQueryTool(config: VectorQueryConfig = {}) {
           } catch (error: unknown) {
             logger.error("Tiktoken embedding error:", { error });
             throw new Error(
-              `Tiktoken embedding failed: ${error instanceof Error ? error.message : String(error)}`
+              `Tiktoken embedding failed: ${
+                error instanceof Error ? error.message : String(error)
+              }`
             );
           }
         },
@@ -145,7 +147,7 @@ export function createMastraVectorQueryTool(config: VectorQueryConfig = {}) {
         embedDocuments: function (_documents: string[]): Promise<number[][]> {
           throw new Error("Function not implemented.");
         },
-        caller: new AsyncCaller({})
+        caller: new AsyncCaller({}),
       };
 
       // Use the adapter with createEmbeddings with type assertion
@@ -153,12 +155,15 @@ export function createMastraVectorQueryTool(config: VectorQueryConfig = {}) {
     } else {
       // Use Google embeddings
       logger.info("Using Google embeddings");
-      embeddingModel = createEmbeddings(apiKey, "models/gemini-embedding-1.0");
+      embeddingModel = createEmbeddings(
+        apiKey,
+        "models/gemini-embedding-exp-03-07"
+      );
     }
 
     // Create reranker
     const reranker = {
-      model: google("models/gemini-2.0-flash"),
+      model: google("models/gemini-2.0-flash-exp"),
       options: {
         weights: {
           semantic: 0.5,

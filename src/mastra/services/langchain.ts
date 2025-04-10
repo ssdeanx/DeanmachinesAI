@@ -8,6 +8,7 @@
 import { BaseCallbackHandler } from "@langchain/core/callbacks/base";
 import { ChatOpenAI } from "@langchain/openai";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatAnthropic } from "@langchain/anthropic";
 import { ConversationChain } from "langchain/chains";
 import { SystemMessage } from "@langchain/core/messages";
 import { PromptTemplate, ChatPromptTemplate } from "@langchain/core/prompts";
@@ -42,6 +43,7 @@ export interface LangChainConfig {
  *
  * @param config - Configuration options for the LangChain model
  * @returns A configured chat model ready for use with LangChain
+ * @throws {Error} When required API keys are missing
  */
 export function createLangChainModel(config: LangChainConfig = {}) {
   // Set up LangSmith tracing if enabled
@@ -54,15 +56,33 @@ export function createLangChainModel(config: LangChainConfig = {}) {
   // Create model based on provider
   switch (config.provider || "google") {
     case "openai":
+      if (!env.OPENAI_API_KEY) {
+        throw new Error("OpenAI API key is required");
+      }
       return new ChatOpenAI({
-        modelName: config.modelName || "gpt-4o",
+        modelName: config.modelName || "gpt-4",
         temperature: config.temperature || 0.7,
         maxTokens: config.maxTokens,
         callbacks,
       });
 
+    case "anthropic":
+      if (!env.ANTHROPIC_API_KEY) {
+        throw new Error("Anthropic API key is required");
+      }
+      return new ChatAnthropic({
+        modelName: config.modelName || "claude-3-sonnet-20240229",
+        temperature: config.temperature || 0.7,
+        maxTokens: config.maxTokens,
+        anthropicApiKey: env.ANTHROPIC_API_KEY,
+        callbacks,
+      });
+
     case "google":
     default:
+      if (!env.GOOGLE_GENERATIVE_AI_API_KEY) {
+        throw new Error("Google AI API key is required");
+      }
       return new ChatGoogleGenerativeAI({
         model: config.modelName || env.MODEL || "models/gemini-2.0-flash",
         apiKey: env.GOOGLE_GENERATIVE_AI_API_KEY,
