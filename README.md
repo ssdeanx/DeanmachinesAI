@@ -232,112 +232,105 @@ DeanmachinesAI is licensed under the ISC License. See the [LICENSE](LICENSE) fil
 
 ```mermaid
 graph TB
-    User((External User))
+    User(("External User"))
 
     subgraph "Mastra AI System"
         subgraph "Agent Network Layer"
-            DeanInsights["DeanInsights Network<br>(AgentNetwork)"]
-            DataFlow["DataFlow Network<br>(AgentNetwork)"]
-            ContentCreation["ContentCreation Network<br>(AgentNetwork)"]
+            DeanInsights["DeanInsights Network<br>AgentNetwork"]
+            DataFlow["DataFlow Network<br>AgentNetwork"]
+            ContentCreation["ContentCreation Network<br>AgentNetwork"]
+            KnowledgeMoE["Knowledge Work MoE Network<br>AgentNetwork"]
         end
 
         subgraph "Core Agents"
-            ResearchAgent["Research Agent<br>(TypeScript)"]
-            AnalystAgent["Analyst Agent<br>(TypeScript)"]
-            WriterAgent["Writer Agent<br>(TypeScript)"]
-            RLTrainerAgent["RL Trainer Agent<br>(TypeScript)"]
-            DataManagerAgent["Data Manager Agent<br>(TypeScript)"]
+            ResearchAgent["Research Agent<br>Gemini AI"]
+            AnalystAgent["Analyst Agent<br>Gemini AI"]
+            WriterAgent["Writer Agent<br>Gemini AI"]
+            RLTrainerAgent["RL Trainer Agent<br>Gemini AI"]
+            DataManagerAgent["Data Manager Agent<br>Gemini AI"]
         end
 
         subgraph "Database Layer"
-            VectorStore["Vector Store<br>(Pinecone)"]
-            RedisCache["Cache<br>(Redis)"]
-            ThreadManager["Thread Manager<br>(In-Memory)"]
+            VectorStore["Vector Store<br>Pinecone"]
+            Memory["Memory Store<br>LibSQL"]
+            Cache["Cache Layer<br>Redis"]
         end
 
         subgraph "Services Layer"
-            LangChain["LangChain Service<br>(LangChain)"]
-            LangFuse["LangFuse Service<br>(Telemetry)"]
-            ExaSearch["ExaSearch Service<br>(Search)"]
-            HyperBrowser["HyperBrowser Service<br>(Browser)"]
+            LangChain["LangChain Service<br>LangChain"]
+            ExaSearch["ExaSearch Service<br>REST API"]
+            LangFuse["LangFuse Service<br>Telemetry"]
+            LangSmith["LangSmith Service<br>Monitoring"]
         end
 
         subgraph "Tools Layer"
             subgraph "Search Tools"
-                BraveSearch["Brave Search<br>(API)"]
-                GoogleSearch["Google Search<br>(API)"]
-                TavilySearch["Tavily Search<br>(API)"]
+                BraveSearch["Brave Search<br>REST API"]
+                GoogleSearch["Google Search<br>REST API"]
+                TavilySearch["Tavily Search<br>REST API"]
             end
 
             subgraph "Vector Tools"
-                VectorQuery["Vector Query<br>(TypeScript)"]
-                GoogleVectorQuery["Google Vector Query<br>(TypeScript)"]
-                FilteredQuery["Filtered Query<br>(TypeScript)"]
+                VectorQuery["Vector Query Tool<br>Pinecone"]
+                GoogleVectorQuery["Google Vector Query<br>Gemini"]
+                FilteredQuery["Filtered Query<br>Custom"]
             end
 
             subgraph "File Tools"
-                ReadFile["Read File<br>(TypeScript)"]
-                WriteFile["Write File<br>(TypeScript)"]
+                ReadFile["Read File Tool<br>Node.js"]
+                WriteFile["Write File Tool<br>Node.js"]
             end
 
             subgraph "RL Tools"
-                FeedbackTool["Feedback Collection<br>(TypeScript)"]
-                RewardTool["Reward Calculation<br>(TypeScript)"]
+                FeedbackTools["Feedback Tools<br>Custom"]
+                RewardTools["Reward Tools<br>Custom"]
             end
-        end
-
-        subgraph "Workflow Layer"
-            RAGWorkflow["RAG Workflow<br>(TypeScript)"]
-            ResearchStep["Research Step<br>(Workflow)"]
-            AnalysisStep["Analysis Step<br>(Workflow)"]
-            DocumentationStep["Documentation Step<br>(Workflow)"]
-            FeedbackStep["Feedback Step<br>(Workflow)"]
         end
     end
 
     subgraph "External Services"
-        GoogleAI["Google AI<br>(API)"]
-        PineconeDB["Pinecone DB<br>(Vector DB)"]
-        ExternalAPIs["External APIs<br>(Various)"]
+        GoogleAI["Google AI<br>Gemini"]
+        PineconeDB["Pinecone DB<br>Vector Database"]
     end
 
-    %% Connections
-    User -->|Interacts with| DeanInsights
-    User -->|Interacts with| DataFlow
-    User -->|Interacts with| ContentCreation
+    %% Relationships
+    User -->|"Interacts with"| DeanInsights
+    User -->|"Interacts with"| DataFlow
+    User -->|"Interacts with"| ContentCreation
+    User -->|"Interacts with"| KnowledgeMoE
 
-    %% Agent Network connections
-    DeanInsights -->|Coordinates| ResearchAgent
-    DeanInsights -->|Coordinates| AnalystAgent
-    DeanInsights -->|Coordinates| WriterAgent
-    DataFlow -->|Coordinates| DataManagerAgent
-    DataFlow -->|Coordinates| AnalystAgent
-    ContentCreation -->|Coordinates| ResearchAgent
-    ContentCreation -->|Coordinates| WriterAgent
+    %% Network to Agent relationships
+    DeanInsights -->|"Coordinates"| ResearchAgent
+    DeanInsights -->|"Coordinates"| AnalystAgent
+    DeanInsights -->|"Coordinates"| WriterAgent
+    DataFlow -->|"Coordinates"| DataManagerAgent
+    DataFlow -->|"Coordinates"| AnalystAgent
+    ContentCreation -->|"Coordinates"| ResearchAgent
+    ContentCreation -->|"Coordinates"| WriterAgent
 
-    %% Workflow connections
-    RAGWorkflow -->|Executes| ResearchStep
-    ResearchStep -->|Followed by| AnalysisStep
-    AnalysisStep -->|Followed by| DocumentationStep
-    DocumentationStep -->|Followed by| FeedbackStep
+    %% Agent to Service relationships
+    ResearchAgent -->|"Uses"| LangChain
+    AnalystAgent -->|"Uses"| LangChain
+    WriterAgent -->|"Uses"| LangChain
+    RLTrainerAgent -->|"Uses"| LangSmith
+    DataManagerAgent -->|"Uses"| VectorStore
 
-    %% Service connections
-    ResearchAgent -->|Uses| LangChain
-    AnalystAgent -->|Uses| LangChain
-    WriterAgent -->|Uses| LangChain
-    LangChain -->|Connects to| GoogleAI
-    VectorStore -->|Stores in| PineconeDB
+    %% Service to External Service relationships
+    LangChain -->|"Calls"| GoogleAI
+    VectorStore -->|"Stores in"| PineconeDB
 
-    %% Tool connections
-    ResearchAgent -->|Uses| VectorQuery
-    ResearchAgent -->|Uses| GoogleSearch
-    AnalystAgent -->|Uses| FilteredQuery
-    DataManagerAgent -->|Uses| ReadFile
-    DataManagerAgent -->|Uses| WriteFile
-    RLTrainerAgent -->|Uses| FeedbackTool
-    RLTrainerAgent -->|Uses| RewardTool
+    %% Tool relationships
+    ResearchAgent -->|"Uses"| BraveSearch
+    ResearchAgent -->|"Uses"| GoogleSearch
+    ResearchAgent -->|"Uses"| VectorQuery
+    DataManagerAgent -->|"Uses"| ReadFile
+    DataManagerAgent -->|"Uses"| WriteFile
+    RLTrainerAgent -->|"Uses"| FeedbackTools
+    RLTrainerAgent -->|"Uses"| RewardTools
 
-    %% Database connections
-    ThreadManager -->|Manages| VectorStore
-    ThreadManager -->|Manages| RedisCache
+    %% Database relationships
+    ResearchAgent -->|"Uses"| Memory
+    AnalystAgent -->|"Uses"| Memory
+    WriterAgent -->|"Uses"| Memory
+    DataManagerAgent -->|"Uses"| VectorStore
 ```
