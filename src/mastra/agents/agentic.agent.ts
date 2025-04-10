@@ -5,106 +5,40 @@
  * combining multiple tools for enhanced capabilities.
  */
 
-import { Agent } from "@mastra/core/agent";
 import { createLogger } from "@mastra/core/logger";
 import { sharedMemory } from "../database";
-import { createAgentFromConfig, createModelInstance } from "./base.agent";
-import {
-  agenticAssistantConfig,
-  agenticResponseSchema,
-  type AgenticResponse,
-} from "./config";
+import { createAgentFromConfig } from "./base.agent";
+import { agenticAssistantConfig, agenticResponseSchema } from "./config";
 
 // Initialize logger for this module
 const logger = createLogger({ name: "agentic-agent", level: "info" });
 
 /**
- * Creates and initializes the agentic assistant agent with all required tools
+ * Agentic-style Agent with data analysis capabilities
  *
- * @returns An initialized Mastra agent instance
- * @throws {Error} If agent creation fails or required tools are missing
+ * @remarks
+ * This agent is agentic in nature, capable of analyzing information,
+ * identifying trends and patterns, and extracting meaningful insights from data sources.
+ * It can also generate structured responses based on the provided schema.
+ * The agent is designed to be flexible and adaptable, allowing for various use cases.
+ * It also supports integration with external APIs for enhanced functionality.
  */
-export function createAgenticAssistant(): Agent {
-  try {
-    logger.info(`Creating agent: ${agenticAssistantConfig.id}`);
+export const agenticAssistant = createAgentFromConfig({
+  config: agenticAssistantConfig,
+  memory: sharedMemory, // Following RULE-MemoryInjection
+  onError: async (error: Error) => {
+    logger.error("Agentic agent error:", error);
+    return {
+      text: "I encountered an error while analyzing data. Please provide additional context or clarify your request.",
+    };
+  },
+});
 
-    // Create the agent using the standardized createAgentFromConfig function
-    return createAgentFromConfig({
-      config: agenticAssistantConfig,
-      memory: sharedMemory, // Following RULE-MemoryInjection
-      model: createModelInstance(agenticAssistantConfig.modelConfig),
-      onError: async (error: Error) => {
-        logger.error("Agentic assistant error:", error);
-        return {
-          text: "I encountered an error. Please try again or provide more information.",
-        };
-      },
-    });
-  } catch (error) {
-    logger.error(`Failed to create agent ${agenticAssistantConfig.id}:`, {
-      error,
-    });
-    throw new Error(
-      `Agent creation failed: ${
-        error instanceof Error ? error.message : String(error)
-      }`
-    );
-  }
-}
-
-// Create the agent instance
-export const agenticAssistant = createAgenticAssistant();
-
-/**
- * Generates a structured response using the agentic assistant
- *
- * @param query - The user's question or request
- * @returns A promise resolving to the structured response
- * @throws {Error} If generation fails or response validation fails
- */
-export async function getStructuredResponse(
-  query: string
-): Promise<AgenticResponse> {
-  try {
-    // Use the agent with structured output schema
-    const result = await agenticAssistant.generate(query, {
-      output: agenticResponseSchema,
-    });
-
-    if (!result.object) {
-      throw new Error("Failed to generate structured response");
-    }
-
-    return result.object as AgenticResponse;
-  } catch (error) {
-    logger.error("Error generating structured response:", { error });
-    throw new Error(
-      `Failed to generate response: ${
-        error instanceof Error ? error.message : String(error)
-      }`
-    );
-  }
-}
-
-/**
- * Streams a response from the agentic assistant
- *
- * @param query - The user's question or request
- * @returns A promise resolving to the streaming response
- * @throws {Error} If streaming setup fails
- */
-export async function streamResponse(query: string) {
-  try {
-    return await agenticAssistant.stream(query);
-  } catch (error) {
-    logger.error("Error streaming response:", { error });
-    throw new Error(
-      `Failed to stream response: ${
-        error instanceof Error ? error.message : String(error)
-      }`
-    );
-  }
-}
+export default agenticAssistant;
+export type AgenticAgent = typeof agenticAssistant;
+export type AgenticAgentConfig = typeof agenticAssistantConfig;
+export type AgenticAgentMemory = typeof sharedMemory;
+export type AgenticAgentMemoryType = typeof sharedMemory;
 
 /**
  * Example usage:
