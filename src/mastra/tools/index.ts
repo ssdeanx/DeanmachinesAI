@@ -1,9 +1,9 @@
 /**
  * Tool Registry and Management
  *
- * This module serves as the central registry for tools,
+ * This module serves as the central registry for all available tools,
  * handling their initialization, configuration, and export. It assembles
- * core, optional, and extra tools into a lookup map so that agents
+ * core, optional, additional, and extra tools into a lookup map so that agents
  * can easily find and use them.
  *
  * @module Tools
@@ -16,7 +16,6 @@ import { env } from "process";
 import { z } from "zod";
 import { Tool } from "@mastra/core/tools";
 import { createLogger } from "@mastra/core/logger";
-import { AIFunctionsProvider, type AIFunctionSet } from "@agentic/core";
 
 // === Internal tool imports ===
 import {
@@ -51,57 +50,13 @@ import { GraphNode } from "./graphRag";
 import { createCalculatorTool } from "./calculator";
 import { createLlamaIndexTools } from "./llamaindex";
 import { McpTools } from "./mcptools";
-import { ArXivClient } from "./arxiv";
+import { arxiv } from "./arxiv";
 import { WikipediaClient } from "./wikibase";
 import { createAISDKTools } from "./ai-sdk";
 import { e2b } from "./e2b";
 // Import GraphRag tools so that they are read and fully functional.
 import { createGraphRagTool, graphRagQueryTool } from "./graphRag";
-// Import LLM chain tools for AI model interaction
 import { llmChainTool, aiSdkPromptTool } from "./llmchain";
-// === Type definitions ===
-/**
- * Tool that can include AIFunctionSet capabilities
- */
-type ToolOrProvider =
-  | Tool<z.ZodTypeAny, z.ZodTypeAny>
-  | (Tool<z.ZodTypeAny, z.ZodTypeAny> & { functions: AIFunctionSet });
-
-/**
- * Wrapped tool that includes AI functions
- */
-type WrappedTool = Tool<z.ZodTypeAny, z.ZodTypeAny> & {
-  functions?: AIFunctionSet;
-};
-
-/**
- * Creates a tool from an AIFunctionsProvider instance
- *
- * @param provider - The AI functions provider
- * @param id - Tool identifier
- * @param description - Tool description
- * @param defaultFunction - Name of default function to execute
- * @returns A tool wrapping the provider
- */
-function createProviderTool(
-  provider: AIFunctionsProvider,
-  id: string,
-  description: string,
-  defaultFunction: string
-): WrappedTool {
-  return {
-    id,
-    description,
-    functions: provider.functions,
-    execute: async (context: unknown) => {
-      const fn = provider.functions.get(defaultFunction);
-      if (!fn) {
-        throw new Error(`Function "${defaultFunction}" not found in provider`);
-      }
-      return fn.execute(context);
-    },
-  };
-}
 
 // === Export all tool modules ===
 export * from "./e2b";
@@ -248,39 +203,16 @@ const additionalTools: Tool<z.ZodTypeAny, z.ZodTypeAny>[] = [
  * NOTE: Some imports (like GraphNode, CalculatorConfig, WikipediaClient) are types or configurations,
  * so only tool instances are added to the tools map.
  */
-const extraTools: Array<ToolOrProvider> = [];
+const extraTools: Tool<z.ZodTypeAny, z.ZodTypeAny>[] = [];
 
-// Initialize GitHub tool
-const gitHubTool = createProviderTool(
-  new GitHubClient({ apiKey: config.GITHUB_API_KEY }),
-  "github",
-  "GitHub API client for accessing repository and user information",
-  "github_get_user_by_username"
-);
-extraTools.push(gitHubTool);
+// Instantiate GitHub client using the provided API key.
+const gitHubTool = new GitHubClient({ apiKey: config.GITHUB_API_KEY });
+extraTools.push(gitHubTool as unknown as Tool<z.ZodTypeAny, z.ZodTypeAny>);
 
-// Add E2B tool (already has proper ID)
-if (config.E2B_API_KEY && e2b && typeof e2b === "object" && "id" in e2b) {
-  extraTools.push(e2b as WrappedTool);
+// Instantiate (or use) the E2B tool if it is already an instance.
+if (e2b && typeof e2b === "object" && "id" in e2b) {
+  extraTools.push(e2b as Tool<z.ZodTypeAny, z.ZodTypeAny>);
 }
-
-// Initialize ArXiv tool
-const arxivTool = createProviderTool(
-  new ArXivClient({}),
-  "arxiv",
-  "ArXiv API client for accessing research papers and articles",
-  "arxiv_search"
-);
-extraTools.push(arxivTool);
-
-// Initialize Wikipedia tool
-const wikiTool = createProviderTool(
-  new WikipediaClient(),
-  "wikipedia",
-  "Wikipedia API client for searching and retrieving articles",
-  "wikipedia_search"
-);
-extraTools.push(wikiTool);
 
 // Create and add LlamaIndex tools.
 const llamaIndexArray = createLlamaIndexTools();
@@ -295,11 +227,23 @@ if (Array.isArray(McpTools)) {
   extraTools.push(...(McpTools as Tool<z.ZodTypeAny, z.ZodTypeAny>[]));
 }
 
+// Include 'arxiv' tool if it is a valid tool instance.
+if (arxiv && typeof arxiv === "object" && "id" in arxiv) {
+  extraTools.push({ ...arxiv, description: "Arxiv Tool" } as unknown as Tool<
+    z.ZodTypeAny,
+    z.ZodTypeAny
+  >);
+}
+
 // Create and add AISDK tools.
 const aisdkArray = createAISDKTools();
 if (Array.isArray(aisdkArray)) {
   extraTools.push(...aisdkArray);
 }
+
+// Instantiate Wikipedia client.
+const wikiClient = new WikipediaClient();
+extraTools.push(wikiClient as unknown as Tool<z.ZodTypeAny, z.ZodTypeAny>);
 
 // Instantiate Calculator tool.
 const calculatorToolInstance = createCalculatorTool();
@@ -335,19 +279,21 @@ const optionalTools: Tool<z.ZodTypeAny, z.ZodTypeAny>[] = Object.values(
 /**
  * Complete collection of all available tools (core + optional + additional + extra).
  */
-export const allTools: readonly ToolOrProvider[] = Object.freeze([
-  ...coreTools,
-  ...optionalTools,
-  ...additionalTools,
-  ...extraTools,
-]);
+export const allTools: readonly Tool<z.ZodTypeAny, z.ZodTypeAny>[] =
+  Object.freeze([
+    ...coreTools,
+    ...optionalTools,
+    ...additionalTools,
+    ...extraTools,
+  ]);
 
 /**
  * Map for efficient lookup of tools by their ID.
  */
-export const allToolsMap: ReadonlyMap<string, ToolOrProvider> = new Map(
-  allTools.map((tool) => [tool.id, tool])
-);
+export const allToolsMap: ReadonlyMap<
+  string,
+  Tool<z.ZodTypeAny, z.ZodTypeAny>
+> = new Map(allTools.map((tool) => [tool.id, tool]));
 
 /**
  * Grouped tools by category for easier access.
